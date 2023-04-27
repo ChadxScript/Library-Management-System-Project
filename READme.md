@@ -1,7 +1,4 @@
-
 ![banner](https://user-images.githubusercontent.com/101156843/234887330-1514aa24-b157-4694-8551-662bdf5f7389.png)
-
-
 
 > # **Library Management System Project**
 
