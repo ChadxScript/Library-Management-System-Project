@@ -2,8 +2,8 @@
 
 > # **Library Management System Project**
 
-![GitHub](https://img.shields.io/github/license/Sluhii/Prog-Lang-Proj-1-Group-8?logo=Github)
-![GitHub last commit](https://img.shields.io/github/last-commit/Sluhii/Prog-Lang-Proj-1-Group-8?logo=github)
+![GitHub](https://img.shields.io/github/license/ChadxScript/Prog-Lang-Proj-1-Group-8?logo=Github)
+![GitHub last commit](https://img.shields.io/github/last-commit/ChadxScript/Prog-Lang-Proj-1-Group-8?logo=github)
 
 ## FEATURES
 - Student 
