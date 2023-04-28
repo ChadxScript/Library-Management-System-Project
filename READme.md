@@ -1,6 +1,7 @@
 ![banner](https://user-images.githubusercontent.com/101156843/234887330-1514aa24-b157-4694-8551-662bdf5f7389.png)
 
-> # **Library Management System Project**
+> # **Library Management System Project in C**
+> 2nd Year - 2nd Sem Project 1 in Programming Language [BSCS-2CD-M | Group 8]
 
 ![GitHub](https://img.shields.io/github/license/ChadxScript/Prog-Lang-Proj-1-Group-8?logo=Github)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ChadxScript/Prog-Lang-Proj-1-Group-8?logo=github)
