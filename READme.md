@@ -6,6 +6,9 @@
 ![GitHub](https://img.shields.io/github/license/ChadxScript/Prog-Lang-Proj-1-Group-8?logo=Github)
 ![GitHub last commit](https://img.shields.io/github/last-commit/ChadxScript/Prog-Lang-Proj-1-Group-8?logo=github)
 
+## NOTE
+Please download the books.csv and put it on your desktop drive.
+
 ## FEATURES
 - Student 
   - Log-In 
