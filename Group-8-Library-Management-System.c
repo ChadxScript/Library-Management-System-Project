@@ -15,6 +15,15 @@ typedef struct anode{
     struct anode* next;
 }aLIST;aLIST *A;
 
+typedef struct bookDetails{
+    int bookID, publicationYear, bookPages;
+    char bookTitle[100], bookAuthor[100];
+}bREC;
+typedef struct bnode{
+    bREC bLib;
+    struct bnode* next;
+}bLIST;bLIST *B;
+
 //Function Declaration
 void makenull();
 void retrieveAccounts();
@@ -23,9 +32,11 @@ void saveAccounts();
 void saveAccountsFD();
 int insertcard();
 void addAccount(aREC x);
-void logs();
+void addBooks(bREC x);
+void logs(char inout[4]);
 int menu(int x);
 int checkAccount(int x, char str[31]);
+void displayBooks();
 
 //Global Vars
 int currentSKey, currentLKey;
@@ -50,7 +61,7 @@ int main(){
                     addAccount(aLibn); 
                 }else{
                     printf("\nInvalid Entry. Duplicate Student ID. Please try again.\n"); system("pause"); goto fillAgain1;
-                }system("cls"); logs(); break; 
+                }system("cls"); logs("IN"); break; 
         case 2: system("cls"); currentLKey=aLibn.lkey = 1; currentSKey=aLibn.skey = 0;
                 strcpy(aLibn.librarianName, adminFillName); strcpy(currentLibrarianName, adminFillName); 
                 strcpy(aLibn.librarianID, adminFillID); strcpy(currentLibrarianID, adminFillID);
@@ -58,7 +69,7 @@ int main(){
                 printf("\n\n Skey: %d\n Lkey: %d\n SName: %s\n SID: %s\n LName: %s\n LID: %s",aLibn.skey,aLibn.lkey,aLibn.studentName,aLibn.studentID,aLibn.librarianName,aLibn.librarianID);
                 if(checkAccount(2,aLibn.librarianName)==1){
                     addAccount(aLibn); 
-                }printf("\n\nREGISTRATION COMPLETE\n");system("pause"); system("cls"); logs(); break; 
+                }printf("\n\nREGISTRATION COMPLETE\n");system("pause"); system("cls"); logs("IN"); break; 
         case 3: system("cls"); printf("\nLOG IN");
                 strcpy(aLibn.studentName, currentStudentName);
                 aLibn.skey = currentSKey; aLibn.lkey = currentLKey;
@@ -73,7 +84,7 @@ int main(){
                     }else{
                         strcpy(aLibn.studentID, currentStudentID);
                         printf("\nWelcome %s !\n", aLibn.studentName);
-                        system("pause"); system("cls"); logs();
+                        system("pause"); system("cls"); logs("IN");
                     }
                 }else if(currentLKey==1 && currentSKey==0){
                     enterLibID:
@@ -84,7 +95,7 @@ int main(){
                     }else{
                         strcpy(aLibn.librarianID, currentLibrarianID);
                         printf("\nWelcome %s !\n", aLibn.librarianName);
-                        system("pause"); system("cls"); logs();
+                        system("pause"); system("cls"); logs("IN");
                     }
                 }else{
                     system("cls"); printf("\nSystem Error.\n"); system("pause"); system("cls");
@@ -99,10 +110,11 @@ int main(){
             system("cls");
             switch(menu(1)){
                 case 1: //borrow
+                        displayBooks(); printf("\n\n");system("pause");
                         break;
                 case 2: //return
                         break;
-                default: saveAccounts(); saveAccountsFD(); exit(0); 
+                default: saveAccounts(); saveAccountsFD(); logs("OUT"); exit(0); 
                         break;
             }
         }
@@ -116,7 +128,7 @@ int main(){
                         break;
                 case 3: //remove book
                         break;
-                default: saveAccounts(); saveAccountsFD(); exit(0);
+                default: saveAccounts(); saveAccountsFD(); logs("OUT"); exit(0);
                         break;
             }
         }
@@ -125,6 +137,7 @@ int main(){
 
 void makenull(){ //initiate the list to null
     A = NULL;
+    B = NULL;
 }
 int insertcard(){
     int num;
@@ -134,7 +147,7 @@ int insertcard(){
         printf("\nPa-insert ng flashdrive. Baka na stuck kayo rito pabago nalang ng letter. palagyan narin animation like loading HAHA");
     }while(fp==NULL); fclose(fp);
     fp=fopen("D:\\userDetails.csv","r");
-    if(fp==NULL){ //if the user is new
+    if(fp==NULL){ //if the user is new 
         retrieveBooks(); retrieveAccounts();
         do{
             system("cls");
@@ -192,10 +205,37 @@ void retrieveAccounts(){
         p=p->next;
     }printf("\n\n");system("pause");
 }
-void retrieveBooks(){
-    system("cls");
+void addBooks(bREC x){
+    bLIST *p, *q, *temp;
+    q=p=B;
+    temp = (bLIST*) malloc(sizeof(bLIST));
+    temp->bLib = x;
+    while(p!=NULL){
+        q=p;
+        p=p->next;
+    }
+    if(p==B){
+        B = temp;
+    }else{
+        q->next = temp;
+    }temp->next = p;
 }
-void logs(){ //to get time if the student borrow the book
+void retrieveBooks(){
+    FILE *fp;
+    bREC bLibn;
+    fp=fopen("E:\\books.csv","r"); 
+    if(fp==NULL){
+        printf("\nERROR 404. books.csv Not Found.\n"); 
+    }else{ int a=1;
+        while(!feof(fp)){ 
+            fscanf(fp,"%d,%[^,],%[^,],%d,%d\n",
+                    &bLibn.bookID, bLibn.bookTitle, bLibn.bookAuthor,
+                    &bLibn.publicationYear, &bLibn.bookPages);
+            addBooks(bLibn); 
+        }fclose(fp);
+    }
+}
+void logs(char inout[4]){ //to get time if the student borrow the book
     FILE* fp;
     time_t currentTime;
     struct tm *localTime;
@@ -207,13 +247,13 @@ void logs(){ //to get time if the student borrow the book
     localTime = localtime(&currentTime);
         
     if(currentSKey==1 && currentLKey==0){
-        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s\n",
+        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s\n",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentStudentName, currentStudentID);
+            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentStudentName, currentStudentID, inout);
     }else if(currentSKey==0 && currentLKey==1){
-        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s\n",
+        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s\n",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentLibrarianName, currentLibrarianID);
+            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentLibrarianName, currentLibrarianID, inout);
     }fclose(fp);
 }
 int checkAccount(int x,char str[31]){ // to avoid same IDs / multiple admin accounts
@@ -251,6 +291,16 @@ int menu(int x){
     }
     printf("\n\nENTER CHOICE: "); scanf("%d",&userNum);
     return userNum;
+}
+void displayBooks(){
+    bLIST *p; p=B;
+    system("cls"); printf("Book ID\t Book Title\t Book Author\t Publication Year\t Book Pages\n");
+    while(p!=NULL){
+        printf("%d\t %s\t %s\t %d\t %d\n",
+                p->bLib.bookID, p->bLib.bookTitle, p->bLib.bookAuthor, 
+                p->bLib.publicationYear, p->bLib.bookPages);
+        p=p->next;
+    }
 }
 
 void saveAccounts(){
