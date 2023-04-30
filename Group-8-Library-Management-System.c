@@ -32,7 +32,8 @@ void retrieveBooks();
 void addBooks(bREC x);
 void editBooks(int x);
 void removeBooks(int x);
-int checkBooks(int check);
+int checkBooks(bREC *x);
+int verifyADMIN();
 void saveBooks();
 
 void saveAccounts();
@@ -40,13 +41,13 @@ void saveAccountsFD();
 int insertcard();
 void addAccount(aREC x);
 
-void logs(char inout[4]);
+void logs(char inout[10]);
 int menu(int x);
 int checkAccount(int x, char str[31]);
 void displayBooks();
 
 //Global Vars
-int currentSKey, currentLKey;
+int currentSKey, currentLKey, currentBookID=0;
 char currentStudentID[31], currentStudentName[31];
 char currentLibrarianID[31], currentLibrarianName[31];
 char fill[] = "NONE"; char adminFillName[] = "LibrarianADMIN"; char adminFillID[] = "LibrarianADMIN123";
@@ -132,21 +133,50 @@ int main(){
             displayBooks();
             switch(menu(2)){
                 case 1: printf("Input book title: ");scanf(" %[^\n]s",bBooks.bookTitle);
-                        printf("Input book ID: ");scanf("%d",&bBooks.bookID);
+                        bBooks.bookID=currentBookID; bBooks.bookID+=1; printf("Book ID: %d\n",bBooks.bookID);
                         printf("Input book author: ");scanf(" %[^\n]s",bBooks.bookAuthor);
                         printf("Input publication year: ");scanf("%d",&bBooks.publicationYear);
-                        addBooks(bBooks);
+                        if(checkBooks(&bBooks)==1){
+                            if(verifyADMIN()==1){
+                                addBooks(bBooks); logs("Add Book");  
+                                printf("\nModification Successful.\n");system("pause");
+                            }else{
+                                printf("\nModification Unsuccessful.\n");system("pause");
+                            }
+                        }else{
+                            printf("\nModification Unsuccessful. Details are already in the List.\n");system("pause");
+                        }
                         break;
                 case 2: printf("Input book ID to be edited: ");scanf("%d",&bBooks.bookID);
-                        editBooks(bBooks.bookID);
+                        if(verifyADMIN()==1){
+                            editBooks(bBooks.bookID); logs("Edit Book");  
+                            printf("\nModification Successful.\n");system("pause");
+                        }else{
+                            printf("\nModification Unsuccessful.\n");system("pause");
+                        }
                         break;
                 case 3: printf("Input book ID to be deleted: ");scanf("%d",&bBooks.bookID);
-                        removeBooks(bBooks.bookID);
+                        if(verifyADMIN()==1){
+                            removeBooks(bBooks.bookID); logs("Removed Book");  
+                        }else{
+                            printf("\nModification Unsuccessful.\n");system("pause");
+                        }
                         break;
                 default: saveBooks();saveAccounts(); saveAccountsFD(); logs("OUT"); exit(0);
                         break;
             }
         }
+    }
+}
+
+
+int verifyADMIN(){
+    char userInput[31];
+    printf("\nPlease Enter Librarian ID to confirm: "); scanf(" %[^\n]s",userInput);
+    if(strcmp(userInput,adminFillID)==0){
+        return 1;
+    }else{
+        return 0;
     }
 }
 void addBooks(bREC x){
@@ -164,17 +194,28 @@ void addBooks(bREC x){
         q->next = temp;
     }temp->next = p;
 }
-int checkBooks(int x){
+int checkBooks(bREC *x){
     bLIST *p, *q;
     q=p=B;
-    while(p!=NULL && x!=p->bLib.bookID){
-        q=p; p=p->next;
-        }if(p==NULL)
+    while(p!=NULL && strcasecmp(x->bookTitle,p->bLib.bookTitle)!=0){
+        q=p; 
+        p=p->next;
+    }
+    if(p==NULL){
+        return 1;
+    }else{
+        q=p=B;
+        while(p!=NULL && strcasecmp(x->bookAuthor,p->bLib.bookAuthor)!=0){
+            q=p; 
+            p=p->next;
+        }
+        if(p==NULL){
             return 1;
-        else
+        }else{
             return 2;
+        }
+    }
 }
-
 void editBooks(int x){
     int ch=0, a;
     bLIST *p, *q;
@@ -217,7 +258,6 @@ void editBooks(int x){
         }
     }
 }
-
 void removeBooks(int x){
     char temp[100];
     bLIST *p, *q;
@@ -240,6 +280,7 @@ void removeBooks(int x){
         printf("The book %s was successfully removed.\n", temp); system("pause");
     }
 }
+
 
 void makenull(){ //initiate the list to null
     A = NULL;
@@ -329,7 +370,7 @@ void saveBooks(){
 void retrieveBooks(){
     FILE *fp;
     bREC bLibn;
-    fp=fopen("E:\\books.csv","r");
+    fp=fopen("E:\\books.csv","r+");
     if(fp==NULL){
         printf("\nERROR 404. books.csv Not Found.\n");
     }else{ int a=1;
@@ -337,11 +378,11 @@ void retrieveBooks(){
             fscanf(fp,"%d,%[^,],%[^,],%d\n",
                     &bLibn.bookID, bLibn.bookTitle, bLibn.bookAuthor, 
                     &bLibn.publicationYear);
-           addBooks(bLibn);
+           currentBookID=bLibn.bookID; addBooks(bLibn);
         }fclose(fp);
     }
 }
-void logs(char inout[5]){ //to get time if the student borrow the book
+void logs(char inout[10]){ //to get time if the student borrow the book
     FILE* fp;
     time_t currentTime;
     struct tm *localTime;
@@ -452,4 +493,4 @@ void saveAccountsFD(){
                 p->aLib.librarianName,p->aLib.skey,p->aLib.lkey);
     }
     fclose(fp);
-};
+}

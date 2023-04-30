@@ -14,7 +14,7 @@ if student
     while != exit
         show menu for student 
             borrow
-                display books (sorted)
+                display books 
                 choose book
                 the book chosen will disappear
                 note the book, student, time to the logs
