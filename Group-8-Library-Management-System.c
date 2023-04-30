@@ -19,7 +19,6 @@ typedef struct bookDetails{
     int bookID, publicationYear;
     char bookTitle[100], bookAuthor[100];
 }bREC;
-
 typedef struct bnode{
     bREC bLib;
     struct bnode* next;
@@ -31,8 +30,8 @@ void retrieveAccounts();
 void retrieveBooks();
 
 void addBooks(bREC x);
-void editBooks(bREC *x);
-void removeBooks(int *bookID);
+void editBooks(int x);
+void removeBooks(int x);
 int checkBooks(int check);
 void saveBooks();
 
@@ -166,9 +165,9 @@ void addBooks(bREC x){
     }temp->next = p;
 }
 int checkBooks(int x){
-bLIST *p, *q;
-q=p=B;
-while(p!=NULL && x!=p->bLib.bookID){
+    bLIST *p, *q;
+    q=p=B;
+    while(p!=NULL && x!=p->bLib.bookID){
         q=p; p=p->next;
         }if(p==NULL)
             return 1;
@@ -176,67 +175,69 @@ while(p!=NULL && x!=p->bLib.bookID){
             return 2;
 }
 
-void editBooks(bREC *x){
-int ch;
-bLIST *p, *q;
-bREC bBooks;
-q=p=B;
-while(p!=NULL && x->bookID!=p->bLib.bookID){
-        p=q;
+void editBooks(int x){
+    int ch=0, a;
+    bLIST *p, *q;
+    bREC bBooks;
+    q=p=B;
+    while(p!=NULL && x!=p->bLib.bookID){
+        q=p;
         p=p->next;
-}
-if (p==NULL){
-    printf("Book not found!\n");
-    printf("Wrong book ID or book does not exist.\n");
-}
-else{
-    while(ch!=4){
-          printf("Book ID: %s\n",p->bLib.bookID);
-          printf("Book title: %s\n",p->bLib.bookTitle);
-          printf("Book author: %s\n",p->bLib.bookAuthor);
-          printf("Book publication year: %d\n",p->bLib.publicationYear);
-          printf("Select the detail to edit: ");scanf("%d",&ch);
-          printf("CHANGE BOOK DETAILS\n");
-          printf("[1] Book title\n");
-          printf("[2] Book author\n");
-          printf("[3] Book publication year\n");
-          printf("[4] Back\n");
-          switch(ch){
-                case 1:printf("Input NEW book title: ");scanf(" %[^\n]s",bBooks.bookTitle);
-                       strcpy(p->bLib.bookTitle,bBooks.bookTitle);
-                       break;
-                case 2:printf("Input NEW book author: ");scanf(" %[^\n]s",bBooks.bookAuthor);
-                       strcpy(p->bLib.bookAuthor,bBooks.bookAuthor);
-                       break;
-                case 3:printf("Input NEW publication year: ");scanf("%d",&p->bLib.publicationYear);
-                       break;
-                case 4:printf("Book was succesfully edited.");
-                       break;
-                default: printf("Select 1-4 only.");
-                         break;
-          }
+    }
+    if (p==NULL){
+        printf("Book not found!\n");
+        printf("Wrong book ID or book does not exist.\n");
+    }
+    else{
+        while(ch!=4){
+            printf("Book ID: %d\n",p->bLib.bookID);
+            printf("Book title: %s\n",p->bLib.bookTitle);
+            printf("Book author: %s\n",p->bLib.bookAuthor);
+            printf("Book publication year: %d\n",p->bLib.publicationYear);
+            printf("\nCHANGE BOOK DETAILS\n");
+            printf("[1] Book title\n");
+            printf("[2] Book author\n");
+            printf("[3] Book publication year\n");
+            printf("[4] Back\n");
+            printf("Select the detail to edit: ");scanf("%d",&ch);
+            switch(ch){
+                    case 1:printf("Input NEW book title: ");scanf(" %[^\n]s",p->bLib.bookTitle);
+                        //strcpy(p->bLib.bookTitle,bBooks.bookTitle);
+                        break;
+                    case 2:printf("Input NEW book author: ");scanf(" %[^\n]s",p->bLib.bookAuthor);
+                        //strcpy(p->bLib.bookAuthor,bBooks.bookAuthor);
+                        break;
+                    case 3:printf("Input NEW publication year: ");scanf("%d",&p->bLib.publicationYear);
+                        break;
+                    case 4:printf("Book was succesfully edited.");
+                        break;
+                    default: printf("Select 1-4 only.");
+                            break;
+            }
+        }
     }
 }
-}
 
-void removeBooks(int *bookID){
-bLIST *p, *q;
-q=p=B;
-while(p!=NULL && p->bLib.bookID!=bookID){
-        p=q;
-        p=p->next;
-}
-if (p==NULL){
-    printf("Book not found!\n");
-    printf("Wrong book ID or book does not exist.\n");
-}
-else{
-    if (p==B)
-       B=p->next;
-    else
-       q->next=p->next;
-    free(p);
-    printf("The book was successfully removed.\n");
+void removeBooks(int x){
+    char temp[100];
+    bLIST *p, *q;
+    q=p=B;
+    while(p!=NULL && p->bLib.bookID!=x){
+            q=p;
+            p=p->next;
+    }
+    if (p==NULL){
+        printf("Book not found!\n");
+        printf("Wrong book ID or book does not exist.\n");
+    }
+    else{
+        strcpy(temp,p->bLib.bookTitle);
+        if (p==B)
+            B=p->next;
+        else
+            q->next=p->next;
+        free(p);
+        printf("The book %s was successfully removed.\n", temp); system("pause");
     }
 }
 
@@ -248,7 +249,7 @@ int insertcard(){
     int num;
     FILE *fp;
     do{ //will check if the flashdrive is inserted to the device or not
-        fp=fopen("D:\\Check.txt","w"); system("cls");
+        fp=fopen("D:\\Check.txt","w"); //system("cls");
         printf("\nPa-insert ng flashdrive. Baka na stuck kayo rito pabago nalang ng letter. palagyan narin animation like loading HAHA");
     }while(fp==NULL); fclose(fp);
     fp=fopen("D:\\userDetails.csv","r");
@@ -267,8 +268,6 @@ int insertcard(){
         return 3;
     }fclose(fp);
 }
-
-
 void addAccount(aREC x){
     aLIST *p, *q, *temp;
     q=p=A;
@@ -320,7 +319,7 @@ void saveBooks(){
         printf("Error 404. File not found.\n"); system("pause");
     }else{
         while(p!=NULL){
-            fprintf(fp,"%s,%s,%s,%d\n",
+            fprintf(fp,"%d,%s,%s,%d\n",
                     p->bLib.bookID,p->bLib.bookTitle,p->bLib.bookAuthor,p->bLib.publicationYear);
             p=p->next;
         }fclose(fp);
@@ -336,13 +335,13 @@ void retrieveBooks(){
     }else{ int a=1;
         while(!feof(fp)){
             fscanf(fp,"%d,%[^,],%[^,],%d\n",
-                    &bLibn.bookID, bLibn.bookTitle, bLibn.bookAuthor,
+                    &bLibn.bookID, bLibn.bookTitle, bLibn.bookAuthor, 
                     &bLibn.publicationYear);
-            addBooks(bLibn);
+           addBooks(bLibn);
         }fclose(fp);
     }
 }
-void logs(char inout[4]){ //to get time if the student borrow the book
+void logs(char inout[5]){ //to get time if the student borrow the book
     FILE* fp;
     time_t currentTime;
     struct tm *localTime;
@@ -385,7 +384,8 @@ int checkAccount(int x,char str[31]){ // to avoid same IDs / multiple admin acco
     }
 }
 int menu(int x){
-    system("cls"); int userNum;
+    //system("cls"); 
+    int userNum;
     printf("\nCHOOSE CATEGORY\n");
     if(x==1){//student
         printf("\n[1] BORROW");
