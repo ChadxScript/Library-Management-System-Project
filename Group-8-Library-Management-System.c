@@ -458,9 +458,9 @@ int checkAccount(int x,char str[31]){ // to avoid same IDs / multiple admin acco
         case 2: while(p!=NULL && strcmp(str,p->aLib.librarianID)!=0){
                     q=p; p=p->next;
                 }if(p==NULL){
-                    printf("\nOO fre na add\n"); return 1;
+                    return 1;
                 }else{
-                    printf("\nhindi fre na add. str: %s p->alib: %s\n",str, p->aLib.librarianID);return 2;
+                    return 2;
                 }break;
     }
 }
