@@ -29,11 +29,14 @@ void makenull();
 void retrieveAccounts();
 void retrieveBooks();
 
+void borrowBook(int x);
+void returnbook();
+
 void addBooks(bREC x);
 void editBooks(int x);
 void removeBooks(int x);
 int checkBooks(bREC *x);
-int verifyADMIN();
+int verifyAccount(int x);
 void saveBooks();
 
 void saveAccounts();
@@ -41,7 +44,7 @@ void saveAccountsFD();
 int insertcard();
 void addAccount(aREC x);
 
-void logs(char inout[10]);
+void logs(char inout[10], char item[100]);
 int menu(int x);
 int checkAccount(int x, char str[31]);
 void displayBooks();
@@ -70,7 +73,7 @@ int main(){
                     addAccount(aLibn);
                 }else{
                     printf("\nInvalid Entry. Duplicate Student ID. Please try again.\n"); system("pause"); goto fillAgain1;
-                }system("cls"); logs("IN"); break;
+                }system("cls"); logs("IN",fill); break;
         case 2: system("cls"); currentLKey=aLibn.lkey = 1; currentSKey=aLibn.skey = 0;
                 strcpy(aLibn.librarianName, adminFillName); strcpy(currentLibrarianName, adminFillName);
                 strcpy(aLibn.librarianID, adminFillID); strcpy(currentLibrarianID, adminFillID);
@@ -78,12 +81,11 @@ int main(){
                 printf("\n\n Skey: %d\n Lkey: %d\n SName: %s\n SID: %s\n LName: %s\n LID: %s",aLibn.skey,aLibn.lkey,aLibn.studentName,aLibn.studentID,aLibn.librarianName,aLibn.librarianID);
                 if(checkAccount(2,aLibn.librarianName)==1){
                     addAccount(aLibn);
-                }printf("\n\nREGISTRATION COMPLETE\n");system("pause"); system("cls"); logs("IN"); break;
+                }printf("\n\nREGISTRATION COMPLETE\n");system("pause"); system("cls"); logs("IN",fill); break;
         case 3: system("cls"); printf("\nLOG IN");
                 strcpy(aLibn.studentName, currentStudentName);
                 aLibn.skey = currentSKey; aLibn.lkey = currentLKey;
                 strcpy(aLibn.librarianName, currentLibrarianName);
-                aLibn.skey = currentSKey; aLibn.lkey = currentLKey;
                 if(currentSKey==1 && currentLKey==0){
                     enterStudID:
                     printf("\nEnter Student ID: "); scanf(" %[^\n]s",aLibn.studentID);
@@ -91,9 +93,9 @@ int main(){
                         printf("\nWrong Student ID. Please try again.\n");
                         system("pause"); system("cls"); goto enterStudID;
                     }else{
-                        strcpy(aLibn.studentID, currentStudentID);
+                        //strcpy(aLibn.studentID, currentStudentID);
                         printf("\nWelcome %s !\n", aLibn.studentName);
-                        system("pause"); system("cls"); logs("IN");
+                        system("pause"); system("cls"); logs("IN",fill);
                     }
                 }else if(currentLKey==1 && currentSKey==0){
                     enterLibID:
@@ -102,9 +104,9 @@ int main(){
                         printf("\nWrong Librarian ID. Please try again.\n");
                         system("pause"); system("cls"); goto enterLibID;
                     }else{
-                        strcpy(aLibn.librarianID, currentLibrarianID);
+                        //strcpy(aLibn.librarianID, currentLibrarianID);
                         printf("\nWelcome %s !\n", aLibn.librarianName);
-                        system("pause"); system("cls"); logs("IN");
+                        system("pause"); system("cls"); logs("IN",fill);
                     }
                 }else{
                     system("cls"); printf("\nSystem Error.\n"); system("pause"); system("cls");
@@ -116,14 +118,17 @@ int main(){
     system("cls");
     if(currentSKey==1 && currentLKey==0){ //student
         while(1){
-            system("cls");
+            system("cls"); displayBooks();
             switch(menu(1)){
-                case 1: //borrow
-                        displayBooks(); printf("\n\n");system("pause");
+                case 1: printf("\nInput Book ID: ");scanf("%d",&bBooks.bookID);
+                        borrowBook(bBooks.bookID); break;
+                case 2: if(verifyAccount(1)==1){
+                            returnbook();
+                        }else{
+                            printf("\nTransaction Cancelled. Your input does not match to your cridentials.\n"); system("pause");system("cls");
+                        }
                         break;
-                case 2: //return
-                        break;
-                default: saveAccounts(); saveAccountsFD(); logs("OUT"); exit(0);
+                default: saveBooks(); saveAccounts(); saveAccountsFD(); logs("OUT",fill); exit(0);
                         break;
             }
         }
@@ -137,8 +142,8 @@ int main(){
                         printf("Input book author: ");scanf(" %[^\n]s",bBooks.bookAuthor);
                         printf("Input publication year: ");scanf("%d",&bBooks.publicationYear);
                         if(checkBooks(&bBooks)==1){
-                            if(verifyADMIN()==1){
-                                addBooks(bBooks); logs("Add Book");  
+                            if(verifyAccount(2)==1){
+                                addBooks(bBooks); logs("Add Book",bBooks.bookTitle);  
                                 printf("\nModification Successful.\n");system("pause");
                             }else{
                                 printf("\nModification Unsuccessful.\n");system("pause");
@@ -148,35 +153,107 @@ int main(){
                         }
                         break;
                 case 2: printf("Input book ID to be edited: ");scanf("%d",&bBooks.bookID);
-                        if(verifyADMIN()==1){
-                            editBooks(bBooks.bookID); logs("Edit Book");  
+                        if(verifyAccount(2)==1){
+                            editBooks(bBooks.bookID); 
                             printf("\nModification Successful.\n");system("pause");
                         }else{
                             printf("\nModification Unsuccessful.\n");system("pause");
                         }
                         break;
                 case 3: printf("Input book ID to be deleted: ");scanf("%d",&bBooks.bookID);
-                        if(verifyADMIN()==1){
-                            removeBooks(bBooks.bookID); logs("Removed Book");  
+                        if(verifyAccount(2)==1){
+                            removeBooks(bBooks.bookID); 
                         }else{
                             printf("\nModification Unsuccessful.\n");system("pause");
                         }
                         break;
-                default: saveBooks();saveAccounts(); saveAccountsFD(); logs("OUT"); exit(0);
+                default: saveBooks();saveAccounts(); saveAccountsFD(); logs("OUT",fill); exit(0);
                         break;
             }
         }
     }
 }
 
-
-int verifyADMIN(){
-    char userInput[31];
-    printf("\nPlease Enter Librarian ID to confirm: "); scanf(" %[^\n]s",userInput);
-    if(strcmp(userInput,adminFillID)==0){
-        return 1;
+void borrowBook(int x){
+    int i=1;
+    char temp[100];
+    bLIST *p, *q;
+    q=p=B;
+    while(p!=NULL && x!=p->bLib.bookID){
+        q=p; 
+        p=p->next;
+    }
+    if(p==NULL){
+        printf("\nError 404. BookID: %d not found.\n",x); system("pause"); system("cls");
     }else{
-        return 0;
+        printf("\nBookID\t Book Title\t Book Author\t Publication Year\n %d.) %d\t %s\t %s\t %d\n",
+                i++,p->bLib.bookID, p->bLib.bookTitle, p->bLib.bookAuthor, p->bLib.publicationYear);
+        if(verifyAccount(1)==1){
+            //save the borrowed book to the file
+            FILE *fp; 
+            fp=fopen("D:\\borrowedBooks.csv","a+");
+            if(fp!=NULL){
+                fprintf(fp,"%d,%s,%s,%d\n",
+                        p->bLib.bookID, p->bLib.bookTitle, p->bLib.bookAuthor, p->bLib.publicationYear);
+            }else{
+                printf("\nSystem Error. cant save into file.\n"); system("pause");system("cls");
+            }fclose(fp);
+
+            //remove the borrowed book to the database kasi hiniram nga so bale mawawala sa database yung libro
+            q=p=B;
+            while(p!=NULL && x!=p->bLib.bookID){
+                q=p; 
+                p=p->next;
+            }
+            if(fp==NULL){
+                printf("\nBook not found!\nWrong book ID or book does not exist.\n"); system("pause"); system("cls");
+            }else{
+                strcpy(temp,p->bLib.bookTitle);
+                if (p==B){
+                    B=p->next;
+                }else{
+                    q->next=p->next;
+                }free(p);
+                logs("Borrowed Book", temp); printf("\nYou successfully borrowed %s.\n", temp); system("pause");
+            }
+        }else{
+            printf("\nTransaction Cancelled. Your input does not match to your cridentials.\n"); system("pause");system("cls");
+        }
+    }
+}
+void returnbook(){
+    FILE *fp;
+    bREC bLibn;
+    fp=fopen("D:\\borrowedBooks.csv","r");
+    if(fp==NULL){
+        printf("\nERROR. No Books to Return.\n"); system("pause"); system("cls");
+    }else{ 
+        while(!feof(fp)){
+            fscanf(fp,"%d,%[^,],%[^,],%d\n",
+                    &bLibn.bookID, bLibn.bookTitle, bLibn.bookAuthor, 
+                    &bLibn.publicationYear);
+           addBooks(bLibn);
+        }fclose(fp); saveBooks(); remove("D:\\borrowedBooks.csv"); logs("Retured Book",bLibn.bookTitle);
+        printf("\nBook (%s) successfully retured.\n",bLibn.bookTitle); system("pause"); system("cls");
+    }
+}
+
+int verifyAccount(int x){
+    char userInput[31];
+    if(x==1){ //student
+        printf("\nPlease Enter Your Student ID to confirm: "); scanf(" %[^\n]s",userInput);
+        if(strcmp(userInput,currentStudentID)==0){
+            return 1;
+        }else{
+            return 2;
+        }
+    }else{ //librarian
+        printf("\nPlease Enter Librarian ID to confirm: "); scanf(" %[^\n]s",userInput);
+        if(strcmp(userInput,adminFillID)==0){
+            return 1;
+        }else{
+            return 2;
+        }
     }
 }
 void addBooks(bREC x){
@@ -184,7 +261,7 @@ void addBooks(bREC x){
     q=p=B;
     temp = (bLIST*) malloc(sizeof(bLIST));
     temp->bLib = x;
-    while(p!=NULL){
+    while(p!=NULL && x.bookID > p->bLib.bookID){
         q=p;
         p=p->next;
     }
@@ -214,7 +291,7 @@ int checkBooks(bREC *x){
         }else{
             return 2;
         }
-    }
+    } 
 }
 void editBooks(int x){
     int ch=0, a;
@@ -255,7 +332,7 @@ void editBooks(int x){
                     default: printf("Select 1-4 only.");
                             break;
             }
-        }
+        }logs("Edit Book",p->bLib.bookTitle);  
     }
 }
 void removeBooks(int x){
@@ -269,6 +346,7 @@ void removeBooks(int x){
     if (p==NULL){
         printf("Book not found!\n");
         printf("Wrong book ID or book does not exist.\n");
+        system("pause"); system("cls");
     }
     else{
         strcpy(temp,p->bLib.bookTitle);
@@ -277,7 +355,7 @@ void removeBooks(int x){
         else
             q->next=p->next;
         free(p);
-        printf("The book %s was successfully removed.\n", temp); system("pause");
+        logs("Removed Book",temp); printf("The book %s was successfully removed.\n", temp); system("pause");
     }
 }
 
@@ -372,8 +450,8 @@ void retrieveBooks(){
     bREC bLibn;
     fp=fopen("E:\\books.csv","r+");
     if(fp==NULL){
-        printf("\nERROR 404. books.csv Not Found.\n");
-    }else{ int a=1;
+        printf("\nERROR 404. books.csv Not Found.\n");system("pause"); system("cls");
+    }else{ 
         while(!feof(fp)){
             fscanf(fp,"%d,%[^,],%[^,],%d\n",
                     &bLibn.bookID, bLibn.bookTitle, bLibn.bookAuthor, 
@@ -382,7 +460,7 @@ void retrieveBooks(){
         }fclose(fp);
     }
 }
-void logs(char inout[10]){ //to get time if the student borrow the book
+void logs(char inout[10], char item[100]){ //to get time if the student borrow the book
     FILE* fp;
     time_t currentTime;
     struct tm *localTime;
@@ -394,13 +472,13 @@ void logs(char inout[10]){ //to get time if the student borrow the book
     localTime = localtime(&currentTime);
 
     if(currentSKey==1 && currentLKey==0){
-        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s\n",
+        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s,%s\n",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentStudentName, currentStudentID, inout);
+            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentStudentName, currentStudentID, inout, item);
     }else if(currentSKey==0 && currentLKey==1){
-        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s\n",
+        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s,%s\n",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentLibrarianName, currentLibrarianID, inout);
+            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentLibrarianName, currentLibrarianID, inout, item);
     }fclose(fp);
 }
 
