@@ -62,7 +62,6 @@ char currentLibrarianID[31], currentLibrarianName[31];
 char fill[] = "NONE"; char adminFillName[] = "LibrarianADMIN"; char adminFillID[] = "LibrarianADMIN123";
 
 //UI
-COORD coord = {0, 0};
 void printToxy(int x, int y, char *label);
 void gotoxy(int x, int y);
 void front();
@@ -73,63 +72,72 @@ void delay(int ms);
 int main(){
     aREC aLibn;
     bREC bBooks;
-    front();
     makenull();
+    HANDLE h =GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(h,06);
     system("cls");
     printf("\033[1;33m");
     switch(insertcard()){
-        case 1: fillAgain1: 
-                    system("cls"); 
+        case 1: fillAgain1:
+                    system("cls");
                     currentSKey=aLibn.skey = 1; currentLKey=aLibn.lkey = 0;
 
-                    gotoxy(45,5);printf("NEW USER APPLICATION FORM (STUDENT)");
-                    gotoxy(45,7);printf("Enter Student Name: ");
-                    gotoxy(45,8);printf("Enter Student ID: ");
-                    gotoxy(65,7);scanf(" %[^\n]s",aLibn.studentName);
-                    gotoxy(63,8);scanf(" %[^\n]s",aLibn.studentID);
+                    printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
+                    printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  ");
+                    printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
+                    printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc     \xdc\xdc  \xdc\xdc      \xdc\xdc  \xdc\xdc    ");
+                    printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc   \xdc\xdc   ");
+                    SetConsoleTextAttribute(h,15); printToxy(22,8," A   P   P   L   I   C   A   T   I   O   N          F   O   R   M");
+                    printToxy(22,10,"Enter Student Name: ");
+                    printToxy(22,11,"Enter Student ID: ");
+                    gotoxy(42,10);scanf(" %[^\n]s",aLibn.studentName);
+                    gotoxy(42,11);scanf(" %[^\n]s",aLibn.studentID);
 
-                    strcpy(aLibn.librarianID, fill); 
+                    strcpy(aLibn.librarianID, fill);
                     strcpy(aLibn.librarianName, fill);
-                    strcpy(currentStudentName, aLibn.studentName); 
+                    strcpy(currentStudentName, aLibn.studentName);
                     strcpy(currentStudentID, aLibn.studentID);
 
-                    gotoxy(45,15);printf("Student Name: %s",aLibn.studentName);
-                    gotoxy(45,16);printf("Student ID: %s",aLibn.studentID);
-
                     if(checkAccount(1,aLibn.studentID)==1){
-                        gotoxy(45,18);printf("REGISTRATION COMPLETE");
-                        gotoxy(45,19);system("pause");
+                        gotoxy(22,16);printf("REGISTRATION COMPLETE");
+                        gotoxy(22,17);system("pause");
                         addAccount(aLibn);
                     }else{
-                        printf("\nInvalid Entry. Duplicate Student ID. Please try again.\n"); 
-                        system("pause"); 
+                        printToxy(42,16,"Invalid Entry. Duplicate Student ID. Please try again.");
+                        gotoxy(42,17);system("pause");
                         goto fillAgain1;
                     }
-                system("cls"); 
-                logs("IN",fill); 
+                system("cls");
+                logs("IN",fill);
                 break;
-        case 2: system("cls"); 
+        case 2: system("cls");
                 currentLKey=aLibn.lkey = 1; currentSKey=aLibn.skey = 0;
-                strcpy(aLibn.librarianName, adminFillName); 
+                strcpy(aLibn.librarianName, adminFillName);
                 strcpy(currentLibrarianName, adminFillName);
-                strcpy(aLibn.librarianID, adminFillID); 
+                strcpy(aLibn.librarianID, adminFillID);
                 strcpy(currentLibrarianID, adminFillID);
-                strcpy(aLibn.studentID, fill); 
+                strcpy(aLibn.studentID, fill);
                 strcpy(aLibn.studentName, fill);
 
-                gotoxy(45,7);printf("Librarian Name: %s",aLibn.librarianName);
-                gotoxy(45,8);printf("Librarian ID: %s",aLibn.librarianID);
+                printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc         \xdc\xdc      \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc    \xdc\xdc");
+                printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc        \xdc\xdc\xdc\xdc     \xdc\xdc   \xdc\xdc   \xdc\xdc\xdc   \xdc\xdc\xdc  \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc");
+                printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc       \xdc\xdc  \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc \xdc\xdc \xdc\xdc");
+                printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc   \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc\xdc\xdc");
+                printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc   \xdc\xdc\xdc");
+                SetConsoleTextAttribute(h,15); printToxy(35,8," A   D   M   I   N   I   S   T   R   A   T   O   R"); 
+                printToxy(22,10,"Librarian Name: "); printToxy(38,10,aLibn.librarianName);
+                printToxy(22,11,"Librarian ID: "); printToxy(38,11,aLibn.librarianID);
 
                 if(checkAccount(2,aLibn.librarianID)==1){
-                    addAccount(aLibn);
+                    addAccount(aLibn); 
                 }
 
-                gotoxy(45,10);printf("REGISTRATION COMPLETE");
-                gotoxy(45,11);system("pause");
-                system("cls"); 
-                logs("IN",fill); 
+                gotoxy(22,15);printf("REGISTRATION COMPLETE");
+                gotoxy(22,16);system("pause");
+                system("cls");
+                logs("IN",fill);
                 break;
-        case 3: system("cls"); 
+        case 3: system("cls");
                 printf("\nLOG IN");
                 strcpy(aLibn.studentName, currentStudentName);
                 aLibn.skey = currentSKey; aLibn.lkey = currentLKey;
@@ -137,70 +145,73 @@ int main(){
 
                 if(currentSKey==1 && currentLKey==0){
                     enterStudID:
-                        printf("\nEnter Student ID: "); 
+                        printf("\nEnter Student ID: ");
                         scanf(" %[^\n]s",aLibn.studentID);
                         if(strcmp(aLibn.studentID, currentStudentID)!=0){
                             printf("\nWrong Student ID. Please try again.\n");
-                            system("pause"); 
-                            system("cls"); 
+                            system("pause");
+                            system("cls");
                             goto enterStudID;
                         }else{
                             logs("IN",fill);
                         }
                 }else if(currentLKey==1 && currentSKey==0){
                     enterLibID:
-                        printf("\nEnter Librarian ID: "); 
+                        printf("\nEnter Librarian ID: ");
                         scanf(" %[^\n]s",aLibn.librarianID);
 
                         if(strcmp(aLibn.librarianID, currentLibrarianID)!=0){
                             printf("\nWrong Librarian ID. Please try again.\n");
-                            system("pause"); system("cls"); 
+                            system("pause"); system("cls");
                             goto enterLibID;
                         }else{
                             logs("IN",fill);
                         }
                 }else{
-                    system("cls"); 
-                    printf("\nSystem Error.\n"); 
+                    system("cls");
+                    printf("\nSystem Error.\n");
                     system("pause"); system("cls");
                 }break;
-        default: system("cls"); 
-                 printf("\nWrong input.\n"); 
+        default: system("cls");
+                 printf("\nWrong input.\n");
                  system("pause");system("cls");
                  break;
     }
 
-    
+
     system("cls");
     if(currentSKey==1 && currentLKey==0){ //student
         while(1){
-            system("cls"); displayBooks();
+            system("cls");
             switch(menu(1)){
-                case 1: printf("\nInput Book ID: ");
+                case 1: system("cls");
+                        displayBooks();
+                        printf("\n\nInput Book ID: ");
                         scanf("%d",&bBooks.bookID);
-                        borrowBook(bBooks.bookID); 
+                        borrowBook(bBooks.bookID);
                         break;
-                case 2: if(verifyAccount(1)==1){
+                case 2: system("cls");
+                        displayBooks();
+                        if(verifyAccount(1)==1){
                             returnbook();
                         }else{
-                            printf("\nTransaction Cancelled. Your input does not match to your cridentials.\n"); 
+                            printf("\nTransaction Cancelled. Your input does not match to your cridentials.\n");
                             system("pause"); system("cls");
                         }
                         break;
-                default: saveBooks(); saveAccountsFD(); 
+                default: saveBooks(); saveAccountsFD();
                          saveAccounts(); logs("OUT",fill); exit(0);
                          break;
             }
         }
     }else if(currentSKey==0 && currentLKey==1){ //librarian
         while(1){
-            system("cls");
-            displayBooks();
             switch(menu(2)){
-                case 1: printf("Input book title: ");
+                case 1: system("cls");
+                        printf("\nInput book title: ");
                         scanf(" %[^\n]s",bBooks.bookTitle);
 
-                        currentBookID++; bBooks.bookID=currentBookID; 
+                        currentBookID++; bBooks.bookID=currentBookID;
                         printf("Book ID: %d\n",bBooks.bookID);
 
                         printf("Input book author: ");
@@ -210,34 +221,45 @@ int main(){
 
                         if(checkBooks(&bBooks)==1){
                             if(verifyAccount(2)==1){
-                                addBooks(bBooks); 
+                                addBooks(bBooks);
                                 logs("Add Book",bBooks.bookTitle);
-                                printf("\nModification Successful.\n");
+                                displayBooks();
+                                printf("\n\nModification Successful.\n");
                                 system("pause");
                             }else{
-                                printf("\nModification Unsuccessful.\n");
+                                displayBooks();
+                                printf("\n\nModification Unsuccessful.\n");
                                 system("pause");
                                 currentBookID--;
                             }
                         }else{
-                            printf("\nModification Unsuccessful. Details are already in the List.\n");
+                            displayBooks();
+                            printf("\n\nModification Unsuccessful. Details are already in the List.\n");
                             system("pause");
                             currentBookID--;
                         }
                         break;
-                case 2: printf("Input book ID to be edited: ");
+                case 2: system("cls");
+                        displayBooks();
+                        printf("\n\nInput book ID to be edited: ");
                         scanf("%d",&bBooks.bookID);
 
                         if(verifyAccount(2)==1){
                             editBooks(bBooks.bookID);
-                            printf("\nModification Successful.\n");
+                            system("cls");
+                            displayBooks();
+                            printf("\n\nModification Successful.\n");
                             system("pause");
                         }else{
-                            printf("\nModification Unsuccessful.\n");
+                            system("cls");
+                            displayBooks();
+                            printf("\n\nModification Unsuccessful.\n");
                             system("pause");
                         }
                         break;
-                case 3: printf("Input book ID to be deleted: ");
+                case 3: system("cls");
+                        displayBooks();
+                        printf("\n\nInput book ID to be deleted: ");
                         scanf("%d",&bBooks.bookID);
 
                         if(verifyAccount(2)==1){
@@ -247,7 +269,7 @@ int main(){
                             system("pause");
                         }
                         break;
-                default: saveBooks(); saveAccountsFD(); 
+                default: saveBooks(); saveAccountsFD();
                          saveAccounts();  logs("OUT",fill); exit(0);
                          break;
             }
@@ -261,30 +283,41 @@ void makenull(){ //initiate the list to null
     B = NULL;
 }
 int insertcard(){
-    int num;
+    int num, i;
+    HANDLE h =GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(h,06);
     FILE *fp;
     //will check if the flashdrive is inserted to the device or not
-    do{ 
-        fp=fopen("D:\\Check.txt","w"); 
+    do{
+        fp=fopen("D:\\Check.txt","w");
         loading();
-    }while(fp==NULL); 
+    }while(fp==NULL);
     fclose(fp);
+    front();
 
     fp=fopen("D:\\userDetails.csv","r");
     if(fp==NULL){
-        retrieveBooks(); retrieveAccounts(); 
+        retrieveBooks(); retrieveAccounts();
         decrypt(); scanScreen(1);
         do{
             system("cls");
-            gotoxy(45,5);printf("New User || Select Category");
-            gotoxy(45,7);printf("[1] Student");
-            gotoxy(45,8);printf("[2] Librarian");
-            gotoxy(45,10);printf("Are you a: ");
-            scanf("%d",&num);
-        }while(num<1||num>3); 
+            printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
+            printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  ");
+            printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
+            printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc     \xdc\xdc  \xdc\xdc      \xdc\xdc  \xdc\xdc    ");
+            printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc   \xdc\xdc   ");
+            SetConsoleTextAttribute(h,15); printToxy(22,8,"  S   E   L   E   C   T            C   A   T   E   G   O   R   Y");
+            printToxy(32,16,"[1]"); printToxy(30,12,"STUDENT");printToxy(75,16,"[2]");printToxy(72,12,"LIBRARIAN");
+            SetConsoleTextAttribute(h,05);gotoxy(24,10); for(i=0;i<19;i++) printf("%c",220); gotoxy(24,14); for(i=0;i<19;i++) printf("%c",220);
+            for(i=0;i<4;i++){gotoxy(24,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(42,11+i);printf("%c",219);}
+            gotoxy(67,10); for(i=0;i<19;i++) printf("%c",220); gotoxy(67,14); for(i=0;i<19;i++) printf("%c",220);
+            for(i=0;i<4;i++){gotoxy(67,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(85,11+i);printf("%c",219);}
+            SetConsoleTextAttribute(h,15); printToxy(50,18,"Are you a: ");
+            gotoxy(61,18); scanf("%d",&num);
+        }while(num<1||num>3);
         return num;
     }else{
-        retrieveBooks(); retrieveAccounts(); 
+        retrieveBooks(); retrieveAccounts();
         decrypt(); scanScreen(2);
         return 3;
     }
@@ -359,34 +392,55 @@ void addBooks(bREC x){
 
 
 void displayBooks(){
-    int i=0;
     bLIST *p; p=B;
-    system("cls"); 
-    printf(" | BOOK ID | BOOK TITLE                                         | BOOK AUTHOR                   | PUBLISH YEAR |");
-    while(p!=NULL){
-        gotoxy(6,1+i);printf("%d",p->bLib.bookID);
-        gotoxy(13,1+i);printf("%s",p->bLib.bookTitle);
-        gotoxy(66,1+i);printf("%s",p->bLib.bookAuthor);
-        gotoxy(102,1+i);printf("%d",p->bLib.publicationYear);
-        p=p->next;
-        i++;
+    system("cls");
+    printf("| %-8s | %-90s | %-80s | %-12s |\n",
+         "BOOK ID", "BOOK TITLE", "BOOK AUTHOR", "PUBLISH YEAR");
+
+    while (p != NULL) {
+        printf("| %-8d | %-90s | %-80s | %-12d |\n",
+            p->bLib.bookID, p->bLib.bookTitle, p->bLib.bookAuthor, p->bLib.publicationYear);
+        p = p->next;
     }
 }
 int menu(int x){
-    //system("cls");
-    int userNum;
-    printf("\nCHOOSE CATEGORY\n");
+    int i, userNum;
+    HANDLE h =GetStdHandle(STD_OUTPUT_HANDLE);
+    system("cls");
     if(x==1){//student
-        printf("\n[1] BORROW");
-        printf("\n[2] RETURN");
-        printf("\n[3] EXIT");
+        printToxy(22,2,"   \xdc\xdc\xdc\xdc\xdc    \xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc \xdc\xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc    \xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc   \xdc\xdc    \xdc\xdc                                          ");
+        printToxy(22,3," \xdc\xdc        \xdc\xdc\xdc\xdc    \xdc\xdc\xdc   \xdc\xdc     \xdc\xdc        \xdc\xdc   \xdc\xdc  \xdc\xdc    \xdc\xdc   \xdc\xdc  \xdc\xdc                                              ");
+        printToxy(22,4," \xdc\xdc       \xdc\xdc  \xdc\xdc   \xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc  \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc   \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc      \xdc\xdc                                  ");
+        printToxy(22,5," \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc     \xdc\xdc    \xdc\xdc  \xdc\xdc   \xdc\xdc  \xdc\xdc  \xdc\xdc       \xdc\xdc                                  ");
+        printToxy(22,6,"   \xdc\xdc\xdc\xdc\xdc \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc    \xdc\xdc\xdc\xdc\xdc   \xdc\xdc   \xdc\xdc      \xdc\xdc                                                      ");
+        SetConsoleTextAttribute(h,15);
+        gotoxy(12,10); for(i=0;i<19;i++) printf("%c",220); gotoxy(12,14); for(i=0;i<19;i++) printf("%c",220); printToxy(17,16,"[1]");
+        for(i=0;i<4;i++){gotoxy(12,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(30,11+i);printf("%c",219);} printToxy(16,12,"BORROW BOOK");
+        gotoxy(45,10); for(i=0;i<19;i++) printf("%c",220); gotoxy(45,14); for(i=0;i<19;i++) printf("%c",220); printToxy(53,16,"[2]");
+        for(i=0;i<4;i++){gotoxy(45,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(63,11+i);printf("%c",219);} printToxy(49,12,"RETURN BOOK");
+        gotoxy(78,10); for(i=0;i<20;i++) printf("%c",220); gotoxy(78,14); for(i=0;i<19;i++) printf("%c",220); printToxy(87,16,"[3]");
+        for(i=0;i<4;i++){gotoxy(78,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(97,11+i);printf("%c",219);} printToxy(86,12,"EXIT");
+        SetConsoleTextAttribute(h,05); gotoxy(5,18); for(int i=0;i<101;i++) printf("%c",223);
+        SetConsoleTextAttribute(h,06); printToxy(33,8,"S       T       U       D       E       N       T ");
     }else{//librarian
-        printf("\n[1] ADD BOOK");
-        printf("\n[2] EDIT BOOK");
-        printf("\n[3] REMOVE BOOK");
-        printf("\n[4] EXIT");
+        printToxy(22,2,"   \xdc\xdc\xdc\xdc\xdc    \xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc \xdc\xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc    \xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc   \xdc\xdc    \xdc\xdc                                          ");
+        printToxy(22,3," \xdc\xdc        \xdc\xdc\xdc\xdc    \xdc\xdc\xdc   \xdc\xdc     \xdc\xdc        \xdc\xdc   \xdc\xdc  \xdc\xdc    \xdc\xdc   \xdc\xdc  \xdc\xdc                                              ");
+        printToxy(22,4," \xdc\xdc       \xdc\xdc  \xdc\xdc   \xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc  \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc   \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc      \xdc\xdc                                  ");
+        printToxy(22,5," \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc     \xdc\xdc    \xdc\xdc  \xdc\xdc   \xdc\xdc  \xdc\xdc  \xdc\xdc       \xdc\xdc                                  ");
+        printToxy(22,6,"   \xdc\xdc\xdc\xdc\xdc \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc    \xdc\xdc\xdc\xdc\xdc   \xdc\xdc   \xdc\xdc      \xdc\xdc                                                      ");
+        SetConsoleTextAttribute(h,15);
+        gotoxy(12,10); for(i=0;i<14;i++) printf("%c",220); gotoxy(12,14); for(i=0;i<14;i++) printf("%c",220); printToxy(17,16,"[1]");
+        for(i=0;i<4;i++){gotoxy(12,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(25,11+i);printf("%c",219);} printToxy(15,12,"ADD BOOK");
+        gotoxy(35,10); for(i=0;i<15;i++) printf("%c",220); gotoxy(35,14); for(i=0;i<15;i++) printf("%c",220); printToxy(41,16,"[2]");
+        for(i=0;i<4;i++){gotoxy(35,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(49,11+i);printf("%c",219);} printToxy(38,12,"EDIT BOOK");
+        gotoxy(59,10); for(i=0;i<17;i++) printf("%c",220); gotoxy(59,14); for(i=0;i<17;i++) printf("%c",220); printToxy(66,16,"[3]");
+        for(i=0;i<4;i++){gotoxy(59,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(75,11+i);printf("%c",219);} printToxy(62,12,"REMOVE BOOK");
+        gotoxy(85,10); for(i=0;i<14;i++) printf("%c",220); gotoxy(85,14); for(i=0;i<14;i++) printf("%c",220); printToxy(91,16,"[4]");
+        for(i=0;i<4;i++){gotoxy(85,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(98,11+i);printf("%c",219);} printToxy(90,12,"EXIT");
+        SetConsoleTextAttribute(h,05); gotoxy(5,18); for(int i=0;i<101;i++) printf("%c",223);
+        SetConsoleTextAttribute(h,06); printToxy(33,8,"L     I     B     R     A     R     I     A     N");
     }
-    printf("\n\nENTER CHOICE: "); 
+    SetConsoleTextAttribute(h,15);printToxy(5,20,"Enter choice: ");
     scanf("%d",&userNum);
     return userNum;
 }
@@ -402,7 +456,7 @@ void borrowBook(int x){
         p=p->next;
     }
     if(p==NULL){
-        printf("\nError 404. BookID: %d not found.\n",x); 
+        printf("\nError 404. BookID: %d not found.\n",x);
         system("pause"); system("cls");
     }else{
         printf("\nBookID\t Book Title\t Book Author\t Publication Year\n %d.) %d\t %s\t %s\t %d\n",
@@ -416,7 +470,7 @@ void borrowBook(int x){
                 fprintf(fp,"%d,%s,%s,%d\n",
                         p->bLib.bookID, p->bLib.bookTitle, p->bLib.bookAuthor, p->bLib.publicationYear);
             }else{
-                printf("\nSystem Error. cant save into file.\n"); 
+                printf("\nSystem Error. cant save into file.\n");
                 system("pause");system("cls");
             }fclose(fp);
 
@@ -427,7 +481,7 @@ void borrowBook(int x){
                 p=p->next;
             }
             if(fp==NULL){
-                printf("\nBook not found!\nWrong book ID or book does not exist or borrowed.\n"); 
+                printf("\nBook not found!\nWrong book ID or book does not exist or borrowed.\n");
                 system("pause"); system("cls");
             }else{
                 strcpy(temp,p->bLib.bookTitle);
@@ -436,12 +490,12 @@ void borrowBook(int x){
                 }else{
                     q->next=p->next;
                 }free(p);
-                logs("Borrowed Book", temp); 
-                printf("\nYou successfully borrowed %s.\n", temp); 
+                logs("Borrowed Book", temp);
+                printf("\nYou successfully borrowed %s.\n", temp);
                 system("pause");
             }
         }else{
-            printf("\nTransaction Cancelled. Your input does not match to your cridentials.\n"); 
+            printf("\nTransaction Cancelled. Your input does not match to your cridentials.\n");
             system("pause");system("cls");
         }
     }
@@ -451,7 +505,7 @@ void returnbook(){
     bREC bLibn;
     fp=fopen("D:\\borrowedBooks.csv","r");
     if(fp==NULL){
-        printf("\nERROR. No Books to Return.\n"); 
+        printf("\nERROR. No Books to Return.\n");
         system("pause"); system("cls");
     }else{
         while(!feof(fp)){
@@ -459,12 +513,12 @@ void returnbook(){
                     &bLibn.bookID, bLibn.bookTitle, bLibn.bookAuthor,
                     &bLibn.publicationYear);
            addBooks(bLibn);
-        }fclose(fp); 
-        saveBooks(); 
-        remove("D:\\borrowedBooks.csv"); 
+        }fclose(fp);
+        saveBooks();
+        remove("D:\\borrowedBooks.csv");
         logs("Retured Book",bLibn.bookTitle);
 
-        printf("\nBook (%s) successfully retured.\n",bLibn.bookTitle); 
+        printf("\nBook (%s) successfully retured.\n",bLibn.bookTitle);
         system("pause"); system("cls");
     }
 }
@@ -507,7 +561,7 @@ void editBooks(int x){
                     case 3: printf("\nInput NEW publication year: ");
                             scanf("%d",&p->bLib.publicationYear);
                             break;
-                    case 4: printf("\n\nBook was succesfully edited.");
+                    case 4: printf("\n\nBook was succesfully edited.\n");
                             system("pause"); system("cls");
                             break;
                     default: printf("\n\nSelect 1-4 only.");
@@ -536,29 +590,43 @@ void removeBooks(int x){
         }else{
             q->next=p->next;
         }free(p);
-        logs("Removed Book",temp); 
-        printf("The book %s was successfully removed.\n", temp); 
+        logs("Removed Book",temp);
+        printf("The book %s was successfully removed.\n", temp);
         system("pause");
     }
 }
 
 
 int checkAccount(int x,char str[31]){ // to avoid same IDs / multiple admin accounts
+    int i=0;
+    char temp[31];
     aLIST *p, *q;
     q=p=A;
+
+    //encrypt the str to compare if there are same strings in the list
+    //strcpy(temp,str);
+    //while(str[i]!='\0'){
+    //    str[i] = str[i] + 70;
+    //    i++;
+    //}
+
     switch(x){
         case 1: while(p!=NULL && strcmp(str,p->aLib.studentID)!=0){
                     q=p; p=p->next;
                 }if(p==NULL){
+                    //strcpy(str,temp);
                     return 1;
                 }else{
+                    //strcpy(str,temp);
                     return 2;
                 }break;
         case 2: while(p!=NULL && strcmp(str,p->aLib.librarianID)!=0){
                     q=p; p=p->next;
                 }if(p==NULL){
+                    //strcpy(str,temp);
                     return 1;
                 }else{
+                    //strcpy(str,temp);
                     return 2;
                 }break;
     }
@@ -566,7 +634,7 @@ int checkAccount(int x,char str[31]){ // to avoid same IDs / multiple admin acco
 int verifyAccount(int x){
     char userInput[31];
     if(x==1){ //student
-        printf("\nPlease Enter Your Student ID to confirm: "); 
+        printf("\nPlease Enter Your Student ID to confirm: ");
         scanf(" %[^\n]s",userInput);
         if(strcmp(userInput,currentStudentID)==0){
             return 1;
@@ -574,7 +642,7 @@ int verifyAccount(int x){
             return 2;
         }
     }else{ //librarian
-        printf("\nPlease Enter Librarian ID to confirm: "); 
+        printf("\nPlease Enter Librarian ID to confirm: ");
         scanf(" %[^\n]s",userInput);
         if(strcmp(userInput,adminFillID)==0){
             return 1;
@@ -608,59 +676,59 @@ int checkBooks(bREC *x){
 
 
 void decrypt(){
-    int i=0;
+    int i;
     aLIST *p, *q;
-    q=p=A;
-    if(currentSKey==1 && currentLKey==0){ //student
-        while(p!=NULL && strcmp(p->aLib.studentID,currentStudentID)!=0){
-            q=p;
-            p=p->next;
-        }
-        if(p!=NULL){
+    p=A;
+
+    while(p!=NULL){
+        i=0;
+        if(p->aLib.skey==1 && p->aLib.lkey==0){ //student
             while(p->aLib.studentID[i]!='\0'){
-                currentStudentID[i] = p->aLib.studentID[i] = p->aLib.studentID[i] - 70;
+                p->aLib.studentID[i] = p->aLib.studentID[i] - 70;
                 i++;
             }
-        }
-    }else if(currentSKey==0 && currentLKey==1){ // librarian
-        while(p!=NULL && strcmp(p->aLib.librarianID,currentLibrarianID)!=0){
-            q=p;
-            p=p->next;
-        }
-        if(p!=NULL){
+        }else if(p->aLib.skey==0 && p->aLib.lkey==1){ //Librarian 
             while(p->aLib.librarianID[i]!='\0'){
-                currentLibrarianID[i] = p->aLib.librarianID[i] = p->aLib.librarianID[i] - 70;
-                i++;
+                p->aLib.librarianID[i] = p->aLib.librarianID[i] - 70;
+                i++; 
             }
+        } 
+        p=p->next; 
+    }
+    
+    if(currentSKey==1 && currentLKey==0){ //student
+        i=0;
+        while(currentStudentID[i]!='\0'){
+            currentStudentID[i] = currentStudentID[i] - 70;
+            i++;
+        }
+    }else if(currentSKey==0 && currentLKey==1){ //librarian
+        i=0;
+        while(currentLibrarianID[i]!='\0'){
+            currentLibrarianID[i] = currentLibrarianID[i] - 70; 
+            i++;
         }
     }
 }
 void encrypt(){
     int i=0;
     aLIST *p, *q;
-    q=p=A;
-    if(currentSKey==1 && currentLKey==0){ //student
-        while(p!=NULL && strcmp(p->aLib.studentID,currentStudentID)!=0){
-            q=p;
-            p=p->next;
-        }
-        if(p!=NULL){
+    p=A;
+
+    while(p!=NULL){
+        i=0;
+        if(p->aLib.skey==1 && p->aLib.lkey==0){ //student
             while(p->aLib.studentID[i]!='\0'){
                 p->aLib.studentID[i] = p->aLib.studentID[i] + 70;
                 i++;
             }
-        }
-    }else if(currentSKey==0 && currentLKey==1){ // librarian
-        while(p!=NULL && strcmp(p->aLib.librarianID,currentLibrarianID)!=0){
-            q=p;
-            p=p->next;
-        }
-        if(p!=NULL){
+        }else if(p->aLib.skey==0 && p->aLib.lkey==1){ //Librarian 
             while(p->aLib.librarianID[i]!='\0'){
                 p->aLib.librarianID[i] = p->aLib.librarianID[i] + 70;
-                i++;
+                i++; 
             }
-        }
+        } 
+        p=p->next; 
     }
 }
 
@@ -670,7 +738,7 @@ void saveBooks(){
     bLIST *p; p=B;
     fp=fopen("E:\\books.csv", "w+");
     if(fp==NULL){
-        printf("Error 404. File not found.\n"); 
+        printf("Error 404. File not found.\n");
         system("pause");
     }else{
         while(p!=NULL){
@@ -686,7 +754,7 @@ void saveAccounts(){
     aLIST *p; p=A;
     fp=fopen("E:\\Accounts.csv", "w+");
     if(fp==NULL){
-        printf("Error 404. File not found.\n"); 
+        printf("Error 404. File not found.\n");
         system("pause");
     }else{
         while(p!=NULL){
@@ -698,6 +766,7 @@ void saveAccounts(){
     }
 }
 void saveAccountsFD(){
+    int i=0;
     FILE *fp;
     aLIST *p, *q;
     q=p=A;
@@ -712,13 +781,15 @@ void saveAccountsFD(){
             p=p->next;
         }
     }else{
-        system("cls"); 
-        printf("\nSystem Error. cant save into file.\n"); 
+        system("cls");
+        printf("\nSystem Error. cant save into file.\n");
         system("pause");system("cls");
     }
-    encrypt(); fp=fopen("D:\\userDetails.csv", "w+");
+
+    encrypt(); 
+    fp=fopen("D:\\userDetails.csv", "w+");
     if (fp==NULL){
-        printf("\nError 404. File not found.\n"); 
+        printf("\nError 404. File not found.\n");
         system("pause");system("cls");
     }else{
         fprintf(fp,"%s,%s,%s,%s,%d,%d\n",
@@ -727,7 +798,7 @@ void saveAccountsFD(){
     }
     fclose(fp);
 }
-void logs(char inout[10], char item[100]){ 
+void logs(char inout[10], char item[100]){
     FILE* fp;
     time_t currentTime;
     struct tm *localTime;
@@ -736,7 +807,7 @@ void logs(char inout[10], char item[100]){
         printf("Error 404. File not found.\n"); system("pause");
     }
     //get current date and time
-    currentTime = time(NULL);   
+    currentTime = time(NULL);
     localTime = localtime(&currentTime);
 
     if(currentSKey==1 && currentLKey==0){
@@ -829,6 +900,7 @@ void printToxy(int x, int y, char *label){
     printf("%s", label);
 }
 void gotoxy(int x, int y){
+    COORD coord = {0, 0};
     coord.X = x;
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
