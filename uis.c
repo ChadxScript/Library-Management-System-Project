@@ -10,9 +10,10 @@ int main()
 {
     //front()
     //librarian() 
-      student();
+    //student();
     //student_new_user()
     //select_user()
+    admin_new();
 }
 
 void gotoxy(int x, int y)
@@ -132,4 +133,18 @@ void select_user()
     gotoxy(67,10); for(i=0;i<19;i++) printf("%c",220); gotoxy(67,14); for(i=0;i<19;i++) printf("%c",220); 
      for(i=0;i<4;i++){gotoxy(67,11+i);printf("%c",219);} for(i=0;i<4;i++){gotoxy(85,11+i);printf("%c",219);} 
     SetConsoleTextAttribute(h,15); printToxy(50,18,"Are you a: ");  //gotoxy (?,?); scanf(kineso)
+}
+
+void admin_new()
+{
+    HANDLE h =GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute(h,06);
+    printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc         \xdc\xdc      \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc    \xdc\xdc");
+    printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc        \xdc\xdc\xdc\xdc     \xdc\xdc   \xdc\xdc   \xdc\xdc\xdc   \xdc\xdc\xdc  \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc");
+    printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc       \xdc\xdc  \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc \xdc\xdc \xdc\xdc");
+    printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc   \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc\xdc\xdc");
+    printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc   \xdc\xdc\xdc");
+    SetConsoleTextAttribute(h,15); printToxy(35,8," A   D   M   I   N   I   S   T   R   A   T   O   R"); 
+    printToxy(22,10,"Librarian Name: "); //gotoxy (?,?); scanf(kineso)
+    printToxy(22,11,"Librarian ID: "); //gotoxy (?,?); scanf(kineso)
 }
