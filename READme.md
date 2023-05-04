@@ -16,7 +16,7 @@ Please download the books.csv and put it on your desktop drive.
   - Return Books
   - Verifications
 - Librarian
-  - Log-In -> Logs
+  - Log-In 
   - Add Books
   - Edit Books
   - Remove Books
@@ -25,6 +25,8 @@ Please download the books.csv and put it on your desktop drive.
   - Accounts
   - Logs
   - List of Books
+  - Borrowed Books
+- Encrypt and Decrypt IDs
 
 ## License
 [MIT License](LISENCE)
