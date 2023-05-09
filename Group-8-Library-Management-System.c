@@ -5,6 +5,7 @@
 #include <string.h>
 #include <time.h>
 #include <windows.h>
+#include <errno.h>
 
 typedef struct accountDetails{
     int skey, lkey;
@@ -68,7 +69,12 @@ void logs(char inout[10], char item[100]);
 int currentSKey, currentLKey, currentbookNum=0;
 char currentStudentID[31], currentStudentName[31];
 char currentLibrarianID[31], currentLibrarianName[31];
-char fill[] = "NONE"; char adminFillName[] = "LibrarianADMIN"; char adminFillID[] = "LibrarianADMIN123";
+char LMSFolderDB[] = "E:\\LMS Database";
+char LMSLogs[] = "E:\\LMS Database\\LMS Logs";
+char LMSFlashDrive[] = "D:\\LMS Details";
+char fill[] = "NONE"; 
+char adminFillName[] = "LibrarianADMIN"; 
+char adminFillID[] = "LibrarianADMIN123";
 
 //UI
 void printToxy(int x, int y, char *label);
@@ -82,17 +88,22 @@ void delay(int ms);
 int main(){
     int userNum;
     bREC bBooks;
+
+    // make folders for database
+    mkdir(LMSFolderDB, 0777);
+    mkdir(LMSLogs, 0777);
+
     makenull();
     system("cls");
     printf("\033[1;33m");
     switch(insertcard()){
         case 1: registerStudent();
+                saveAccountsFD();
+                logs("IN",fill);
                 break;
-        case 2: if(registerLibrarian()==1){
-                    break;
-                }else{
-                    exit(0);
-                }
+        case 2: registerLibrarian();
+                saveAccountsFD();
+                logs("IN",fill);
                 break;
         case 3: userLOGIN();
                 break;
@@ -195,13 +206,17 @@ int insertcard(){
     FILE *fp;
     //will check if the flashdrive is inserted to the device or not
     do{
-        fp=fopen("D:\\Check.txt","w");
+        fp=fopen("D:\\LMS_Check.txt","w");
         loading();
     }while(fp==NULL);
     fclose(fp);
+    mkdir(LMSFlashDrive, 0777);
     front();
 
-    fp=fopen("D:\\userDetails.csv","r");
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\userDetails.csv", LMSFlashDrive);
+
+    fp=fopen(fileName,"r");
     if(fp==NULL){
         retrieveBooks(); retrieveAccounts();
         decrypt(); scanScreen(1);
@@ -232,8 +247,11 @@ int insertcard(){
 void retrieveAccounts(){
     FILE *fp;
     aREC aLibn;
-    // database
-    fp=fopen("E:\\Accounts.csv","r+");
+
+    // In Database
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\Accounts.csv", LMSFolderDB);
+    fp=fopen(fileName,"r+");
     if(fp!=NULL){
         while(!feof(fp)){
             fscanf(fp,"%[^,],%[^,],%[^,],%[^,],%d,%d\n",
@@ -244,7 +262,9 @@ void retrieveAccounts(){
     }
 
     // flashdrive
-    fp=fopen("D:\\userDetails.csv", "r+");
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\userDetails.csv", LMSFlashDrive);
+    fp=fopen(fileName, "r+");
     if(fp!=NULL){
         fscanf(fp,"%[^,],%[^,],%[^,],%[^,],%d,%d",
                 currentStudentID, currentLibrarianID, currentStudentName,
@@ -270,16 +290,25 @@ void addAccount(aREC x){
 void retrieveBooks(){
     FILE *fp;
     bREC bLibn;
-    do{
-        fp=fopen("E:\\Books.csv","r+");
-    }while(fp==NULL);
-    while(!feof(fp)){
-        fscanf(fp,"%d,%[^,],%[^,],%[^,],%d,%d\n",
-                &bLibn.bookNum, bLibn.ISBN, bLibn.bookTitle,
-                bLibn.bookAuthor, &bLibn.publicationYear, &bLibn.bookQuant);
-           currentbookNum=bLibn.bookNum; 
-           addBooks(bLibn);
-    }fclose(fp);
+    
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\Books.csv", LMSFolderDB);
+    fp=fopen(fileName,"r+");
+    if(fp==NULL){
+        printf("\nLIBRARY IS CURRENTLY EMPTY");
+        printf("\nNO BOOKS TO BE FOUND :(");
+        printf("\nPLEASE COME BACK LATER. SORRY FOR INCONVENIENCE.\n");
+        system("pause"); exit(0);
+    }else{
+        while(!feof(fp)){
+            fscanf(fp,"%d,%[^,],%[^,],%[^,],%d,%d\n",
+                    &bLibn.bookNum, bLibn.ISBN, bLibn.bookTitle,
+                    bLibn.bookAuthor, &bLibn.publicationYear, &bLibn.bookQuant);
+            currentbookNum=bLibn.bookNum; 
+            addBooks(bLibn);
+        }
+    }
+    fclose(fp);
 }
 void addBooks(bREC x){
     bLIST *p, *q, *temp;
@@ -317,44 +346,50 @@ void registerStudent(){
     aREC aLibn;
     HANDLE h =GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(h,06);
+    int count=0;
     fillAgain1:
-        system("cls");
-        currentSKey=aLibn.skey = 1; currentLKey=aLibn.lkey = 0;
+        if(count<3){
+            system("cls");
+            currentSKey=aLibn.skey = 1; currentLKey=aLibn.lkey = 0;
 
-        printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
-        printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  ");
-        printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
-        printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc     \xdc\xdc  \xdc\xdc      \xdc\xdc  \xdc\xdc    ");
-        printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc   \xdc\xdc   ");
-        SetConsoleTextAttribute(h,15); printToxy(22,8," A   P   P   L   I   C   A   T   I   O   N          F   O   R   M");
-        printToxy(22,10,"Enter Student Name: ");
-        printToxy(22,11,"Enter Student ID: ");
-        gotoxy(42,10);scanf(" %[^\n]s",aLibn.studentName);
-        gotoxy(42,11);scanf(" %[^\n]s",aLibn.studentID);
+            printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
+            printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  ");
+            printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
+            printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc     \xdc\xdc  \xdc\xdc      \xdc\xdc  \xdc\xdc    ");
+            printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc\xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc   \xdc\xdc   ");
+            SetConsoleTextAttribute(h,15); printToxy(22,8," A   P   P   L   I   C   A   T   I   O   N          F   O   R   M");
+            printToxy(22,10,"Enter Student Name: ");
+            printToxy(22,11,"Enter Student ID: ");
+            gotoxy(42,10);scanf(" %[^\n]s",aLibn.studentName);
+            gotoxy(42,11);scanf(" %[^\n]s",aLibn.studentID);
 
-        strcpy(aLibn.librarianID, fill);
-        strcpy(aLibn.librarianName, fill);
-        strcpy(currentStudentName, aLibn.studentName);
-        strcpy(currentStudentID, aLibn.studentID);
+            strcpy(aLibn.librarianID, fill);
+            strcpy(aLibn.librarianName, fill);
+            strcpy(currentStudentName, aLibn.studentName);
+            strcpy(currentStudentID, aLibn.studentID);
 
-        if(checkAccount(1,aLibn.studentID)==1){
-            gotoxy(22,16);printf("REGISTRATION COMPLETE");
-            gotoxy(22,17);system("pause");
-            addAccount(aLibn);
+            if(checkAccount(1,aLibn.studentID)==1){
+                gotoxy(22,16);printf("REGISTRATION COMPLETE");
+                gotoxy(22,17);system("pause");
+                addAccount(aLibn);
+            }else{
+                printToxy(42,16,"Invalid Entry. Duplicate Student ID. Please try again.");
+                gotoxy(42,17);system("pause");
+                count++; goto fillAgain1;
+            }
         }else{
-            printToxy(42,16,"Invalid Entry. Duplicate Student ID. Please try again.");
-            gotoxy(42,17);system("pause");
-            goto fillAgain1;
+            printf("\n\nERROR. TOO MANY UNSUCCESSFUL ATTEMPS.");
+            printf("\nPLEASE TRY AGAIN LATER.\n");
+            system("pause"); exit(0);
         }
     system("cls");
-    logs("IN",fill);
 }
 int registerLibrarian(){
     aREC aLibn;
     HANDLE h =GetStdHandle(STD_OUTPUT_HANDLE);
     SetConsoleTextAttribute(h,06);
+    int count=0;
     char userStr[19];
-    system("cls");
     currentLKey=aLibn.lkey = 1; currentSKey=aLibn.skey = 0;
     strcpy(aLibn.librarianName, adminFillName);
     strcpy(currentLibrarianName, adminFillName);
@@ -363,68 +398,92 @@ int registerLibrarian(){
     strcpy(aLibn.studentID, fill);
     strcpy(aLibn.studentName, fill);
 
-    printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc         \xdc\xdc      \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc    \xdc\xdc");
-    printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc        \xdc\xdc\xdc\xdc     \xdc\xdc   \xdc\xdc   \xdc\xdc\xdc   \xdc\xdc\xdc  \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc");
-    printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc       \xdc\xdc  \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc \xdc\xdc \xdc\xdc");
-    printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc   \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc\xdc\xdc");
-    printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc   \xdc\xdc\xdc");
-    SetConsoleTextAttribute(h,15); printToxy(35,8," A   D   M   I   N   I   S   T   R   A   T   O   R"); 
-    printf("\nEnter Librarian ID to Confirm: \n"); scanf(" %[^\n]",userStr);
-    if(strcmp(userStr,aLibn.librarianID)==0){
-        printToxy(22,10,"Librarian Name: "); printToxy(38,10,aLibn.librarianName);
-        printToxy(22,11,"Librarian ID: "); printToxy(38,11,aLibn.librarianID);
+    fillAgain2:
+        if(count<3){
+            system("cls");
+            printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc         \xdc\xdc      \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc    \xdc\xdc");
+            printToxy(22,3," \xdc\xdc\xdc   \xdc\xdc  \xdc\xdc      \xdc\xdc     \xdc\xdc        \xdc\xdc\xdc\xdc     \xdc\xdc   \xdc\xdc   \xdc\xdc\xdc   \xdc\xdc\xdc  \xdc\xdc  \xdc\xdc\xdc   \xdc\xdc");
+            printToxy(22,4," \xdc\xdc \xdc\xdc \xdc\xdc  \xdc\xdc\xdc\xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc       \xdc\xdc  \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc  \xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc \xdc\xdc \xdc\xdc");
+            printToxy(22,5," \xdc\xdc  \xdc\xdc\xdc\xdc  \xdc\xdc      \xdc\xdc\xdc   \xdc\xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc   \xdc\xdc   \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc  \xdc\xdc\xdc\xdc");
+            printToxy(22,6," \xdc\xdc   \xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc   \xdc\xdc\xdc\xdc\xdc     \xdc\xdc     \xdc\xdc  \xdc\xdc  \xdc\xdc   \xdc\xdc\xdc");
+            SetConsoleTextAttribute(h,15); printToxy(35,8," A   D   M   I   N   I   S   T   R   A   T   O   R"); 
+            printf("\nEnter Librarian ID to Confirm: \n"); scanf(" %[^\n]",userStr);
+            if(strcmp(userStr,aLibn.librarianID)==0){
+                printToxy(22,10,"Librarian Name: "); printToxy(38,10,aLibn.librarianName);
+                printToxy(22,11,"Librarian ID: "); printToxy(38,11,aLibn.librarianID);
 
-        if(checkAccount(2,aLibn.librarianID)==1){
-            addAccount(aLibn); 
+                if(checkAccount(2,aLibn.librarianID)==1){
+                    addAccount(aLibn); 
+                }
+                gotoxy(22,15);printf("REGISTRATION COMPLETE");
+                gotoxy(22,16);system("pause");
+                
+            }else{
+                printf("\nERROR.");
+                printf("\nCRIDENTIALS DO NOT MATCH.\n");
+                system("pause");
+                count++; goto fillAgain2;
+            }
+        }else{
+            printf("\n\nERROR. TOO MANY UNSUCCESSFUL ATTEMPS.");
+            printf("\nPLEASE TRY AGAIN LATER.\n");
+            system("pause"); exit(0);
         }
-
-        gotoxy(22,15);printf("REGISTRATION COMPLETE");
-        gotoxy(22,16);system("pause");
-        system("cls");
-        logs("IN",fill);
-        return 1;
-    }else{
-        printf("\nERROR.");
-        printf("\nCRIDENTIALS NOT MATCH.\n");
-        system("pause");
-        return 2;
-    }
-    
+    system("cls");
 }
 void userLOGIN(){
     aREC aLibn;
-    system("cls");
-    printf("\nLOG IN");
+    int count;
     strcpy(aLibn.studentName, currentStudentName);
     aLibn.skey = currentSKey; aLibn.lkey = currentLKey;
     strcpy(aLibn.librarianName, currentLibrarianName);
 
     if(currentSKey==1 && currentLKey==0){
+        count=0;
         enterStudID:
-            printf("\nEnter Student ID: ");
-            scanf(" %[^\n]s",aLibn.studentID);
-            if(strcmp(aLibn.studentID, currentStudentID)!=0){
-                printf("\nWrong Student ID. Please try again.\n");
-                system("pause"); system("cls");
-                goto enterStudID;
+            if(count<3){
+                system("cls");
+                printf("\nLOG IN");
+                printf("\nEnter Student ID: ");
+                scanf(" %[^\n]s",aLibn.studentID);
+                if(strcmp(aLibn.studentID, currentStudentID)!=0){
+                    printf("\nWrong Student ID. Please try again.\n");
+                    system("pause"); system("cls");
+                    count++; goto enterStudID;
+                }else{
+                    logs("IN",fill); system("cls");
+                }
             }else{
-                logs("IN",fill);
+                printf("\n\nERROR. TOO MANY UNSUCCESSFUL ATTEMPS.");
+                printf("\nPLEASE TRY AGAIN LATER.\n");
+                system("pause"); exit(0);
             }
+            
     }else if(currentLKey==1 && currentSKey==0){
+        count=0;
         enterLibID:
-            printf("\nEnter Librarian ID: ");
-            scanf(" %[^\n]s",aLibn.librarianID);
+            if(count<3){
+                system("cls");
+                printf("\nLOG IN");
+                printf("\nEnter Librarian ID: ");
+                scanf(" %[^\n]s",aLibn.librarianID);
 
-            if(strcmp(aLibn.librarianID, currentLibrarianID)!=0){
-                printf("\nWrong Librarian ID. Please try again.\n");
-                system("pause"); system("cls");
-                goto enterLibID;
+                if(strcmp(aLibn.librarianID, currentLibrarianID)!=0){
+                    printf("\nWrong Librarian ID. Please try again.\n");
+                    system("pause"); system("cls");
+                    count++; goto enterLibID;
+                }else{
+                    logs("IN",fill); system("cls");
+                }
             }else{
-                logs("IN",fill);
+                printf("\n\nERROR. TOO MANY UNSUCCESSFUL ATTEMPS.");
+                printf("\nPLEASE TRY AGAIN LATER.\n");
+                system("pause"); exit(0);
             }
+            
     }else{
         system("cls");
-        printf("\nSystem Error.\n");
+        printf("\nSYSTEM ERROR.\n");
         system("pause"); system("cls");
     }
 }
@@ -498,7 +557,7 @@ int menu(int x){
 
 
 void borrowBook(int x){
-    int i=1;
+    int count, borrow;
     char temp[100];
     bLIST *p, *q;
     q=p=B;
@@ -510,41 +569,52 @@ void borrowBook(int x){
         printf("\nError 404. Book Number: %d not found.\n",x);
         system("pause"); system("cls");
     }else{
-        printf("\nBook Number\t Book Title\t Book Author\t Publication Year\n %d.) %d\t %s\t %s\t %d\n",
-                i++,p->bLib.bookNum, p->bLib.bookTitle, p->bLib.bookAuthor, p->bLib.publicationYear);
+        //get current date and time
+        time_t currentTime;
+        struct tm *localTime;
+        currentTime = time(NULL);
+        localTime = localtime(&currentTime);
 
+        displayCurrentBook(p);
+        
         if(verifyAccount(1)==1){
-            //save the borrowed book to the file
-            FILE *fp;
-            fp=fopen("D:\\borrowedBooks.csv","a+");
-            if(fp!=NULL){
-                fprintf(fp,"%d,%s,%s,%d\n",
-                        p->bLib.bookNum, p->bLib.bookTitle, p->bLib.bookAuthor, p->bLib.publicationYear);
-            }else{
-                printf("\nSystem Error. cant save into file.\n");
-                system("pause");system("cls");
-            }fclose(fp);
+            strcpy(temp,p->bLib.bookTitle);
+            count=0;
+            EnterBookCopyAgain:
+                if(count<3){
+                    printf("\nHow many copies to be borrowed: ");
+                    scanf("%d", &borrow);
+                    if(borrow<p->bLib.bookQuant && borrow>0){
+                        p->bLib.bookQuant -= borrow;
 
-            //remove the borrowed book to the database kasi hiniram nga so bale mawawala sa database yung libro
-            q=p=B;
-            while(p!=NULL && x!=p->bLib.bookNum){
-                q=p;
-                p=p->next;
-            }
-            if(fp==NULL){
-                printf("\nBook not found!\nWrong book ID or book does not exist or borrowed.\n");
-                system("pause"); system("cls");
-            }else{
-                strcpy(temp,p->bLib.bookTitle);
-                if (p==B){
-                    B=p->next;
+                        //save the borrowed book to the file and the date borrwed
+                        FILE *fp;
+                        char fileName[50];
+                        snprintf(fileName, sizeof(fileName), "%s\\borrowedBooks.csv", LMSFlashDrive);
+                        fp=fopen(fileName,"a+");
+                        if(fp!=NULL){
+                            fprintf(fp,"%d,%s,%s,%s,%d,%d,%04d,%02d,%02d\n",
+                                    p->bLib.bookNum,p->bLib.ISBN, p->bLib.bookTitle, 
+                                    p->bLib.bookAuthor, p->bLib.publicationYear, borrow,
+                                    localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday);
+                        }else{
+                            printf("\nSystem Error. cant save into file.\n");
+                            system("pause");system("cls");
+                        }fclose(fp);
+                        logs("Borrowed Book", temp);
+                        printf("\nYou successfully borrowed (%s).\n", temp);
+                        system("pause");
+                    }else{
+                        printf("\nINVALID INPUT.");
+                        printf("\nPLEASE TRY AGAIN.\n");
+                        system("pause");
+                        count++; goto EnterBookCopyAgain;
+                    }
                 }else{
-                    q->next=p->next;
-                }free(p);
-                logs("Borrowed Book", temp);
-                printf("\nYou successfully borrowed (%s).\n", temp);
-                system("pause");
-            }
+                    printf("\nTOO MANY FAILED ATTEMPTS.");
+                    printf("\nPLEASE TRY AGAIN LATER.\n");
+                    system("pause");
+                }
         }else{
             printf("\nTransaction Cancelled. Your input does not match to your cridentials.\n");
             system("pause");system("cls");
@@ -554,21 +624,68 @@ void borrowBook(int x){
 void returnbook(){
     FILE *fp;
     bREC bLibn;
-    fp=fopen("D:\\borrowedBooks.csv","r");
+    bLIST *p, *q;
+    q=p=B;
+    int borrowYear, borrowMonth, borrowDay, penalty;
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\borrowedBooks.csv", LMSFlashDrive);
+    fp=fopen(fileName,"r");
     if(fp==NULL){
         printf("\nERROR. No Books to Return.\n");
         system("pause"); system("cls");
     }else{
+        //get current date and time
+        time_t currentTime;
+        struct tm *localTime;
+        currentTime = time(NULL);
+        localTime = localtime(&currentTime);
+        int currYear = localTime->tm_year + 1900;
+        int currMonth = localTime->tm_mon + 1;
+        int currDay = localTime->tm_mday;
+
         while(!feof(fp)){
-            fscanf(fp,"%d,%[^,],%[^,],%[^,],%d,%d\n",
+            fscanf(fp,"%d,%[^,],%[^,],%[^,],%d,%d,%d,%d,%d\n",
                     &bLibn.bookNum, bLibn.ISBN, bLibn.bookTitle, 
-                    bLibn.bookAuthor, &bLibn.publicationYear, &bLibn.bookQuant);
-           addBooks(bLibn);
-           logs("Retured Book",bLibn.bookTitle);
-           printf("\nBook (%s) successfully retured.\n",bLibn.bookTitle);
+                    bLibn.bookAuthor, &bLibn.publicationYear, &bLibn.bookQuant,
+                    &borrowYear, &borrowMonth, &borrowDay);
+
+            //check penalty 
+            //[kayo na dito mga fre HAHAHAHAHA lagyan nyo banko para pwede mag withdraw si student HAHAHAHAHAHA]
+            if(borrowYear > currYear){
+                //penalty here
+                displayCurrentBook(&bLibn);
+                printf("\nPENALTY:");
+                printf("\nP 1,000 * 'x' NUMBER OF YEAR(S) * 'x' NUMBER OF BOOK COPIES");
+                penalty = currYear - borrowYear;
+                printf("\n\nNUMBER OF YEAR YOU HAVE HAD THE BOOK: %d",penalty);
+                printf("\nCOPIES OF BOOKS THAT YOU BORROWED: %d",bLibn.bookQuant);
+                penalty *= 1000; penalty *= bLibn.bookQuant;
+                printf("\n\nPLEASE SETTLE THE AMOUNT OF (P %d) IMMEDIATELY.",penalty);
+
+            }else if(borrowMonth > currMonth){
+                //penalty here
+            }else if((currDay-borrowDay) >= 3){
+                //penalty here
+            }else{
+                //no penalty
+            }
+
+            //return the book to the Database
+            while(p!=NULL && p->bLib.bookNum!=bLibn.bookNum){
+                q=p;
+                p=p->next;
+            }
+            if(p==NULL){
+                addBooks(bLibn);
+                logs("Retured Book",bLibn.bookTitle);
+                printf("\nBook (%s) successfully retured.\n",bLibn.bookTitle);
+            }else{
+                p->bLib.bookQuant += bLibn.bookQuant;
+                printf("\nBook (%s) successfully retured.\n",bLibn.bookTitle);
+            }
         }fclose(fp);
         saveBooks();
-        remove("D:\\borrowedBooks.csv");
+        remove(fileName);
         system("pause"); system("cls");
     }
 }
@@ -1179,7 +1296,11 @@ void encrypt(){
 void saveBooks(){
     FILE *fp;
     bLIST *p; p=B;
-    fp=fopen("E:\\Books.csv", "w+");
+
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\Books.csv", LMSFolderDB);
+
+    fp=fopen(fileName, "w+");
     if(fp==NULL){
         printf("Error 404. File not found.\n");
         system("pause");
@@ -1195,7 +1316,11 @@ void saveBooks(){
 void saveAccounts(){
     FILE *fp;
     aLIST *p; p=A;
-    fp=fopen("E:\\Accounts.csv", "w+");
+
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\Accounts.csv", LMSFolderDB);
+
+    fp=fopen(fileName, "w+");
     if(fp==NULL){
         printf("Error 404. File not found.\n");
         system("pause");
@@ -1209,7 +1334,6 @@ void saveAccounts(){
     }
 }
 void saveAccountsFD(){
-    int i=0;
     FILE *fp;
     aLIST *p, *q;
     q=p=A;
@@ -1228,8 +1352,9 @@ void saveAccountsFD(){
         printf("\nSystem Error. cant save into file.\n");
         system("pause");system("cls");
     }
-
     encrypt(); 
+
+
     fp=fopen("D:\\userDetails.csv", "w+");
     if (fp==NULL){
         printf("\nError 404. File not found.\n");
@@ -1249,10 +1374,15 @@ void logs(char inout[10], char item[100]){
     //get current date and time
     currentTime = time(NULL);
     localTime = localtime(&currentTime);
-    char filename[20];
-    strftime(filename, sizeof(filename), "%Y-%m-%d.csv", localTime);
 
-    fp=fopen(filename,"a+");
+    //generate the file path and file format
+    char logsFilename[10];
+    strftime(logsFilename, sizeof(logsFilename), "%Y-%m-%d", localTime);
+
+    char logsFilePath[50];
+    snprintf(logsFilePath, sizeof(logsFilePath), "%s\\%s.csv",LMSLogs,logsFilename);
+
+    fp=fopen(logsFilePath,"a+");
 
     if(currentSKey==1 && currentLKey==0){
         fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s,%s\n",
