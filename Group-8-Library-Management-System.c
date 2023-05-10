@@ -5,26 +5,40 @@
 #include <string.h>
 #include <time.h>
 #include <windows.h>
-#include <errno.h>
+#include <dirent.h>
+
+#define KEY 70
+#define LMSFolderDB "E:\\LMS Database"
+#define LMSLogs "E:\\LMS Database\\LMS Logs"
+#define LMSFlashDrive "D:\\LMS Details"
+#define fill "NONE"
+#define adminFillName "LibrarianADMIN"
+#define adminFillID "LibrarianADMIN123"
 
 typedef struct accountDetails{
     int skey, lkey;
     char studentID[31], studentName[31];
     char librarianID[31], librarianName[31];
 }aREC;
-typedef struct anode{
-    aREC aLib;
-    struct anode* next;
-}aLIST;aLIST *A;
-
 typedef struct bookDetails{
     int bookNum, publicationYear, bookQuant;
     char bookTitle[100], bookAuthor[100], ISBN[15];
 }bREC;
-typedef struct bnode{
+typedef struct logDetails{
+    char date[50], 
+         time[50],
+         name[50],
+         STATUS[50],
+         ITEM[50];
+}lREC;
+
+typedef struct node{
+    aREC aLib;
     bREC bLib;
-    struct bnode* next;
-}bLIST;bLIST *B, *C;
+    lREC rLogs;
+    struct node* next;
+}LIST;
+LIST *A, *B, *C, *L;
 
 //Function Declaration
 void makenull();
@@ -40,12 +54,16 @@ int registerLibrarian();
 void userLOGIN();
 
 void displayBooks();
+void displayCurrentBook(bREC *x);
 void displayLogs();
+void displayDirectoryContent();
 int menu(int x);
 
 void borrowBook(int x);
 void returnbook();
 
+void insertExistingBook();
+void insertNewBook();
 void editBooks();
 void removeAcopy();
 void removeBooks();
@@ -55,26 +73,22 @@ int checkAccount(int x, char str[31]);
 int verifyAccount(int x);
 int checkBooks(bREC *x);
 int checkISBN(char *ISBN, int x);
+int getBookNumber();
 
-void decrypt();
-void encrypt();
+void decrypt(int x,char *str,int *num);
+void encrypt(int x,char *str,int *num);
 
 void saveBooks();
 void saveAccounts();
 void saveAccountsFD();
-void logs(char inout[10], char item[100]);
+void logs(char status[100], char item[100]);
 
 
 //Global Vars
-int currentSKey, currentLKey, currentbookNum=0;
+int currentSKey, currentLKey;
 char currentStudentID[31], currentStudentName[31];
 char currentLibrarianID[31], currentLibrarianName[31];
-char LMSFolderDB[] = "E:\\LMS Database";
-char LMSLogs[] = "E:\\LMS Database\\LMS Logs";
-char LMSFlashDrive[] = "D:\\LMS Details";
-char fill[] = "NONE"; 
-char adminFillName[] = "LibrarianADMIN"; 
-char adminFillID[] = "LibrarianADMIN123";
+
 
 //UI
 void printToxy(int x, int y, char *label);
@@ -90,8 +104,8 @@ int main(){
     bREC bBooks;
 
     // make folders for database
-    mkdir(LMSFolderDB, 0777);
-    mkdir(LMSLogs, 0777);
+    mkdir(LMSFolderDB);
+    mkdir(LMSLogs);
 
     makenull();
     system("cls");
@@ -99,20 +113,23 @@ int main(){
     switch(insertcard()){
         case 1: registerStudent();
                 saveAccountsFD();
+                saveAccounts();  
                 logs("IN",fill);
                 break;
         case 2: registerLibrarian();
                 saveAccountsFD();
+                saveAccounts();  
                 logs("IN",fill);
                 break;
         case 3: userLOGIN();
                 break;
         default: system("cls");
-                 printf("\INVALID INPUT.\n");
+                 printf("\nINVALID INPUT.\n");
                  system("pause"); system("cls");
                  break;
     }
 
+    retrieveBooks();
     system("cls");
     if(currentSKey==1 && currentLKey==0){ //student
         while(1){
@@ -133,8 +150,7 @@ int main(){
                             system("pause"); system("cls");
                         }
                         break;
-                default: saveBooks(); saveAccountsFD();
-                         saveAccounts(); logs("OUT",fill); exit(0);
+                default: logs("OUT",fill); exit(0);
                          break;
             }
         }
@@ -174,9 +190,8 @@ int main(){
                             displayBooks();
                             removeBooks();
                         }else{
-                            printf("\nCANCELLED.");
+                            printf("\nCANCELLED.\n");
                             system("pause");
-                            break;
                         }
                         break;
                 case 4: bookRequests();
@@ -185,8 +200,7 @@ int main(){
                         break;
                 case 6: displayLogs();
                         break;
-                default: saveBooks(); saveAccountsFD();
-                         saveAccounts();  logs("OUT",fill); exit(0);
+                default: logs("OUT",fill); exit(0);
                          break;
             }
         }
@@ -198,6 +212,7 @@ void makenull(){ //initiate the list to null
     A = NULL;
     B = NULL;
     C = NULL;
+    L = NULL;
 }
 int insertcard(){
     int num, i;
@@ -210,7 +225,7 @@ int insertcard(){
         loading();
     }while(fp==NULL);
     fclose(fp);
-    mkdir(LMSFlashDrive, 0777);
+    mkdir(LMSFlashDrive);
     front();
 
     char fileName[50];
@@ -218,8 +233,8 @@ int insertcard(){
 
     fp=fopen(fileName,"r");
     if(fp==NULL){
-        retrieveBooks(); retrieveAccounts();
-        decrypt(); scanScreen(1);
+        retrieveAccounts();
+        scanScreen(1);
         do{
             system("cls");
             printToxy(22,2," \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc     \xdc\xdc      \xdc\xdc    \xdc\xdc  \xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc  \xdc\xdc\xdc\xdc\xdc\xdc\xdc   ");
@@ -238,8 +253,8 @@ int insertcard(){
         }while(num<1||num>3);
         return num;
     }else{
-        retrieveBooks(); retrieveAccounts();
-        decrypt(); scanScreen(2);
+        retrieveAccounts();
+        scanScreen(2);
         return 3;
     }
     fclose(fp);
@@ -257,25 +272,40 @@ void retrieveAccounts(){
             fscanf(fp,"%[^,],%[^,],%[^,],%[^,],%d,%d\n",
                     aLibn.studentID, aLibn.librarianID, aLibn.studentName,
                     aLibn.librarianName, &aLibn.skey, &aLibn.lkey);
+
+            decrypt(1,aLibn.studentID,0);
+            decrypt(1,aLibn.studentName,0);
+            decrypt(1,aLibn.librarianID,0);
+            decrypt(1,aLibn.librarianName,0);
+            decrypt(2,"",&aLibn.skey);
+            decrypt(2,"",&aLibn.lkey);
+
             addAccount(aLibn);
         }fclose(fp);
     }
 
     // flashdrive
-    char fileName[50];
     snprintf(fileName, sizeof(fileName), "%s\\userDetails.csv", LMSFlashDrive);
     fp=fopen(fileName, "r+");
     if(fp!=NULL){
         fscanf(fp,"%[^,],%[^,],%[^,],%[^,],%d,%d",
                 currentStudentID, currentLibrarianID, currentStudentName,
                 currentLibrarianName, &currentSKey, &currentLKey);
+        
+        decrypt(1,currentStudentID,0);
+        decrypt(1,currentStudentName,0);
+        decrypt(1,currentLibrarianID,0);
+        decrypt(1,currentLibrarianName,0);
+        decrypt(2,"",&currentSKey);
+        decrypt(2,"",&currentLKey);
+
         fclose(fp);
     }
 }
 void addAccount(aREC x){
-    aLIST *p, *q, *temp;
+    LIST *p, *q, *temp;
     q=p=A;
-    temp = (aLIST*) malloc(sizeof(aLIST));
+    temp = (LIST*) malloc(sizeof(LIST));
     temp->aLib = x;
     while (p!=NULL && x.lkey < p->aLib.lkey){
         q=p;
@@ -292,28 +322,47 @@ void retrieveBooks(){
     bREC bLibn;
     
     char fileName[50];
-    snprintf(fileName, sizeof(fileName), "%s\\Books.csv", LMSFolderDB);
+    snprintf(fileName, sizeof(fileName), "%s\\Books.txt", LMSFolderDB);
     fp=fopen(fileName,"r+");
     if(fp==NULL){
-        printf("\nLIBRARY IS CURRENTLY EMPTY");
-        printf("\nNO BOOKS TO BE FOUND :(");
-        printf("\nPLEASE COME BACK LATER. SORRY FOR INCONVENIENCE.\n");
-        system("pause"); exit(0);
+        if(currentSKey==1 && currentLKey==0){
+            printf("\nLIBRARY IS CURRENTLY EMPTY");
+            printf("\nNO BOOKS TO BE FOUND :(");
+            printf("\nPLEASE COME BACK LATER. SORRY FOR INCONVENIENCE.\n");
+            system("pause"); 
+            fclose(fp); 
+            logs("OUT", fill);
+            exit(0);
+        }else if(currentSKey==0 && currentLKey==1){
+            printf("\nLIBRARY IS CURRENTLY EMPTY");
+            printf("\nNO BOOKS TO BE FOUND :(");
+            printf("\nPLEASE ADD BOOKS.\n");
+            system("pause");
+        }else{
+            printf("\nSYSTEM ERROR.");
+            system("pause");
+            fclose(fp); 
+        }
     }else{
         while(!feof(fp)){
             fscanf(fp,"%d,%[^,],%[^,],%[^,],%d,%d\n",
                     &bLibn.bookNum, bLibn.ISBN, bLibn.bookTitle,
                     bLibn.bookAuthor, &bLibn.publicationYear, &bLibn.bookQuant);
-            currentbookNum=bLibn.bookNum; 
+            decrypt(2,"",&bLibn.bookNum);
+            decrypt(1,bLibn.ISBN,0);
+            decrypt(1,bLibn.bookTitle,0);
+            decrypt(1,bLibn.bookAuthor,0);
+            decrypt(2,"",&bLibn.publicationYear);
+            decrypt(2,"",&bLibn.bookQuant);
             addBooks(bLibn);
         }
+        fclose(fp); 
     }
-    fclose(fp);
 }
 void addBooks(bREC x){
-    bLIST *p, *q, *temp;
+    LIST *p, *q, *temp;
     q=p=B;
-    temp = (bLIST*) malloc(sizeof(bLIST));
+    temp = (LIST*) malloc(sizeof(LIST));
     temp->bLib = x;
     while(p!=NULL && x.bookNum > p->bLib.bookNum){
         q=p;
@@ -326,9 +375,9 @@ void addBooks(bREC x){
     }temp->next = p;
 }
 void addBookRequests(bREC x){
-    bLIST *p, *q, *temp;
+    LIST *p, *q, *temp;
     q=p=C;
-    temp = (bLIST*) malloc(sizeof(bLIST));
+    temp = (LIST*) malloc(sizeof(LIST));
     temp->bLib = x;
     while(p!=NULL && x.bookNum > p->bLib.bookNum){
         q=p;
@@ -490,25 +539,76 @@ void userLOGIN(){
 
 
 void displayBooks(){
-    bLIST *p; p=B;
+    LIST *p; p=B;
     system("cls");
-    printf("| %-8s | %-50s | %-90s | %-80s | %-12s | %-12s |\n",
-         "BOOK NUMBER", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUBLISH YEAR", "BOOK QUANTITY");
+    printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |\n",
+         "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
 
     while (p != NULL) {
-        printf("| %-8d | %-50s | %-90s | %-80s | %-12d | %-12s |\n\n",
+        printf("| %-8d | %-15s | %-74s | %-82s | %-9d | %-8d |\n",
             p->bLib.bookNum, p->bLib.ISBN, p->bLib.bookTitle, 
             p->bLib.bookAuthor, p->bLib.publicationYear, p->bLib.bookQuant);
         p = p->next;
     }
 }
 void displayCurrentBook(bREC *x){
-    printf("\n| %-8s | %-50s | %-90s | %-80s | %-12s | %-12s |\n",
-            "BOOK NUMBER", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUBLISH YEAR", "BOOK QUANTITY");
+    printf("\n| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |\n",
+            "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
         
-    printf("| %-8s | %-50s | %-90s | %-80s | %-12s | %-12s |\n\n",
+    printf("| %-8d | %-15s | %-74s | %-82s | %-9d | %-8d |\n\n",
         x->bookNum, x->ISBN, x->bookTitle,
         x->bookAuthor, x->publicationYear, x->bookQuant);
+}
+void displayLogs(){
+    lREC rLogsn;
+    int count=0;
+    char userFilename[50];
+    char searchFile[50];
+    EnterDateAgainLogs:
+        if(count<3){
+            system("cls");
+            displayDirectoryContent();
+            printf("\n\nENTER DATE (YYYY-MM-DD) !DON'T INCLUDE THE .csv! : ");
+            scanf(" %[^\n]s", userFilename);
+            snprintf(searchFile, sizeof(searchFile), "%s\\%s.csv", LMSLogs, userFilename);
+            FILE *fp;
+            fp=fopen(searchFile, "r");
+            if(fp==NULL){
+                printf("\nERROR 404. FILE (%s) NOT FOUND.\n",userFilename);
+                system("pause");
+            }else{
+                printf("| %-11s | %-11s | %-50s | %-10s | %-10s |\n",
+                        "DATE", "TIME", "NAME", "STATUS", "ITEM");
+                while(fp!=NULL){
+                    fscanf(fp, "%[^,],%[^,],%[^,],%[^,],%[^,],%[^\n]\n",
+                            rLogsn.date, rLogsn.time, rLogsn.name,
+                            rLogsn.STATUS, rLogsn.ITEM);
+                    
+                    printf("| %-11s | %-11s | %-50s | %-10s | %-10s |\n",
+                            rLogsn.date, rLogsn.time, rLogsn.name,
+                            rLogsn.STATUS, rLogsn.ITEM);
+                }
+                printf("\n\n"); system("pause");
+            }
+        }else{
+            printf("\nTOO MANY FAILED ATTEMPTS.");
+            printf("\nPLEASE TRY AGAIN LATER.\n");
+            system("pause");
+        }
+    system("cls");
+}
+void displayDirectoryContent(){
+    struct dirent *direct;
+    DIR *directory = opendir(LMSLogs);
+    if(directory == NULL){
+        printf("\nERROR 404. DIRECTORY NOT FOUND.\n");
+        system("pause");
+    }else{
+        printf("\nLOG DATES:\n");
+        while((direct = readdir(directory)) != NULL){
+            printf("\n-> %s",direct->d_name);
+        }
+    } closedir(directory);
 }
 int menu(int x){
     int i, userNum;
@@ -559,7 +659,7 @@ int menu(int x){
 void borrowBook(int x){
     int count, borrow;
     char temp[100];
-    bLIST *p, *q;
+    LIST *p, *q;
     q=p=B;
     while(p!=NULL && x!=p->bLib.bookNum){
         q=p;
@@ -590,7 +690,7 @@ void borrowBook(int x){
                         //save the borrowed book to the file and the date borrwed
                         FILE *fp;
                         char fileName[50];
-                        snprintf(fileName, sizeof(fileName), "%s\\borrowedBooks.csv", LMSFlashDrive);
+                        snprintf(fileName, sizeof(fileName), "%s\\borrowedBooks.txt", LMSFlashDrive);
                         fp=fopen(fileName,"a+");
                         if(fp!=NULL){
                             fprintf(fp,"%d,%s,%s,%s,%d,%d,%04d,%02d,%02d\n",
@@ -601,6 +701,7 @@ void borrowBook(int x){
                             printf("\nSystem Error. cant save into file.\n");
                             system("pause");system("cls");
                         }fclose(fp);
+                        saveBooks(); 
                         logs("Borrowed Book", temp);
                         printf("\nYou successfully borrowed (%s).\n", temp);
                         system("pause");
@@ -624,11 +725,11 @@ void borrowBook(int x){
 void returnbook(){
     FILE *fp;
     bREC bLibn;
-    bLIST *p, *q;
+    LIST *p, *q;
     q=p=B;
     int borrowYear, borrowMonth, borrowDay, penalty;
     char fileName[50];
-    snprintf(fileName, sizeof(fileName), "%s\\borrowedBooks.csv", LMSFlashDrive);
+    snprintf(fileName, sizeof(fileName), "%s\\borrowedBooks.txt", LMSFlashDrive);
     fp=fopen(fileName,"r");
     if(fp==NULL){
         printf("\nERROR. No Books to Return.\n");
@@ -697,7 +798,7 @@ void insertExistingBook(){
     printf("\n\nEnter Book Number: ");
     scanf("%d", &userNum);
 
-    bLIST *p, *q;
+    LIST *p, *q;
     q=p=B;
     while(p!=NULL && userNum!=p->bLib.bookNum){
         q=p;
@@ -723,45 +824,70 @@ void insertExistingBook(){
             system("pause");
             displayBooks();
             system("pause");
+            saveBooks(); 
+            logs("Insert Existing Book",p->bLib.bookTitle);
         }
     }
 }
 void insertNewBook(){
     bREC bBooks;
-    int userNum;
+    int userNum, count;
     char userISBN[14];
     long long firstNum, randomNum;
     insertNewBookAgain:
-        system("cls");
+    if(count<3){
+            system("cls");
 
-        currentbookNum++; bBooks.bookNum=currentbookNum;
-        printf("\nBook ID: %d",bBooks.bookNum);
+            bBooks.bookNum = getBookNumber();
+            printf("\nBook ID: %d",bBooks.bookNum);
 
-        printf("\nInput book title: ");
-        scanf(" %[^\n]s",bBooks.bookTitle);
+            printf("\nInput book title: ");
+            scanf(" %[^\n]s",bBooks.bookTitle);
 
-        printf("\nEnter Book Quantity: ");
-        scanf("%d", &bBooks.bookQuant);
+            printf("\nEnter Book Quantity: ");
+            scanf("%d", &bBooks.bookQuant);
 
-        printf("\nInput book author: ");
-        scanf(" %[^\n]s",bBooks.bookAuthor);
-        
-        printf("\nInput publication year: ");
-        scanf("%d",&bBooks.publicationYear);
+            printf("\nInput book author: ");
+            scanf(" %[^\n]s",bBooks.bookAuthor);
+            
+            printf("\nInput publication year: ");
+            scanf("%d",&bBooks.publicationYear);
 
-    printf("\nDo you know the books's ISBN?");
-    printf("\n[1] YES");
-    printf("\n[2] NO");
-    printf("\n-> ");
-    scanf("%d",&userNum);
-    if(userNum==1){
-        if(bBooks.publicationYear>0 && bBooks.publicationYear<=2006){
-            printf("\n\nEnter VALID 10-digit ISBN: ");
-            scanf(" %[^\n]s",userISBN);
-            int len = strlen(userISBN);
-            if(len == 10){
-                if(checkISBN(userISBN,10)==1){
-                    strcpy(bBooks.ISBN,userISBN);
+        printf("\nDo you know the books's ISBN?");
+        printf("\n[1] YES");
+        printf("\n[2] NO");
+        printf("\n-> ");
+        scanf("%d",&userNum);
+        if(userNum==1){
+            if(bBooks.publicationYear>0 && bBooks.publicationYear<=2006){
+                printf("\n\nEnter VALID 10-digit ISBN: ");
+                scanf(" %[^\n]s",userISBN);
+                int len = strlen(userISBN);
+                if(len == 10){
+                    if(checkISBN(userISBN,10)==1){
+                        strcpy(bBooks.ISBN,userISBN);
+                    }else{
+                        printf("\nMODIFICATION UNSUCCESSFUL.");
+                        printf("\nINVALID ISBN.\n");
+                        system("pause");
+                    }
+                }else{
+                    printf("\nMODIFICATION UNSUCCESSFUL.");
+                    printf("\nINVALID ISBN.\n");
+                    system("pause");
+                }
+            }else if(bBooks.publicationYear>2006){
+                printf("\n\nEnter VALID 13-digit ISBN: ");
+                scanf(" %[^\n]s",userISBN);
+                int len = strlen(userISBN);
+                if(len == 13){
+                    if(checkISBN(userISBN,13)==1){
+                        strcpy(bBooks.ISBN,userISBN);
+                    }else{
+                        printf("\nMODIFICATION UNSUCCESSFUL.");
+                        printf("\nINVALID ISBN.\n");
+                        system("pause");
+                    }
                 }else{
                     printf("\nMODIFICATION UNSUCCESSFUL.");
                     printf("\nINVALID ISBN.\n");
@@ -769,101 +895,79 @@ void insertNewBook(){
                 }
             }else{
                 printf("\nMODIFICATION UNSUCCESSFUL.");
-                printf("\nINVALID ISBN.\n");
+                printf("\nINVALID PUBLICATION YEAR.\n");
                 system("pause");
-            }
-        }else if(bBooks.publicationYear>2006){
-            printf("\n\nEnter VALID 13-digit ISBN: ");
-            scanf(" %[^\n]s",userISBN);
-            int len = strlen(userISBN);
-            if(len == 13){
-                if(checkISBN(userISBN,13)==1){
-                    strcpy(bBooks.ISBN,userISBN);
-                }else{
-                    printf("\nMODIFICATION UNSUCCESSFUL.");
-                    printf("\nINVALID ISBN.\n");
-                    system("pause");
-                }
+                goto insertNewBookAgain;
+            }                
+        }else if(userNum==2){ 
+            //will generate valid ISBN base on publication year
+            if(bBooks.publicationYear>0 && bBooks.publicationYear<=2006){
+                char generatedISBN[11];
+                do{
+                    do{
+                        firstNum = rand() % 10;
+                    }while(firstNum<=0);
+
+                    do{
+                        randomNum = firstNum*1000000000 + rand() % 100000000 + 999999999;
+                    }while(randomNum<=0);
+
+                    //convert int to string
+                    sprintf(generatedISBN, "%lld", randomNum);
+                }while(checkISBN(generatedISBN,10)==2);
+                strcpy(bBooks.ISBN,generatedISBN);
+
+            }else if(bBooks.publicationYear>2006){
+                char generatedISBN[14];
+                do{
+                    do{
+                        firstNum = rand() % 10;
+                    }while(firstNum<=0);
+
+                    do{
+                        randomNum = firstNum*1000000000000 + rand() % 100000000000 + 999999999999;
+                    }while(randomNum<=0);
+
+                    //convert int to string
+                    sprintf(generatedISBN, "%lld", randomNum);
+                }while(checkISBN(generatedISBN,13)==2);
+                strcpy(bBooks.ISBN,generatedISBN);
+
             }else{
                 printf("\nMODIFICATION UNSUCCESSFUL.");
-                printf("\nINVALID ISBN.\n");
+                printf("\nINVALID PUBLICATION YEAR.\n");
                 system("pause");
-            }
+                goto insertNewBookAgain;
+            }  
         }else{
             printf("\nMODIFICATION UNSUCCESSFUL.");
-            printf("\nINVALID PUBLICATION YEAR.\n");
+            printf("\nINVALID INPUT.\n");
             system("pause");
             goto insertNewBookAgain;
-        }                
-    }else if(userNum==2){ 
-        //will generate valid ISBN base on publication year
-        if(bBooks.publicationYear>0 && bBooks.publicationYear<=2006){
-            char generatedISBN[11];
-            do{
-                do{
-                    firstNum = rand() % 10;
-                }while(firstNum<=0);
-
-                do{
-                    randomNum = firstNum*1000000000 + rand() % 100000000 + 999999999;
-                }while(randomNum<=0);
-
-                //convert int to string
-                sprintf(generatedISBN, "%lld", randomNum);
-            }while(checkISBN(generatedISBN,10)==2);
-            strcpy(bBooks.ISBN,generatedISBN);
-
-        }else if(bBooks.publicationYear>2006){
-            char generatedISBN[14];
-            do{
-                do{
-                    firstNum = rand() % 10;
-                }while(firstNum<=0);
-
-                do{
-                    randomNum = firstNum*1000000000000 + rand() % 100000000000 + 999999999999;
-                }while(randomNum<=0);
-
-                //convert int to string
-                sprintf(generatedISBN, "%lld", randomNum);
-            }while(checkISBN(generatedISBN,13)==2);
-            strcpy(bBooks.ISBN,generatedISBN);
-
-        }else{
-            printf("\nMODIFICATION UNSUCCESSFUL.");
-            printf("\nINVALID PUBLICATION YEAR.\n");
-            system("pause");
-            goto insertNewBookAgain;
-        }  
-    }else{
-        printf("\nMODIFICATION UNSUCCESSFUL.");
-        printf("\nINVALID INPUT.\n");
-        system("pause");
-        goto insertNewBookAgain;
-    }  
-
-    if(checkBooks(&bBooks)==1){
-        if(verifyAccount(2)==1){
-            addBooks(bBooks);
-            saveBooks();
-            logs("Add Book",bBooks.bookTitle);
-            displayBooks();
-            printf("\n\nMODIFICATION SUCCESSFUL.\n");
-            system("pause");
-        }else{
-            displayBooks();
-            printf("\n\nMODIFICATION UNSUCCESSFUL.\n");
-            system("pause");
-            currentbookNum--;
         }
-    }else{
-        currentbookNum--;
+
+        if(checkBooks(&bBooks)==1){
+            if(verifyAccount(2)==1){
+                addBooks(bBooks);
+                saveBooks();
+                logs("Add Book",bBooks.bookTitle);
+                displayBooks();
+                printf("\n\nMODIFICATION SUCCESSFUL.\n");
+                system("pause");
+            }else{
+                displayBooks();
+                printf("\n\nMODIFICATION UNSUCCESSFUL.\n");
+                system("pause");
+            }
+        }else{
+            system("cls");
+        }
     }
 }
 void editBooks(){
     int ch=0, a, x;
     char userISBN[14];
-    bLIST *p, *q;
+    LIST *p, *q;
     bREC bBooks;
 
     printf("\n\nInput book ID to be edited: ");
@@ -912,14 +1016,13 @@ void editBooks(){
                     case 5: printf("\n\nBook was succesfully edited.\n");
                             system("pause"); system("cls");
                             break;
-                    default: printf("\n\nSelect 1-4 only.");
+                    default: printf("\n\nSelect 1-5 only.");
                             break;
                 }
-            }logs("Edit Book",p->bLib.bookTitle);
+            }
+            saveBooks();
+            logs("Edit Book",p->bLib.bookTitle);
         }
-
-
-
         displayBooks();
         printf("\n\nMODIFICATION SUCCESSFUL.\n");
         system("pause");
@@ -932,8 +1035,8 @@ void editBooks(){
 }
 
 void removeAcopy(){
-    int x;
-    bLIST *p, *q;
+    int x, count;
+    LIST *p, *q;
 
     printf("\n\nInput book ID: ");
     scanf("%d",&x);
@@ -949,22 +1052,26 @@ void removeAcopy(){
             printf("WRONG BOOK ID OR BOOK DOES NOT EXIST.\n");
             system("pause"); system("cls");
         }else{
-            printf("\nBOOK SELECTED:\n");
-            displayCurrentBook(&p);
-            printf("\nEnter book copies to be removed: ");
-            scanf("%d", &x);
-            if(x>0 && x<p->bLib.bookQuant){
-                p->bLib.bookQuant -= x;
-                printf("\nMODIFICATION SUCCESSFUL.\n");
+            EnterBookQuantityAgain:
+                printf("\nBOOK SELECTED:\n");
                 displayCurrentBook(&p);
-                system("pause");
-                displayBooks();
-                system("pause");
-            }else{
-                printf("\nERROR.");
-                printf("\nINVALID QUANTITY OF BOOKS.\n");
-                system("pause");
-            }
+                printf("\nEnter book copies to be removed: ");
+                scanf("%d", &x);
+                if(x>0 && x<p->bLib.bookQuant){
+                    p->bLib.bookQuant -= x;
+                    printf("\nMODIFICATION SUCCESSFUL.\n");
+                    displayCurrentBook(&p);
+                    system("pause"); system("cls");
+                    displayBooks();
+                    system("pause");
+                    saveBooks();
+                    logs("Remove Book Copy", p->bLib.bookTitle);
+                }else{
+                    printf("\nERROR.");
+                    printf("\nINVALID QUANTITY OF BOOKS.\n");
+                    system("pause");
+                    count++; goto EnterBookQuantityAgain;
+                }
         }
     }else{
         printf("\nMODIFICATION UNSUCCESSFUL.\n");
@@ -974,10 +1081,12 @@ void removeAcopy(){
 void removeBooks(){
     int x;
     char temp[100];
-    bLIST *p, *q;
+    LIST *p, *q;
 
     printf("\n\nInput book ID to be removed: ");
     scanf("%d",&x);
+
+    printf("\n\n!WARNING! THIS WILL REMOVE ALL THE COPY OF THE BOOKS.\n");
 
     if(verifyAccount(2)==1){
         q=p=B;
@@ -996,6 +1105,7 @@ void removeBooks(){
             }else{
                 q->next=p->next;
             }free(p);
+            saveBooks();
             logs("Removed Book",temp);
             printf("The book %s was successfully removed.\n", temp);
             system("pause");
@@ -1009,8 +1119,10 @@ void bookRequests(){
     int userNum,x;
     FILE *fp;
     bREC bRequest;
-    bLIST *p, *q; 
-    fp=fopen("BookRequests.csv","r");
+    LIST *p, *q; 
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\BookRequest.txt", LMSFlashDrive);
+    fp=fopen(fileName,"r");
     if(fp==NULL){
         printf("\nNO BOOK REQUESTS YET.");
         system("pause");
@@ -1024,18 +1136,19 @@ void bookRequests(){
 
         while(x!=3){
             system("cls");
-            printf("| %-8s | %-50s | %-90s | %-80s | %-12s | %-12s |\n",
-                "BOOK NUMBER", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUBLISH YEAR", "BOOK QUANTITY");
+            displayBooks();
+            /*printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |\n",
+                "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
 
             q=p=C;
             while (p != NULL) {
-                printf("| %-8d | %-50s | %-90s | %-80s | %-12d | %-12s |\n\n",
+                printf("| %-8d | %-15s | %-74s | %-82s | %-9d | %-8s |\n\n",
                     p->bLib.bookNum, p->bLib.ISBN, p->bLib.bookTitle, 
                     p->bLib.bookAuthor, p->bLib.publicationYear, p->bLib.bookQuant);
                 p = p->next;
-            }
+            }*/
 
-            printf("\nSELECT CATEGORY\n");
+            printf("\n\nSELECT CATEGORY\n");
             printf("\n[1] APPROVED BOOK\n");
             printf("\n[2] DISAPPROVED BOOK\n");
             printf("\n[3] EXIT\n");
@@ -1063,6 +1176,7 @@ void bookRequests(){
                                 bRequest.bookQuant = p->bLib.bookQuant;
                                 addBooks(bRequest);
                                 saveBooks();
+                                logs("Approved Book", bRequest.bookTitle);
 
                                 printf("\nBOOK (%s) APPROVED.\n",bRequest.bookTitle);
                                 system("pause");
@@ -1092,6 +1206,7 @@ void bookRequests(){
                                 }else{
                                     q->next = p->next;
                                 }free(p);
+                                logs("Disapproved Book", bRequest.bookTitle);
 
                                 printf("\nBOOK (%s) DISAPPROVED.\n",bRequest.bookTitle);
                                 system("pause");
@@ -1113,7 +1228,7 @@ void bookRequests(){
 
 
 int checkAccount(int x,char str[31]){ // to avoid same IDs / multiple admin accounts
-    aLIST *p, *q;
+    LIST *p, *q;
     q=p=A;
 
     switch(x){
@@ -1154,7 +1269,7 @@ int verifyAccount(int x){
     }
 }
 int checkBooks(bREC *x){
-    bLIST *p, *q;
+    LIST *p, *q;
     q=p=B;
     
     while(p!=NULL && strcasecmp(x->bookTitle,p->bLib.bookTitle)!=0){
@@ -1174,7 +1289,7 @@ int checkBooks(bREC *x){
     }
 }
 int checkISBN(char *ISBN, int x){
-    bLIST *p, *q;
+    LIST *p, *q;
     q=p=B;
     int sum=0;
     if(x==10){ 
@@ -1233,72 +1348,54 @@ int checkISBN(char *ISBN, int x){
         }
     }
 }
+int getBookNumber(){
+    int randBookNum;
+    LIST *p, *q;
+    do{
+        do{
+            randBookNum = rand() % 10 + 99999999;
+        }while(randBookNum<=0);
+
+        q=p=B;
+        while(p!=NULL && randBookNum!=p->bLib.bookNum){
+            q=p;
+            p=p->next;
+        }
+    }while(p!=NULL);
+    return randBookNum;
+}
 
 
-void decrypt(){
-    int i;
-    aLIST *p, *q;
-    p=A;
-
-    while(p!=NULL){
-        i=0;
-        if(p->aLib.skey==1 && p->aLib.lkey==0){ //student
-            while(p->aLib.studentID[i]!='\0'){
-                p->aLib.studentID[i] = p->aLib.studentID[i] - 70;
-                i++;
-            }
-        }else if(p->aLib.skey==0 && p->aLib.lkey==1){ //Librarian 
-            while(p->aLib.librarianID[i]!='\0'){
-                p->aLib.librarianID[i] = p->aLib.librarianID[i] - 70;
-                i++; 
-            }
-        } 
-        p=p->next; 
-    }
-    
-    if(currentSKey==1 && currentLKey==0){ //student
-        i=0;
-        while(currentStudentID[i]!='\0'){
-            currentStudentID[i] = currentStudentID[i] - 70;
+void decrypt(int x, char *str, int *num){
+    int i=0;
+    if(x==1){ 
+        while(str[i] != '\0'){
+            str[i] -= KEY;
             i++;
         }
-    }else if(currentSKey==0 && currentLKey==1){ //librarian
-        i=0;
-        while(currentLibrarianID[i]!='\0'){
-            currentLibrarianID[i] = currentLibrarianID[i] - 70; 
-            i++;
-        }
+    }else if(x==2){ 
+        *num ^= KEY;
     }
 }
-void encrypt(){
+void encrypt(int x,char *str,int *num){
     int i=0;
-    aLIST *p, *q;
-    p=A;
-
-    while(p!=NULL){
-        i=0;
-        if(p->aLib.skey==1 && p->aLib.lkey==0){ //student
-            while(p->aLib.studentID[i]!='\0'){
-                p->aLib.studentID[i] = p->aLib.studentID[i] + 70;
-                i++;
-            }
-        }else if(p->aLib.skey==0 && p->aLib.lkey==1){ //Librarian 
-            while(p->aLib.librarianID[i]!='\0'){
-                p->aLib.librarianID[i] = p->aLib.librarianID[i] + 70;
-                i++; 
-            }
-        } 
-        p=p->next; 
+    if(x==1){ //char
+        while(str[i] != '\0'){
+            str[i] += KEY;
+            i++;
+        }
+    }else if(x==2){
+        *num ^= KEY;
     }
 }
 
 
 void saveBooks(){
     FILE *fp;
-    bLIST *p; p=B;
+    LIST *p; p=B;
 
     char fileName[50];
-    snprintf(fileName, sizeof(fileName), "%s\\Books.csv", LMSFolderDB);
+    snprintf(fileName, sizeof(fileName), "%s\\Books.txt", LMSFolderDB);
 
     fp=fopen(fileName, "w+");
     if(fp==NULL){
@@ -1306,16 +1403,31 @@ void saveBooks(){
         system("pause");
     }else{
         while(p!=NULL){
+            encrypt(2,"",&p->bLib.bookNum);
+            encrypt(1,p->bLib.ISBN,0);
+            encrypt(1,p->bLib.bookTitle,0);
+            encrypt(1,p->bLib.bookAuthor,0);
+            encrypt(2,"",&p->bLib.publicationYear);
+            encrypt(2,"",&p->bLib.bookQuant);
+
             fprintf(fp,"%d,%s,%s,%s,%d,%d\n",
                     p->bLib.bookNum,p->bLib.ISBN,p->bLib.bookTitle,
                     p->bLib.bookAuthor,p->bLib.publicationYear,p->bLib.bookQuant);
+
+            decrypt(2,"",&p->bLib.bookNum);
+            decrypt(1,p->bLib.ISBN,0);
+            decrypt(1,p->bLib.bookTitle,0);
+            decrypt(1,p->bLib.bookAuthor,0);
+            decrypt(2,"",&p->bLib.publicationYear);
+            decrypt(2,"",&p->bLib.bookQuant);
+
             p=p->next;
         }fclose(fp);
     }
 }
 void saveAccounts(){
     FILE *fp;
-    aLIST *p; p=A;
+    LIST *p; p=A;
 
     char fileName[50];
     snprintf(fileName, sizeof(fileName), "%s\\Accounts.csv", LMSFolderDB);
@@ -1326,16 +1438,31 @@ void saveAccounts(){
         system("pause");
     }else{
         while(p!=NULL){
+            encrypt(1,p->aLib.studentID,0); 
+            encrypt(1,p->aLib.studentName,0); 
+            encrypt(1,p->aLib.librarianID,0); 
+            encrypt(1,p->aLib.librarianName,0); 
+            encrypt(2,"",&p->aLib.skey);
+            encrypt(2,"",&p->aLib.lkey);
+
             fprintf(fp,"%s,%s,%s,%s,%d,%d\n",
                     p->aLib.studentID,p->aLib.librarianID,p->aLib.studentName,
                     p->aLib.librarianName,p->aLib.skey,p->aLib.lkey);
+            
+            decrypt(1,p->aLib.studentID,0); 
+            decrypt(1,p->aLib.studentName,0); 
+            decrypt(1,p->aLib.librarianID,0); 
+            decrypt(1,p->aLib.librarianName,0); 
+            decrypt(2,"",&p->aLib.skey);
+            decrypt(2,"",&p->aLib.lkey);
+
             p=p->next;
         }fclose(fp);
     }
 }
 void saveAccountsFD(){
     FILE *fp;
-    aLIST *p, *q;
+    LIST *p, *q;
     q=p=A;
     if(currentSKey==1 && currentLKey==0){
         while(p!=NULL && strcmp(currentStudentID, p->aLib.studentID)!=0){
@@ -1352,10 +1479,17 @@ void saveAccountsFD(){
         printf("\nSystem Error. cant save into file.\n");
         system("pause");system("cls");
     }
-    encrypt(); 
 
+    encrypt(1,p->aLib.studentID,0); 
+    encrypt(1,p->aLib.studentName,0); 
+    encrypt(1,p->aLib.librarianID,0); 
+    encrypt(1,p->aLib.librarianName,0); 
+    encrypt(2,"",&p->aLib.skey);
+    encrypt(2,"",&p->aLib.lkey);
 
-    fp=fopen("D:\\userDetails.csv", "w+");
+    char fileName[50];
+    snprintf(fileName, sizeof(fileName), "%s\\userDetails.csv", LMSFlashDrive);
+    fp=fopen(fileName, "w+");
     if (fp==NULL){
         printf("\nError 404. File not found.\n");
         system("pause");system("cls");
@@ -1365,8 +1499,15 @@ void saveAccountsFD(){
                 p->aLib.librarianName,p->aLib.skey,p->aLib.lkey);
     }
     fclose(fp);
+
+    decrypt(1,p->aLib.studentID,0); 
+    decrypt(1,p->aLib.studentName,0); 
+    decrypt(1,p->aLib.librarianID,0); 
+    decrypt(1,p->aLib.librarianName,0); 
+    decrypt(2,"",&p->aLib.skey);
+    decrypt(2,"",&p->aLib.lkey);
 }
-void logs(char inout[10], char item[100]){
+void logs(char status[100], char item[100]){
     FILE* fp;
     time_t currentTime;
     struct tm *localTime;
@@ -1376,7 +1517,7 @@ void logs(char inout[10], char item[100]){
     localTime = localtime(&currentTime);
 
     //generate the file path and file format
-    char logsFilename[10];
+    char logsFilename[11];
     strftime(logsFilename, sizeof(logsFilename), "%Y-%m-%d", localTime);
 
     char logsFilePath[50];
@@ -1385,13 +1526,15 @@ void logs(char inout[10], char item[100]){
     fp=fopen(logsFilePath,"a+");
 
     if(currentSKey==1 && currentLKey==0){
-        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s,%s\n",
+        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s\n",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentStudentName, currentStudentID, inout, item);
+            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, 
+            currentStudentName, status, item);
     }else if(currentSKey==0 && currentLKey==1){
-        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s,%s\n",
+        fprintf(fp,"%04d-%02d-%02d,%02d:%02d:%02d,%s,%s,%s\n",
             localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday,
-            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, currentLibrarianName, currentLibrarianID, inout, item);
+            localTime->tm_hour, localTime->tm_min, localTime->tm_sec, 
+            currentLibrarianName, status, item);
     }fclose(fp);
 }
 
