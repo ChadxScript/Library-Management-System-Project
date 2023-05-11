@@ -8,8 +8,8 @@
 #include <dirent.h>
 
 #define KEY 70
-#define LMSFolderDB "E:\\LMS Database"
-#define LMSLogs "E:\\LMS Database\\LMS Logs"
+#define LMSFolderDB ".\\LMS Database"
+#define LMSLogs ".\\LMS Database\\LMS Logs"
 #define LMSFlashDrive "D:\\LMS Details"
 #define fill "NONE"
 #define adminFillName "LibrarianADMIN"
