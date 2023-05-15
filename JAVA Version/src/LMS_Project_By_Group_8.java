@@ -1,12 +1,8 @@
 import java.io.*;
-//import java.nio.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
-//import java.lang.*;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
+import java.time.format.*;
 
 /*
 * Mga fre pakilagay nalang ulit yung mga UI hehe
@@ -23,7 +19,6 @@ import java.time.format.DateTimeFormatter;
 
 //----------------------[GLOBAL VARIABLES]----------------------
 class Vars{
-    public static final int KEY = 70;
     public static final String LMSFolderDB = ".\\LMS Database";
     public static final String LMSLogs = ".\\LMS Database\\LMS Logs";
     public static final String LMSFlashDrive = "D:\\LMS Details";
@@ -39,7 +34,7 @@ public class LMS_Project_By_Group_8 {
     private static LinkedList<AccountDetails> accountList = new LinkedList<>();
     private static LinkedList<BookDetails> bookList = new LinkedList<>();
     private static LinkedList<BookDetails> bookRquestList = new LinkedList<>();
-    //private static LinkedList<LogDetails> logList = new LinkedList<>();
+    private static final int KEY = 7;
     private static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -94,7 +89,7 @@ public class LMS_Project_By_Group_8 {
                             break;
                     case 2: //system("cls");
                             displayBooks();
-                            borrowBook(prompts(1));
+                            borrowBook();
                             break;
                     case 3: //system("cls");
                             obj.returnBook();
@@ -111,6 +106,7 @@ public class LMS_Project_By_Group_8 {
                     case 6: //system("cls");
                             exitMessage();
                             logs("OUT", Vars.fill);
+                            System.exit(0);
                             break;
                     default: //system("cls");
                              System.out.println("INVALID INPUT.");
@@ -279,36 +275,6 @@ public class LMS_Project_By_Group_8 {
         }
     }
 
-    class LogDetails {
-        private String date, time, name, STATUS, ITEM;
-
-        //public method to add Logs
-        public LogDetails (String date, String time, String name, String STATUS, String ITEM){
-            this.date = date;
-            this.time = time;
-            this.name = name;
-            this.STATUS = STATUS;
-            this.ITEM = ITEM;
-        }
-
-        //public methods to access and display the logs
-        public String getDate() {
-            return date;
-        }
-        public String getTime() {
-            return time;
-        }
-        public String getName() {
-            return name;
-        }
-        public String getSTATUS() {
-            return STATUS;
-        }
-        public String getITEM() {
-            return ITEM;
-        }
-    }
-
     //----------------------[LOG IN]----------------------
     public int insertcard() {
         int userNum;
@@ -345,6 +311,7 @@ public class LMS_Project_By_Group_8 {
                 System.out.printf("%n%n-> ");
                 try {
                     userNum = scan.nextInt();
+                    scan.nextLine(); // Consume the newline character
                     if (userNum > 0 && userNum <= 3) {
                         isValid = true;
                         return userNum;
@@ -379,22 +346,16 @@ public class LMS_Project_By_Group_8 {
 
                 while((str = bf2p.readLine()) != null){
                     String[] tokens = str.split(",");
+                    //-------------------decrypting-------------------
+                    String studentID = decryptString(tokens[0], KEY);
+                    String librarianID = decryptString(tokens[1], KEY);
+                    String studentName = decryptString(tokens[2], KEY);
+                    String librarianName = decryptString(tokens[3], KEY);
+                    int skey = decryptInt(Integer.parseInt(tokens[4]), KEY);
+                    int lkey = decryptInt(Integer.parseInt(tokens[5]), KEY);
+                    int violation = decryptInt(Integer.parseInt(tokens[6]), KEY);
 
-                    String studentID = tokens[0];
-                    String librarianID = tokens[1];
-                    String studentName = tokens[2];
-                    String librarianName = tokens[3];
-                    int skey = Integer.parseInt(tokens[4]);
-                    int lkey = Integer.parseInt(tokens[5]);
-                    int violation = Integer.parseInt(tokens[6]);
-
-                    /*decrypt(1, studentID, null);
-                    decrypt(1, librarianID, null);
-                    decrypt(1, studentName, null);
-                    decrypt(1, librarianName, null);
-                    decrypt(2, null, skey);
-                    decrypt(2, null, lkey);*/
-
+                    //-------------------add the decrypted value to list-------------------
                     AccountDetails accounts = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
                     accountList.add(accounts);
                 }
@@ -423,21 +384,14 @@ public class LMS_Project_By_Group_8 {
 
                 while((str = bf2p.readLine()) != null){
                     String[] tokens = str.split(",");
-
-                    Vars.currentStudentID = tokens[0];
-                    Vars.currentLibrarianID = tokens[1];
-                    Vars.currentStudentName = tokens[2];
-                    Vars.currentLibrarianName = tokens[3];
-                    Vars.currentSKey = Integer.parseInt(tokens[4]);
-                    Vars.currentLKey = Integer.parseInt(tokens[5]);
-                    Vars.currentViolation = Integer.parseInt(tokens[6]);
-
-                    /*decrypt(1, Vars.currentStudentID, null);
-                    decrypt(1, Vars.currentStudentName, null);
-                    decrypt(1, Vars.currentLibrarianID, null);
-                    decrypt(1, Vars.currentLibrarianName, null);
-                    decrypt(2, null, Vars.currentSKey);
-                    decrypt(2, null, Vars.currentLKey);*/
+                    //-------------------decrypting-------------------
+                    Vars.currentStudentID = decryptString(tokens[0], KEY);
+                    Vars.currentLibrarianID = decryptString(tokens[1], KEY);
+                    Vars.currentStudentName = decryptString(tokens[2], KEY);
+                    Vars.currentLibrarianName = decryptString(tokens[3], KEY);
+                    Vars.currentSKey = decryptInt(Integer.parseInt(tokens[4]), KEY);
+                    Vars.currentLKey = decryptInt(Integer.parseInt(tokens[5]), KEY);
+                    Vars.currentViolation = decryptInt(Integer.parseInt(tokens[6]), KEY);
                 }
                 bf2p.close();
             }catch (FileNotFoundException e){
@@ -476,21 +430,15 @@ public class LMS_Project_By_Group_8 {
 
                 while((str = bf2p.readLine()) != null){
                     String[] tokens = str.split(",");
+                    //-------------------decrypting-------------------
+                    int bookNum = decryptInt(Integer.parseInt(tokens[0]), KEY);
+                    String ISBN = decryptString(tokens[1], KEY);
+                    String bookTitle = decryptString(tokens[2], KEY);
+                    String bookAuthor = decryptString(tokens[3], KEY);
+                    int publicationYear = decryptInt(Integer.parseInt(tokens[4]), KEY);
+                    int bookQuant = decryptInt(Integer.parseInt(tokens[5]), KEY);
 
-                    int bookNum = Integer.parseInt(tokens[0]);
-                    String ISBN = tokens[1];
-                    String bookTitle = tokens[2];
-                    String bookAuthor = tokens[3];
-                    int publicationYear = Integer.parseInt(tokens[4]);
-                    int bookQuant = Integer.parseInt(tokens[5]);
-
-                    /*decrypt(2,"",bLib.bookNum);
-                    decrypt(1,bLib.ISBN,0);
-                    decrypt(1,bLib.bookTitle,0);
-                    decrypt(1,bLib.bookAuthor,0);
-                    decrypt(2,"",bLib.publicationYear);
-                    decrypt(2,"",bLib.bookQuantity);*/
-
+                    //-------------------add the decrypted value to list-------------------
                     BookDetails book = new BookDetails(bookNum, ISBN, bookTitle, bookAuthor, publicationYear, bookQuant);
                     bookList.add(book);
                 }
@@ -512,12 +460,12 @@ public class LMS_Project_By_Group_8 {
                 //system("cls");
 
                 System.out.printf("%nAPPLICATION FORM%n%n");
-                System.out.println("Enter Student Name: ");
+                System.out.print("\nEnter Student Name: ");
                 String studentName = scan.nextLine();
-                System.out.println("Enter Student ID: ");
+                System.out.print("\nEnter Student ID: ");
                 String studentID = scan.nextLine();
 
-                if(checkAccount(1,studentID)==1){
+                if(checkAccount(1,studentID)==2){
                     int skey = Vars.currentSKey = 1;
                     int lkey = Vars.currentLKey = 0;
                     String librarianID = new String(Vars.fill);
@@ -577,7 +525,7 @@ public class LMS_Project_By_Group_8 {
 
                     AccountDetails account = new AccountDetails(studentID, studentName, librarianID, librarianName, skey, lkey, violation);
 
-                    if (checkAccount(2,librarianID) == 1){
+                    if (checkAccount(2,librarianID) == 2){
                         accountList.add(account);
                     }
 
@@ -671,15 +619,17 @@ public class LMS_Project_By_Group_8 {
 
 
     //----------------------[STUDENT methods]----------------------
-    public static void borrowBook(int x) {
+    public static void borrowBook() {
         int count, userNum;
         boolean isValid = false;
         boolean isFound = false;
 
+        int userBookNum = prompts(1);
+
         if (Vars.currentViolation == 0){
             //search the book
             for (BookDetails book : bookList){
-                if (book.getBookNum() == x){
+                if (book.getBookNum() == userBookNum){
                     isFound = true;
 
                     //get current date and time
@@ -688,7 +638,7 @@ public class LMS_Project_By_Group_8 {
                     int currMonth = currentDate.getMonthValue();
                     int currDay = currentDate.getDayOfMonth();
 
-                    displayCurrentBook(x);
+                    displayCurrentBook(userBookNum);
 
                     if (verifyAccount(1)){
                         String temp = new String(book.getBookTitle());
@@ -698,8 +648,11 @@ public class LMS_Project_By_Group_8 {
                                 System.out.println("BOOK COPIES TO BE BORROWED: ");
                                 try {
                                     userNum = scan.nextInt();
+                                    scan.nextLine(); // Consume the newline character
                                     if (userNum > 0 && userNum < book.bookQuantity){
-                                        book.bookQuantity -= userNum;
+                                        isValid = true;
+                                        int newBookQuant = book.getBookQuantity() - userNum;
+                                        book.setBookQuantity(newBookQuant);
 
                                         //save the borrowed book to the flashdrive
                                         File fp = new File(Vars.LMSFlashDrive + "\\borrowedBooks.txt");
@@ -711,17 +664,54 @@ public class LMS_Project_By_Group_8 {
                                             }
                                         }while(!fp.exists());
 
+                                        System.out.println("\n\ncurrYear = " + currYear);
+                                        System.out.println("currMonth = " + currMonth);
+                                        System.out.println("currDay = " + currDay);
+                                        System.out.println("\n\nbook.getBookNum() = " + book.getBookNum());
+                                        System.out.println("book.getISBN() = " + book.getISBN());
+                                        System.out.println("book.getBookTitle() = " + book.getBookTitle());
+                                        System.out.println("book.getBookAuthor() = " + book.getBookAuthor());
+                                        System.out.println("book.getPublicationYear() = " + book.getPublicationYear());
+                                        System.out.println("userNum = " + userNum + "\n\n");
+
+                                        //-------------------encrypting-------------------
+                                        int encryptedcurrYear = encryptInt(currYear, KEY);
+                                        int encryptedcurrMonth = encryptInt(currMonth, KEY);
+                                        int encryptedcurrDay = encryptInt(currDay, KEY);
+                                        int encryptedBookNum = encryptInt(book.getBookNum(), KEY);
+                                        String encryptedISBN = encryptString(book.getISBN(), KEY);
+                                        String encryptedBookTitle = encryptString(book.getBookTitle(), KEY);
+                                        String encryptedBookAuthor = encryptString(book.getBookAuthor(), KEY);
+                                        int encryptedPubYear = encryptInt(book.getPublicationYear(), KEY);
+                                        int encryptedBookQuant = encryptInt(userNum, KEY);
+
+                                        System.out.println("\n\n------------------------------------------------");
+                                        System.out.println("\n\nencryptedcurrYear = " + encryptedcurrYear);
+                                        System.out.println("encryptedcurrMonth = " + encryptedcurrMonth);
+                                        System.out.println("encryptedcurrDay = " + encryptedcurrDay);
+                                        System.out.println("encryptedBookNum = " + encryptedBookNum);
+                                        System.out.println("encryptedISBN = " + encryptedISBN);
+                                        System.out.println("encryptedBookTitle = " + encryptedBookTitle);
+                                        System.out.println("encryptedBookAuthor = " + encryptedBookAuthor);
+                                        System.out.println("encryptedPubYear = " + encryptedPubYear);
+                                        System.out.println("encryptedBookQuant = " + encryptedBookQuant + "\n\n");
+
+                                        //-------------------saving-------------------
                                         try (BufferedWriter fprint = new BufferedWriter(new FileWriter(fp, true))) {
-                                            String borrowedBookDetails = String.format("%d, %d, %d, %d, %s, %s, %s, %d, %d%n",
-                                                    currYear, currMonth, currDay, book.getBookNum(), book.getISBN(), book.getBookTitle(),
-                                                    book.getBookAuthor(), book.getPublicationYear(), userNum);
+                                            String borrowedBookDetails = String.format("%d,%d,%d,%s,%s,%s,%s,%d,%d%n",
+                                                        encryptedcurrYear, encryptedcurrMonth, encryptedcurrDay, encryptedBookNum, 
+                                                        encryptedISBN, encryptedBookTitle, encryptedBookAuthor, encryptedPubYear, encryptedBookQuant);
                                             fprint.write(borrowedBookDetails);
                                             System.out.println("THE BOOK ( " + temp + " ) SUCCESSFULLY BORROWED.");
+
+                                            saveBooks();
+                                            logs("BORROWED BOOK", temp);
                                         }catch (IOException e){
                                             e.printStackTrace();
                                         }
                                     }else{
                                         System.out.println("INVALID INPUT");
+                                        System.out.println("PLEASE SPARE AT LEAST 1 COPY OF THE BOOK :(");
                                         System.out.println("PLEASE TRY AGAIN");
                                         //system("cls");
                                     }
@@ -749,7 +739,7 @@ public class LMS_Project_By_Group_8 {
                 }
             }
             if (!isFound){
-                System.out.println("BOOK NUMBER: ( " + x + " ) NOT FOUND.");
+                System.out.println("BOOK NUMBER: ( " + userBookNum + " ) NOT FOUND.");
             }
         }else {
             System.out.println("TRANSACTION CANCELLED.");
@@ -779,16 +769,29 @@ public class LMS_Project_By_Group_8 {
 
                     while ((str = bf2p.readLine()) != null){
                         String[] tokens = str.split(",");
+                        //-------------------decrypting-------------------
+                        int borrowedYear = decryptInt(Integer.parseInt(tokens[0]), KEY);
+                        int borrowedMonth = decryptInt(Integer.parseInt(tokens[1]), KEY);
+                        int borrowedDay = decryptInt(Integer.parseInt(tokens[2]), KEY);
+                        int borrowedBookNum = decryptInt(Integer.parseInt(tokens[3]), KEY);
+                        String borrowedISBN = decryptString(tokens[4], KEY);
+                        String borrowedBookTitle = decryptString(tokens[5], KEY);
+                        String borrowedBookAuthor = decryptString(tokens[6], KEY);
+                        int borrowedPubYear = decryptInt(Integer.parseInt(tokens[7]), KEY);
+                        int borrowedBookQuantity = decryptInt(Integer.parseInt(tokens[8]), KEY);
 
-                        int borrowedYear = Integer.parseInt(tokens[0]);
-                        int borrowedMonth = Integer.parseInt(tokens[1]);
-                        int borrowedDay = Integer.parseInt(tokens[2]);
-                        int borrowedBookNum = Integer.parseInt(tokens[3]);
-                        String borrowedISBN = tokens[4];
-                        String borrowedBookTitle = tokens[5];
-                        String borrowedBookAuthor = tokens[6];
-                        int borrowedPubYear = Integer.parseInt(tokens[7]);
-                        int borrowedBookQuantity = Integer.parseInt(tokens[8]);
+                        System.out.println("\n\ncurrYear = " + currYear);
+                        System.out.println("currMonth = " + currMonth);
+                        System.out.println("currDay = " + currDay);
+                        System.out.println("\n\nborrowedYear = " + borrowedYear);
+                        System.out.println("borrowedMonth = " + borrowedMonth);
+                        System.out.println("borrowedDay = " + borrowedDay);
+                        System.out.println("borrowedBookNum = " + borrowedBookNum);
+                        System.out.println("borrowedISBN = " + borrowedISBN);
+                        System.out.println("borrowedBookTitle = " + borrowedBookTitle);
+                        System.out.println("borrowedBookAuthor = " + borrowedBookAuthor);
+                        System.out.println("borrowedPubYear = " + borrowedPubYear);
+                        System.out.println("borrowedBookQuantity = " + borrowedBookQuantity);
 
                         //check penalty
                         for (AccountDetails account : accountList){
@@ -796,15 +799,31 @@ public class LMS_Project_By_Group_8 {
                                 isAccFound = true;
                                 if (borrowedYear > currYear){
                                     //penalty here
+                                    int kept = currYear - borrowedYear;
+                                    System.out.println("YOU KEPT THE BOOK FOR ( " + kept + " ) YEAR(S)!? WTF?");
+                                    System.out.println("CONGRATS!");
+                                    System.out.println("YOU HAVE A VIOLATION OF 3 OR KUNG ANO MAN");
                                     account.setViolation(3);
                                 } else if (borrowedMonth > currMonth) {
                                     //penalty here
+                                    int kept = currMonth - borrowedMonth;
+                                    System.out.println("YOU KEPT THE BOOK FOR ( " + kept + " ) MONTH(S)!? WTF?");
+                                    System.out.println("CONGRATS!");
+                                    System.out.println("YOU HAVE A VIOLATION OF 2 OR KUNG ANO MAN");
                                     account.setViolation(2);
                                 }else if ((currDay - borrowedDay) >= 3){
                                     //penalty here
+                                    int kept = currDay - borrowedDay;
+                                    System.out.println("YOU KEPT THE BOOK FOR ( " + kept + " ) DAY(S)!? WTF?");
+                                    System.out.println("CONGRATS!");
+                                    System.out.println("YOU HAVE A VIOLATION OF 1 OR KUNG ANO MAN");
                                     account.setViolation(1);
                                 }else{
                                     //no penalty
+                                    int kept = currDay - borrowedDay;
+                                    System.out.println("YOU KEPT THE BOOK FOR ( " + kept + " ) DAY(S).");
+                                    System.out.println("CONGRATS!");
+                                    System.out.println("YOU DON'T HAVE A VIOLATION OR KUNG ANO MAN");
                                     account.setViolation(0);
                                 }
                                 break;
@@ -822,8 +841,10 @@ public class LMS_Project_By_Group_8 {
                         for (BookDetails book : bookList){
                             if (book.getBookNum() == borrowedBookNum){
                                 isFound = true;
-                                book.bookQuantity += borrowedBookQuantity;
+                                int newBookQuant = book.getBookQuantity() + borrowedBookQuantity;
+                                book.setBookQuantity(newBookQuant);
                                 System.out.println("BOOK ( " + borrowedBookTitle + " ) SUCCESSFULLY RETURNED.");
+                                logs("RETURNED BOOK", borrowedBookTitle);
                                 break;
                             }
                         }
@@ -831,6 +852,7 @@ public class LMS_Project_By_Group_8 {
                             BookDetails books = new BookDetails(borrowedBookNum, borrowedISBN, borrowedBookTitle,
                                     borrowedBookAuthor, borrowedPubYear, borrowedBookQuantity);
                             bookList.add(books);
+                            logs("RETURNED BOOK", borrowedBookTitle);
                         }
                     }
                     bf2p.close();
@@ -884,10 +906,10 @@ public class LMS_Project_By_Group_8 {
     
                     System.out.println("INPUT PUBLICATION YEAR: ");
                     int pubYear = scan.nextInt();
+                    scan.nextLine(); // Consume the newline character
     
                     System.out.println("INPUT BOOK QUANTITY: ");
                     int bookQuantity = scan.nextInt();
-    
                     scan.nextLine(); // Consume the newline character
     
                     int userNum = prompts(4);
@@ -971,9 +993,13 @@ public class LMS_Project_By_Group_8 {
                                 if (count2<3){
                                     if (verifyAccount(1)){
                                         isCorrect = true;
+                                        //----------------encryption----------------
+
+                                        //----------------saving----------------
                                         BookDetails book = new BookDetails(bookNum, validRandomISBN, bookTitle, bookAuthor, pubYear, bookQuantity);
                                         bookRquestList.add(book);
                                         saveBookRequests();
+                                        logs("REQUEST BOOK", bookTitle);
     
                                         System.out.println("\nBOOK ( " + bookTitle + " ) SUCCESSFULLY REQUESTED.");
                                         //system("pause");
@@ -1049,9 +1075,11 @@ public class LMS_Project_By_Group_8 {
                     int userNum = prompts(8);
                     if (userNum == 1){
                         account.setViolation(0);
+                        Vars.currentViolation = 0;
                         saveAccounts();
                         saveAccountFD();
-                        System.out.println("CONGRATULATION YOU SETTLE YOUR VIOLATION.");
+                        logs("SETTLED VIOLATION", Vars.fill);
+                        System.out.println("CONGRATULATION YOU SETTLED YOUR VIOLATION.");
                     }else {
                         System.out.println("BRUH WTF SETTLE YOUR VIOLATION.");
                     }
@@ -1081,6 +1109,7 @@ public class LMS_Project_By_Group_8 {
                 try {
                     System.out.println("ENTER BOOK NUMBER: ");
                     int userNum = scan.nextInt();
+                    scan.nextLine(); // Consume the newline character
     
                     //check if book exist
                     for (BookDetails book : bookList){
@@ -1095,15 +1124,19 @@ public class LMS_Project_By_Group_8 {
                                     System.out.printf("%n%nENTER BOOK COPIES TO BE INSERTED: ");
                                     try {
                                         userNum = scan.nextInt();
+                                        scan.nextLine(); // Consume the newline character
                                         if (userNum > 0){
                                             if (verifyAccount(2)){
                                                 isNum = true;
-                                                book.bookQuantity += userNum;
+                                                int newBookQuant = book.getBookQuantity() - userNum;
+                                                book.setBookQuantity(newBookQuant);
                                                 System.out.printf("%nMODIFICATION SUCCESSFUL.%n%n");
                                                 System.out.println("BOOK LIST:");
                                                 displayBooks();
                                                 System.out.println("\n\nBOOK SELECTED:");
                                                 displayCurrentBook(book.bookNum);
+                                                saveBooks();
+                                                logs("ADD EXISTING BOOK", book.getBookTitle());
                                             }else {
                                                 System.out.println("INVALID INPUT");
                                                 System.out.println("CREDENTIALS DO NOT MATCH");
@@ -1176,9 +1209,11 @@ public class LMS_Project_By_Group_8 {
 
                 System.out.println("INPUT PUBLICATION YEAR: ");
                 int pubYear = scan.nextInt();
+                scan.nextLine(); // Consume the newline character
 
                 System.out.println("INPUT BOOK QUANTITY: ");
                 int bookQuantity = scan.nextInt();
+                scan.nextLine(); // Consume the newline character
 
                 scan.nextLine(); // Consume the newline character
 
@@ -1266,6 +1301,7 @@ public class LMS_Project_By_Group_8 {
                                     BookDetails book = new BookDetails(bookNum, validRandomISBN, bookTitle, bookAuthor, pubYear, bookQuantity);
                                     bookList.add(book);
                                     saveBooks();
+                                    logs("ADDED NEW BOOK", bookTitle);
 
                                     System.out.println("\nBOOK ( " + bookTitle + " ) SUCCESSFULLY ADDED.");
                                     //system("pause");
@@ -1339,6 +1375,7 @@ public class LMS_Project_By_Group_8 {
 
                     System.out.println("\n\nENTER BOOK NUMBER TO BE EDITED: ");
                     int userBookNum = scan.nextInt();
+                    scan.nextLine(); // Consume the newline character
 
                     for (BookDetails book : bookList){
                         if (book.getBookNum() == userBookNum){
@@ -1355,8 +1392,11 @@ public class LMS_Project_By_Group_8 {
                                 switch (ch){
                                     case 1: System.out.println("INPUT NEW VALID BOOK NUMBER: ");
                                             newBookNum = scan.nextInt();
+                                            scan.nextLine(); // Consume the newline character
                                             if (checkBooks(2, null, null, newBookNum)){
                                                 book.setBookNum(newBookNum);
+                                                saveBooks();
+                                                logs("EDIT BOOK NUMER", book.getBookTitle());
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("BOOK NUMBER ALREADY EXIST.");
@@ -1365,7 +1405,9 @@ public class LMS_Project_By_Group_8 {
                                     case 2: System.out.println("INPUT NEW VALID BOOK TITLE: ");
                                             newBookTitle = scan.nextLine();
                                             if (checkBooks(1, newBookTitle, book.getBookAuthor(), 0)){
+                                                logs("EDIT BOOK TITLE", "FROM ( " + book.getBookTitle() + " ) TO ( " + newBookTitle + " )");
                                                 book.setBookTitle(newBookTitle);
+                                                saveBooks();
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("BOOK DETAILS ALREADY EXIST.");
@@ -1374,7 +1416,9 @@ public class LMS_Project_By_Group_8 {
                                     case 3: System.out.println("INPUT NEW VALID BOOK AUTHOR: ");
                                             newBookAuthor = scan.nextLine();
                                             if (checkBooks(1, book.getBookTitle(), newBookAuthor, 0)){
+                                                logs("EDIT BOOK AUTHOR", "FROM ( " + book.getBookAuthor() + " ) TO ( " + newBookAuthor + " )");
                                                 book.setBookTitle(newBookAuthor);
+                                                saveBooks();
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("BOOK DETAILS ALREADY EXIST.");
@@ -1382,8 +1426,10 @@ public class LMS_Project_By_Group_8 {
                                             break;
                                     case 4: System.out.println("INPUT NEW VALID BOOK PUBLICATION YEAR: ");
                                             newBookYear = scan.nextInt();
+                                            scan.nextLine(); // Consume the newline character
                                             LocalDate currDate = LocalDate.now();
                                             if (newBookYear > 0 && newBookYear < currDate.getYear()){
+                                                logs("EDIT BOOK PUB.YEAR", "FROM ( " + book.getPublicationYear() + " ) TO ( " + newBookYear + " )");
                                                 book.setBookPubYear(newBookYear);
 
                                                 //update the ISBN base on the new pub date
@@ -1392,7 +1438,9 @@ public class LMS_Project_By_Group_8 {
                                                 }else {
                                                     newISBN = getISBN(13);
                                                 }
+                                                logs("EDIT BOOK ISBN", "FROM ( " + book.getISBN() + " ) TO ( " + newISBN + " )");
                                                 book.setBookISBN(newISBN);
+                                                saveBooks();
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("INVALID BOOK PUBLICATION YEAR.");
@@ -1400,8 +1448,11 @@ public class LMS_Project_By_Group_8 {
                                             break;
                                     case 5: System.out.println("INPUT NEW VALID BOOK QUANTITY: ");
                                             newBookQuant = scan.nextInt();
+                                            scan.nextLine(); // Consume the newline character
                                             if (newBookQuant > 0){
+                                                logs("EDIT BOOK QUANTITY", "FROM ( " + book.getBookQuantity() + " ) TO ( " + newBookQuant + " )");
                                                 book.setBookQuantity(newBookQuant);
+                                                saveBooks();
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("INVALID BOOK QUANTITY.");
@@ -1452,6 +1503,7 @@ public class LMS_Project_By_Group_8 {
             if (count<3){
                 System.out.println("\n\nENTER BOOK NUMBER TO REMOVE A COPY: ");
                 int userBookNum = scan.nextInt();
+                scan.nextLine(); // Consume the newline character
 
                 for(BookDetails book : bookList){
                     if (book.getBookNum() == userBookNum){
@@ -1463,6 +1515,7 @@ public class LMS_Project_By_Group_8 {
 
                                 System.out.println("ENTER NUMBER OF COPIES TO REMOVE: ");
                                 int userQuantity = scan.nextInt();
+                                scan.nextLine(); // Consume the newline character
                                 if (userQuantity > 0 && userQuantity < book.getBookQuantity()){
                                     if (verifyAccount(2)){
                                         isCorrect = true;
@@ -1515,6 +1568,7 @@ public class LMS_Project_By_Group_8 {
             if (count<3){
                 System.out.println("\n\nENTER BOOK NUMBER TO REMOVE A COPY: ");
                 int userBookNum = scan.nextInt();
+                scan.nextLine(); // Consume the newline character
 
                 for(BookDetails book : bookList){
                     if (book.getBookNum() == userBookNum){
@@ -1526,12 +1580,12 @@ public class LMS_Project_By_Group_8 {
 
                                 if (verifyAccount(2)){
                                     isCorrect = true;
+                                    logs("REMOVED BOOK", book.getBookTitle());
                                     bookList.remove(book);
                                     displayBooks();
                                     System.out.println("\n\nMODIFICATION SUCCESSFUL.");
 
                                     saveBooks();
-                                    logs("REMOVE A COPY", book.getBookTitle());
                                 }else {
                                     System.out.println("INVALID INPUT");
                                     System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
@@ -1574,14 +1628,15 @@ public class LMS_Project_By_Group_8 {
                 
                 while ((str = bf2p.readLine()) != null){
                     String[] tokens = str.split(",");
+                    //-------------------decryption-------------------
+                    int reqBookNum = decryptInt(Integer.parseInt(tokens[0]), KEY);
+                    String reqISBN = decryptString(tokens[1], KEY);
+                    String reqBookTitle = decryptString(tokens[2], KEY);
+                    String reqBookAuthor = decryptString(tokens[3], KEY);
+                    int reqPublicationYear = decryptInt(Integer.parseInt(tokens[4]), KEY);
+                    int reqBookQuant = decryptInt(Integer.parseInt(tokens[5]), KEY);
 
-                    int reqBookNum = Integer.parseInt(tokens[0]);
-                    String reqISBN = tokens[1];
-                    String reqBookTitle = tokens[2];
-                    String reqBookAuthor = tokens[3];
-                    int reqPublicationYear = Integer.parseInt(tokens[4]);
-                    int reqBookQuant = Integer.parseInt(tokens[5]);
-
+                    //-------------------add the decrypted value to list-------------------
                     BookDetails reqBook = new BookDetails(reqBookNum, reqISBN, reqBookTitle, reqBookAuthor, reqPublicationYear, reqBookQuant);
                     bookRquestList.add(reqBook);
                 }
@@ -1599,6 +1654,7 @@ public class LMS_Project_By_Group_8 {
                             if (count<3){
                                 System.out.println("ENTER BOOK NUMBER: ");
                                 userNum = scan.nextInt();
+                                scan.nextLine(); // Consume the newline character
 
                                 //search book
                                 for (BookDetails reqBook: bookRquestList){
@@ -1653,6 +1709,7 @@ public class LMS_Project_By_Group_8 {
                             if (count<3){
                                 System.out.println("ENTER BOOK NUMBER: ");
                                 userNum = scan.nextInt();
+                                scan.nextLine(); // Consume the newline character
 
                                 //search book
                                 for (BookDetails reqBook: bookRquestList){
@@ -1760,6 +1817,7 @@ public class LMS_Project_By_Group_8 {
                             System.out.println("-> ");
                             try{
                                 userNum = scan.nextInt();
+                                scan.nextLine(); // Consume the newline character
                                 if (userNum > 0 && userNum <= 2){
                                     if (userNum == 1){
                                         isValid2 = true;
@@ -1840,6 +1898,7 @@ public class LMS_Project_By_Group_8 {
 
                 try {
                     userNum = scan.nextInt();
+                    scan.nextLine(); // Consume the newline character
                     if (userNum > 0 && userNum <= 6){
                         isValid = true;
                     }else{
@@ -1863,6 +1922,7 @@ public class LMS_Project_By_Group_8 {
 
                 try {
                     userNum = scan.nextInt();
+                    scan.nextLine(); // Consume the newline character
                     if (userNum > 0 && userNum <= 7){
                         isValid = true;
                     }else{
@@ -1883,10 +1943,10 @@ public class LMS_Project_By_Group_8 {
         int userNum = 0;
         boolean isValid = false;
         switch (x){
-            case 1: // main under case 2 [borrowBooks]
+            case 1: // [borrowBooks]
                 System.out.printf("%n%nINPUT BOOK NUMBER: ");
                 userNum = scan.nextInt();
-                //check if existing?
+                scan.nextLine(); // Consume the newline character
                 break;
             case 2: // main under case 1 [addBooks]
                 while (!isValid){
@@ -1898,6 +1958,7 @@ public class LMS_Project_By_Group_8 {
 
                     try {
                         userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
                         if (userNum > 0 && userNum <= 3){
                             isValid = true;
                             return userNum;
@@ -1922,6 +1983,7 @@ public class LMS_Project_By_Group_8 {
 
                     try {
                         userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
                         if (userNum > 0 && userNum <= 3){
                             isValid = true;
                             return userNum;
@@ -1946,6 +2008,7 @@ public class LMS_Project_By_Group_8 {
 
                     try {
                         userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
                         if (userNum > 0 && userNum <= 3){
                             isValid = true;
                             return userNum;
@@ -1970,6 +2033,7 @@ public class LMS_Project_By_Group_8 {
 
                     try {
                         userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
                         if (userNum > 0 && userNum <= 2){
                             isValid = true;
                             return userNum;
@@ -1997,6 +2061,7 @@ public class LMS_Project_By_Group_8 {
 
                     try {
                         userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
                         if (userNum > 0 && userNum <= 6){
                             isValid = true;
                             return userNum;
@@ -2021,6 +2086,7 @@ public class LMS_Project_By_Group_8 {
 
                     try {
                         userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
                         if (userNum > 0 && userNum <= 3){
                             isValid = true;
                             return userNum;
@@ -2044,6 +2110,7 @@ public class LMS_Project_By_Group_8 {
 
                     try {
                         userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
                         if (userNum > 0 && userNum <= 2){
                             isValid = true;
                             return userNum;
@@ -2118,7 +2185,8 @@ public class LMS_Project_By_Group_8 {
 
     public static int checkAccount(int x, String ID) {
         boolean isFound = false;
-        if (x == 1){ // student
+        if (x == 1){ 
+            //-----------------student-----------------
             for (AccountDetails account : accountList){
                 if (account.getStudentID().compareTo(ID) == 0){
                     isFound = true;
@@ -2128,7 +2196,8 @@ public class LMS_Project_By_Group_8 {
             if (!isFound){
                 return 2;
             }
-        }else { //librarian
+        }else { 
+            //-----------------librarian-----------------
             if (Vars.adminFillID.compareTo(ID) == 0){
                 return 1;
             }else{
@@ -2139,7 +2208,8 @@ public class LMS_Project_By_Group_8 {
     }
 
     public static boolean verifyAccount(int x) {
-        if (x==1){ // student
+        if (x==1){ 
+            //-----------------student-----------------
             System.out.println("ENTER STUDENT ID TO CONFIRM: ");
             String userStr = scan.nextLine();
             if (userStr.compareTo(Vars.currentStudentID) == 0){
@@ -2147,7 +2217,8 @@ public class LMS_Project_By_Group_8 {
             }else{
                 return false;
             }
-        }else{ //librarian
+        }else{ 
+            //-----------------librarian-----------------
             System.out.println("ENTER LIBRARIAN ID TO CONFIRM: ");
             String userStr = scan.nextLine();
             if (userStr.compareTo(Vars.adminFillID) == 0){
@@ -2333,12 +2404,18 @@ public class LMS_Project_By_Group_8 {
         try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
             for (AccountDetails account : accountList){
                 //-------------------encrypting-------------------
-
+                String encryptedStudentID = encryptString(account.getStudentID(), KEY);
+                String encryptedLibrarianID = encryptString(account.getLibrarianID(), KEY);
+                String encryptedStudentName = encryptString(account.getStudentName(), KEY);
+                String encryptedLibrarianName = encryptString(account.getLibrarianName(), KEY);
+                int encryptedSkey = encryptInt(account.getSkey(), KEY);
+                int encryptedLkey = encryptInt(account.getLkey(), KEY);
+                int encryptedViolation = encryptInt(account.getViolation(), KEY);
 
                 //-------------------saving-------------------
-                fwrite.write(account.getStudentID() + "," + account.getLibrarianID() + "," +
-                            account.getStudentName() + "," + account.getLibrarianName() + "," +
-                            account.getSkey() + "," + account.getLkey() + "," + account.getViolation());
+                fwrite.write(encryptedStudentID + "," + encryptedLibrarianID + "," +
+                            encryptedStudentName + "," + encryptedLibrarianName + "," +
+                            encryptedSkey + "," + encryptedLkey + "," + encryptedViolation);
                 fwrite.newLine();
             }
         }catch (IOException e) {
@@ -2362,12 +2439,18 @@ public class LMS_Project_By_Group_8 {
                 for (AccountDetails account : accountList){
                     if (Vars.currentStudentID.equals(account.getStudentID())){
                         //-------------------encrypting-------------------
-
-
+                        String encryptedStudentID = encryptString(account.getStudentID(), KEY);
+                        String encryptedLibrarianID = encryptString(account.getLibrarianID(), KEY);
+                        String encryptedStudentName = encryptString(account.getStudentName(), KEY);
+                        String encryptedLibrarianName = encryptString(account.getLibrarianName(), KEY);
+                        int encryptedSkey = encryptInt(account.getSkey(), KEY);
+                        int encryptedLkey = encryptInt(account.getLkey(), KEY);
+                        int encryptedViolation = encryptInt(account.getViolation(), KEY);
+        
                         //-------------------saving-------------------
-                        fwrite.write(account.getStudentID() + "," + account.getLibrarianID() + "," +
-                                    account.getStudentName() + "," + account.getLibrarianName() + "," +
-                                    account.getSkey() + "," + account.getLkey() + "," + account.getViolation());
+                        fwrite.write(encryptedStudentID + "," + encryptedLibrarianID + "," +
+                                    encryptedStudentName + "," + encryptedLibrarianName + "," +
+                                    encryptedSkey + "," + encryptedLkey + "," + encryptedViolation);
                         fwrite.newLine();
                     }
                 }
@@ -2381,12 +2464,18 @@ public class LMS_Project_By_Group_8 {
                 for (AccountDetails account : accountList){
                     if (Vars.currentLibrarianID.equals(account.getLibrarianID())){
                         //-------------------encrypting-------------------
-
-
+                        String encryptedStudentID = encryptString(account.getStudentID(), KEY);
+                        String encryptedLibrarianID = encryptString(account.getLibrarianID(), KEY);
+                        String encryptedStudentName = encryptString(account.getStudentName(), KEY);
+                        String encryptedLibrarianName = encryptString(account.getLibrarianName(), KEY);
+                        int encryptedSkey = encryptInt(account.getSkey(), KEY);
+                        int encryptedLkey = encryptInt(account.getLkey(), KEY);
+                        int encryptedViolation = encryptInt(account.getViolation(), KEY);
+        
                         //-------------------saving-------------------
-                        fwrite.write(account.getStudentID() + "," + account.getLibrarianID() + "," +
-                                    account.getStudentName() + "," + account.getLibrarianName() + "," +
-                                    account.getSkey() + "," + account.getLkey() + "," + account.getViolation());
+                        fwrite.write(encryptedStudentID + "," + encryptedLibrarianID + "," +
+                                    encryptedStudentName + "," + encryptedLibrarianName + "," +
+                                    encryptedSkey + "," + encryptedLkey + "," + encryptedViolation);
                         fwrite.newLine();
                     }
                 }
@@ -2397,9 +2486,6 @@ public class LMS_Project_By_Group_8 {
             System.out.println("ERROR.");
             System.out.println("UNABLE TO SAVE IN FILE.");
         }
-
-        //decrypt data again to use properly in the program
-        //-------------------decrypting-------------------
     }
 
     public static void saveBooks() {
@@ -2415,12 +2501,17 @@ public class LMS_Project_By_Group_8 {
         try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
             for (BookDetails book : bookList){
                 //-------------------encrypting-------------------
-
+                int encryptedBookNum = encryptInt(book.getBookNum(), KEY);
+                String encryptedISBN = encryptString(book.getISBN(), KEY);
+                String encryptedBookTitle = encryptString(book.getBookTitle(), KEY);
+                String encryptedBookAuthor = encryptString(book.getBookAuthor(), KEY);
+                int encryptedPubYear = encryptInt(book.getPublicationYear(), KEY);
+                int encryptedBookQuant = encryptInt(book.getBookQuantity(), KEY);
 
                 //-------------------saving-------------------
-                fwrite.write(book.getBookNum() + "," + book.getISBN() + "," +
-                            book.getBookTitle() + "," + book.getBookAuthor() + "," +
-                            book.getPublicationYear() + "," + book.getBookQuantity());
+                fwrite.write(encryptedBookNum + "," + encryptedISBN + "," +
+                            encryptedBookTitle + "," + encryptedBookAuthor + "," +
+                            encryptedPubYear + "," + encryptedBookQuant);
                 fwrite.newLine();
             }
         }catch (IOException e) {
@@ -2441,12 +2532,17 @@ public class LMS_Project_By_Group_8 {
         try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
             for (BookDetails book : bookRquestList){
                 //-------------------encrypting-------------------
-
+                int encryptedBookNum = encryptInt(book.getBookNum(), KEY);
+                String encryptedISBN = encryptString(book.getISBN(), KEY);
+                String encryptedBookTitle = encryptString(book.getBookTitle(), KEY);
+                String encryptedBookAuthor = encryptString(book.getBookAuthor(), KEY);
+                int encryptedPubYear = encryptInt(book.getPublicationYear(), KEY);
+                int encryptedBookQuant = encryptInt(book.getBookQuantity(), KEY);
 
                 //-------------------saving-------------------
-                fwrite.write(book.getBookNum() + "," + book.getISBN() + "," +
-                            book.getBookTitle() + "," + book.getBookAuthor() + "," +
-                            book.getPublicationYear() + "," + book.getBookQuantity());
+                fwrite.write(encryptedBookNum + "," + encryptedISBN + "," +
+                            encryptedBookTitle + "," + encryptedBookAuthor + "," +
+                            encryptedPubYear + "," + encryptedBookQuant);
                 fwrite.newLine();
             }
         }catch (IOException e) {
@@ -2488,6 +2584,33 @@ public class LMS_Project_By_Group_8 {
                 System.out.println("ERROR: " + e.getMessage());
             }
         }
+    }
+
+    //----------------------ENCRYPTION & DECRYPTION----------------------
+    private static String encryptString(String value, int encryptionKey) {
+        char[] chars = value.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] += encryptionKey;
+        }
+        return new String(chars);
+    }
+
+    // Encrypt an integer value using XOR encryption
+    private static int encryptInt(int value, int encryptionKey) {
+        return value ^ encryptionKey;
+    }
+
+    private static String decryptString(String encryptedValue, int encryptionKey) {
+        char[] chars = encryptedValue.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            chars[i] -= encryptionKey;
+        }
+        return new String(chars);
+    }
+
+    // Decrypt an encrypted integer value using XOR decryption
+    private static int decryptInt(int encryptedValue, int encryptionKey) {
+        return encryptedValue ^ encryptionKey;
     }
 
 
