@@ -28,13 +28,14 @@ class Vars{
     public static int currentSKey, currentLKey, currentViolation;
     public static String currentStudentID, currentStudentName;
     public static String currentLibrarianID, currentLibrarianName;
+    public static int keyExist;
 }
 
 public class LMS_Project_By_Group_8 {
     private static LinkedList<AccountDetails> accountList = new LinkedList<>();
     private static LinkedList<BookDetails> bookList = new LinkedList<>();
     private static LinkedList<BookDetails> bookRquestList = new LinkedList<>();
-    private static final int KEY = 7;
+    private static int KEY;
     private static Scanner scan = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -77,6 +78,12 @@ public class LMS_Project_By_Group_8 {
         }
 
         obj.retrieveBooks();
+        if (Vars.keyExist == 2){
+            //get temporary key if there is no key yet
+            //so if the user save and exit the program
+            //the data will still be encrypted.
+            getKey();
+        }
         //system("cls");
 
         if (Vars.currentSKey == 1 && Vars.currentLKey == 0){ //student
@@ -105,6 +112,9 @@ public class LMS_Project_By_Group_8 {
                             break;
                     case 6: //system("cls");
                             exitMessage();
+                            saveAccounts();
+                            saveAccountFD();
+                            saveBooks();
                             logs("OUT", Vars.fill);
                             System.exit(0);
                             break;
@@ -151,13 +161,19 @@ public class LMS_Project_By_Group_8 {
                             obj.bookRequests();
                             break;
                     case 5: //system("cls");
-                            displayBooks();
+                            changeKey();
                             break;
                     case 6: //system("cls");
-                            displayLogs();
+                            displayBooks();
                             break;
                     case 7: //system("cls");
+                            displayLogs();
+                            break;
+                    case 8: //system("cls");
                             exitMessage();
+                            saveAccounts();
+                            saveAccountFD();
+                            saveBooks();
                             logs("OUT", Vars.fill);
                             break;
                     default: //system("cls");
@@ -296,10 +312,12 @@ public class LMS_Project_By_Group_8 {
 
         fp = new File(Vars.LMSFlashDrive + "\\userDetails.csv");
         if (fp.exists()) {
+            retrieveKEY();
             retrieveAccounts();
             scanScreen(1);
             return 4;
         } else {
+            retrieveKEY();
             retrieveAccounts();
             scanScreen(2);
             while (!isValid) {
@@ -329,10 +347,33 @@ public class LMS_Project_By_Group_8 {
         }
     }
 
+    public static void retrieveKEY() {
+        //get the key if meron
+        File fkey = new File(Vars.LMSFolderDB + "\\KEY.txt");
+        if (fkey.exists()){
+            try {
+                FileReader readKey = new FileReader(fkey);
+                BufferedReader bReadKey = new BufferedReader(readKey);
+                String strKey;
+
+                strKey = bReadKey.readLine();
+                KEY = Integer.parseInt(strKey);
+
+                Vars.keyExist = 1;
+
+                bReadKey.close();
+            } catch (IOException e){
+                System.out.println("ERROR: " + e.getMessage());
+            }
+        }else {
+            Vars.keyExist = 2;
+        }
+    }
+
     public void retrieveAccounts() {
         //retrieve accounts in database
         File fp = new File(Vars.LMSFolderDB + "\\Accounts.csv");
-        if(!fp.exists()){
+        if (!fp.exists()){
             try{
                 fp.createNewFile();
             }catch (IOException e){
@@ -346,24 +387,39 @@ public class LMS_Project_By_Group_8 {
 
                 while((str = bf2p.readLine()) != null){
                     String[] tokens = str.split(",");
-                    //-------------------decrypting-------------------
-                    String studentID = decryptString(tokens[0], KEY);
-                    String librarianID = decryptString(tokens[1], KEY);
-                    String studentName = decryptString(tokens[2], KEY);
-                    String librarianName = decryptString(tokens[3], KEY);
-                    int skey = decryptInt(Integer.parseInt(tokens[4]), KEY);
-                    int lkey = decryptInt(Integer.parseInt(tokens[5]), KEY);
-                    int violation = decryptInt(Integer.parseInt(tokens[6]), KEY);
+                    if (Vars.keyExist == 2){
+                        //scan the plain text in the file because there is no key yet
+                        String studentID = tokens[0];
+                        String librarianID = tokens[1];
+                        String studentName = tokens[2];
+                        String librarianName = tokens[3];
+                        int skey = Integer.parseInt(tokens[4]);
+                        int lkey = Integer.parseInt(tokens[5]);
+                        int violation = Integer.parseInt(tokens[6]);
 
-                    //-------------------add the decrypted value to list-------------------
-                    AccountDetails accounts = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
-                    accountList.add(accounts);
+                        //-------------------add the decrypted value to list-------------------
+                        AccountDetails accounts = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
+                        accountList.add(accounts);
+                    }else{
+                        //-------------------decrypting-------------------
+                        String studentID = decryptString(tokens[0], KEY);
+                        String librarianID = decryptString(tokens[1], KEY);
+                        String studentName = decryptString(tokens[2], KEY);
+                        String librarianName = decryptString(tokens[3], KEY);
+                        int skey = decryptInt(Integer.parseInt(tokens[4]), KEY);
+                        int lkey = decryptInt(Integer.parseInt(tokens[5]), KEY);
+                        int violation = decryptInt(Integer.parseInt(tokens[6]), KEY);
+
+                        //-------------------add the decrypted value to list-------------------
+                        AccountDetails accounts = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
+                        accountList.add(accounts);
+                    }
                 }
                 bf2p.close();
             }catch (FileNotFoundException e){
-                e.printStackTrace();
+                System.out.println("ERROR: " + e.getMessage());
             }catch (IOException e){
-                e.printStackTrace();
+                System.out.println("ERROR: " + e.getMessage());
             }
         }
 
@@ -374,7 +430,7 @@ public class LMS_Project_By_Group_8 {
             try {
                 fp.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("ERROR: " + e.getMessage());
             }
         }else{
             try{
@@ -384,20 +440,30 @@ public class LMS_Project_By_Group_8 {
 
                 while((str = bf2p.readLine()) != null){
                     String[] tokens = str.split(",");
-                    //-------------------decrypting-------------------
-                    Vars.currentStudentID = decryptString(tokens[0], KEY);
-                    Vars.currentLibrarianID = decryptString(tokens[1], KEY);
-                    Vars.currentStudentName = decryptString(tokens[2], KEY);
-                    Vars.currentLibrarianName = decryptString(tokens[3], KEY);
-                    Vars.currentSKey = decryptInt(Integer.parseInt(tokens[4]), KEY);
-                    Vars.currentLKey = decryptInt(Integer.parseInt(tokens[5]), KEY);
-                    Vars.currentViolation = decryptInt(Integer.parseInt(tokens[6]), KEY);
+                    if (Vars.keyExist == 2){
+                        Vars.currentStudentID = tokens[0];
+                        Vars.currentLibrarianID = tokens[1];
+                        Vars.currentStudentName = tokens[2];
+                        Vars.currentLibrarianName = tokens[3];
+                        Vars.currentSKey = Integer.parseInt(tokens[4]);
+                        Vars.currentLKey = Integer.parseInt(tokens[5]);
+                        Vars.currentViolation = Integer.parseInt(tokens[6]);
+                    }else {
+                        //-------------------decrypting-------------------
+                        Vars.currentStudentID = decryptString(tokens[0], KEY);
+                        Vars.currentLibrarianID = decryptString(tokens[1], KEY);
+                        Vars.currentStudentName = decryptString(tokens[2], KEY);
+                        Vars.currentLibrarianName = decryptString(tokens[3], KEY);
+                        Vars.currentSKey = decryptInt(Integer.parseInt(tokens[4]), KEY);
+                        Vars.currentLKey = decryptInt(Integer.parseInt(tokens[5]), KEY);
+                        Vars.currentViolation = decryptInt(Integer.parseInt(tokens[6]), KEY);
+                    }
                 }
                 bf2p.close();
             }catch (FileNotFoundException e){
-                e.printStackTrace();
+                System.out.println("ERROR: " + e.getMessage());
             }catch (IOException e){
-                e.printStackTrace();
+                System.out.println("ERROR: " + e.getMessage());
             }
         }
     }
@@ -430,17 +496,30 @@ public class LMS_Project_By_Group_8 {
 
                 while((str = bf2p.readLine()) != null){
                     String[] tokens = str.split(",");
-                    //-------------------decrypting-------------------
-                    int bookNum = decryptInt(Integer.parseInt(tokens[0]), KEY);
-                    String ISBN = decryptString(tokens[1], KEY);
-                    String bookTitle = decryptString(tokens[2], KEY);
-                    String bookAuthor = decryptString(tokens[3], KEY);
-                    int publicationYear = decryptInt(Integer.parseInt(tokens[4]), KEY);
-                    int bookQuant = decryptInt(Integer.parseInt(tokens[5]), KEY);
+                    if (Vars.keyExist == 2){
+                        int bookNum = Integer.parseInt(tokens[0]);
+                        String ISBN = tokens[1];
+                        String bookTitle = tokens[2];
+                        String bookAuthor = tokens[3];
+                        int publicationYear = Integer.parseInt(tokens[4]);
+                        int bookQuant = Integer.parseInt(tokens[5]);
 
-                    //-------------------add the decrypted value to list-------------------
-                    BookDetails book = new BookDetails(bookNum, ISBN, bookTitle, bookAuthor, publicationYear, bookQuant);
-                    bookList.add(book);
+                        //-------------------add the decrypted value to list-------------------
+                        BookDetails book = new BookDetails(bookNum, ISBN, bookTitle, bookAuthor, publicationYear, bookQuant);
+                        bookList.add(book);
+                    }else {
+                        //-------------------decrypting-------------------
+                        int bookNum = decryptInt(Integer.parseInt(tokens[0]), KEY);
+                        String ISBN = decryptString(tokens[1], KEY);
+                        String bookTitle = decryptString(tokens[2], KEY);
+                        String bookAuthor = decryptString(tokens[3], KEY);
+                        int publicationYear = decryptInt(Integer.parseInt(tokens[4]), KEY);
+                        int bookQuant = decryptInt(Integer.parseInt(tokens[5]), KEY);
+
+                        //-------------------add the decrypted value to list-------------------
+                        BookDetails book = new BookDetails(bookNum, ISBN, bookTitle, bookAuthor, publicationYear, bookQuant);
+                        bookList.add(book);
+                    }
                 }
                 bf2p.close();
             }catch (FileNotFoundException e){
@@ -1780,6 +1859,84 @@ public class LMS_Project_By_Group_8 {
         }
     }
 
+    public static void changeKey() {
+        int newKey = 0, count = 0;
+        boolean isValid = false;
+        Random srand = new Random();
+        File fp = new File(Vars.LMSFolderDB + "\\KEY.txt");
+
+        if (verifyAccount(2)){
+            int userNum = prompts(9);
+            switch (userNum){
+                case 1: //generate random valid key
+                        do{
+                            newKey = srand.nextInt();
+                        }while (newKey < 0 && newKey > 100 && newKey != KEY);
+
+                        //save the key to the file
+                        if (!fp.exists()){
+                            try {
+                                fp.createNewFile();
+                            }catch (IOException e){
+                                System.out.println("ERROR: " + e.getMessage());
+                            }
+                        }
+
+                        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+                            fwrite.write(newKey);
+                        }catch (IOException e){
+                            System.out.println("ERROR: " + e.getMessage());
+                        }
+
+                        System.out.println("KEY IS SET TO: " + newKey);
+                        break;
+                case 2: //librarian will enter the new key
+                        while (!isValid){
+                            if (count<3){
+                                System.out.println("ENTER VALID KEY: ");
+                                try {
+                                    newKey = scan.nextInt();
+                                    if (newKey < 0 && newKey > 100 && newKey != KEY){
+                                        isValid = true;
+                                        //save the key to the file
+                                        if (!fp.exists()){
+                                            try {
+                                                fp.createNewFile();
+                                            }catch (IOException e){
+                                                System.out.println("ERROR: " + e.getMessage());
+                                            }
+                                        }
+
+                                        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+                                            fwrite.write(newKey);
+                                        }catch (IOException e){
+                                            System.out.println("ERROR: " + e.getMessage());
+                                        }
+
+                                    }else {
+                                        System.out.println("PLEASE ENTER 'NEW' AND 'VALID' KEY.");
+                                        System.out.println("PLEASE TRY AGAIN.");
+                                        count++;
+                                    }
+                                }catch (InputMismatchException e){
+                                    System.out.println("ERROR: " + e.getMessage());
+                                    count++;
+                                }
+                            }
+                        }
+                        break;
+                default: System.out.println("WRONG RETURN VALUE.");
+                         System.out.println("PLEASE CHECK THE CODE.");
+                         break;
+                        
+            }
+        }else {
+            System.out.println("INVALID INPUT");
+            System.out.println("CREDENTIALS DO NOT MATCH");
+            System.out.println("PLEASE TRY AGAIN LATER.");
+        }
+    }
+
     public static void displayLogs() {
         int count = 0, userNum;
         boolean isValid = false;
@@ -1915,9 +2072,10 @@ public class LMS_Project_By_Group_8 {
                 System.out.println("[2] EDIT BOOKS");
                 System.out.println("[3] REMOVE BOOKS");
                 System.out.println("[4] BOOK REQUESTS");
-                System.out.println("[5] DISPLAY BOOKS");
-                System.out.println("[6] DISPLAY LOGS");
-                System.out.println("[7] SAVE AND EXIT");
+                System.out.println("[5] CHANGE KEY");
+                System.out.println("[6] DISPLAY BOOKS");
+                System.out.println("[7] DISPLAY LOGS");
+                System.out.println("[8] SAVE AND EXIT");
                 System.out.printf("%n->");
 
                 try {
@@ -2106,6 +2264,30 @@ public class LMS_Project_By_Group_8 {
                     System.out.println("DO YOU WANT TO SETTLE YOUR VIOLATION?");
                     System.out.println("[1] YES");
                     System.out.println("[2] NO");
+                    System.out.print("-> ");
+
+                    try {
+                        userNum = scan.nextInt();
+                        scan.nextLine(); // Consume the newline character
+                        if (userNum > 0 && userNum <= 2){
+                            isValid = true;
+                            return userNum;
+                        }else{
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
+                        }
+                    }catch (InputMismatchException e) {
+                        e.printStackTrace();
+                        System.out.printf("%nINVALID INPUT.%n");
+                        System.out.println("PLEASE TRY AGAIN");
+                    }
+                }
+                break;
+            case 9: //CHANGE KEY METHOD
+                while (!isValid){
+                    System.out.println("SELECT METHOD TO USE");
+                    System.out.println("[1] GENERATE RANDOM VALID KEY");
+                    System.out.println("[2] ENTER OWN VALID KEY");
                     System.out.print("-> ");
 
                     try {
@@ -2390,6 +2572,31 @@ public class LMS_Project_By_Group_8 {
         
         return true;
     }
+
+    public static void getKey() {
+        File fp = new File(Vars.LMSFolderDB + "\\KEY.txt");
+        Random srand = new Random();
+
+        do{
+            KEY = srand.nextInt();
+        }while (KEY < 0 && KEY > 100);
+
+        //save the key to the file
+        if (!fp.exists()){
+            try {
+                fp.createNewFile();
+            }catch (IOException e){
+                System.out.println("ERROR: " + e.getMessage());
+            }
+        }
+
+        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+            fwrite.write(String.valueOf(KEY));
+        }catch (IOException e){
+            System.out.println("ERROR: " + e.getMessage());
+        }
+    }
+
 
     public static void saveAccounts() {
         File fp = new File(Vars.LMSFolderDB + "\\Accounts.csv");
