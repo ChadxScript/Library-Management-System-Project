@@ -5,17 +5,14 @@ import java.time.*;
 import java.time.format.*;
 
 /*
-* Mga fre pakilagay nalang ulit yung mga UI hehe
-* ----
-* Kayo narin bahala kung lalagay nyo sa JOption yung mga keme
-* or yung magbubukas ng window para sa program natin ung parang
-* software na talaga sya HAHAHAHA eme
-* ----
-* Di ako sure kung pano ba yung system("cls") at pause dito
-* HAHAHAHAHA
-* ----
-*
-* */
+    Mga fre pakilagay nalang ulit yung mga UI hehe kung JOption or
+    kung anong pwede 
+    ------
+    Pa check narin kung may mga error para ma debug ko
+    slamatttt
+    ------
+    
+*/
 
 //----------------------[GLOBAL VARIABLES]----------------------
 class Vars{
@@ -51,29 +48,29 @@ public class LMS_Project_By_Group_8 {
         LMS_Project_By_Group_8 obj = new LMS_Project_By_Group_8();
 
         switch (obj.insertcard()){
-            case 1: //system("cls");
+            case 1: cls();
                     obj.registerStudent();
                     saveAccountFD();
                     saveAccounts();
                     logs("IN", Vars.fill);
                     break;
-            case 2: //system("cls");
+            case 2: cls();
                     obj.registerLibrarian();
                     saveAccountFD();
                     saveAccounts();
                     logs("IN", Vars.fill);
                     break;
-            case 3: //system("cls");
+            case 3: cls();
                     exitMessage();
                     System.exit(0);
                     break;
-            case 4: //system("cls");
+            case 4: cls();
                     userLOGIN();
                     break;
-            default: //system("cls");
+            default: cls();
                      System.out.println("INVALID INPUT.");
-                     //system("pause");
-                     //system("cls");
+                     pause();
+                     cls();
                      break;
         }
 
@@ -84,33 +81,30 @@ public class LMS_Project_By_Group_8 {
             //the data will still be encrypted.
             getKey();
         }
-        //system("cls");
+        cls();
 
         if (Vars.currentSKey == 1 && Vars.currentLKey == 0){ //student
             while (true){
-                //system("cls");
+                cls();
                 switch (menu(1)){
-                    case 1: //system("cls");
+                    case 1: cls();
                             displayBooks();
-                            //system("pause"); '
+                            pause();
                             break;
-                    case 2: //system("cls");
+                    case 2: cls();
                             displayBooks();
                             borrowBook();
                             break;
-                    case 3: //system("cls");
+                    case 3: cls();
                             obj.returnBook();
-                            //text here
                             break;
-                    case 4: //system("cls");
+                    case 4: cls();
                             obj.requestBook();
-                            //text here
                             break;
-                    case 5: //system("cls");
+                    case 5: cls();
                             viewViolation();
-                            //text here
                             break;
-                    case 6: //system("cls");
+                    case 6: cls();
                             exitMessage();
                             saveAccounts();
                             saveAccountFD();
@@ -118,18 +112,18 @@ public class LMS_Project_By_Group_8 {
                             logs("OUT", Vars.fill);
                             System.exit(0);
                             break;
-                    default: //system("cls");
+                    default: cls();
                              System.out.println("INVALID INPUT.");
-                             //system("pause");
-                             //system("cls");
+                             pause();
+                             cls();
                              break;
                 }
             }
         }else if (Vars.currentSKey == 0 && Vars.currentLKey == 1){ //librarian
             while (true){
-                //system("cls");
+                cls();
                 switch (menu(2)){
-                    case 1: //system("cls");
+                    case 1: cls();
                             displayBooks();
                             userNum = prompts(2);
                             if (userNum == 1){
@@ -138,14 +132,14 @@ public class LMS_Project_By_Group_8 {
                                 obj.insertNewBook();
                             }else{
                                 System.out.printf("%n%nCANCELLED%n");
-                                //system("pause");
+                                pause(); cls();
                             }
                             break;
-                    case 2: //system("cls");
+                    case 2: cls();
                             displayBooks();
                             editBooks();
                             break;
-                    case 3: //system("cls");
+                    case 3: cls();
                             displayBooks();
                             userNum = prompts(3);
                             if (userNum == 1){
@@ -154,32 +148,32 @@ public class LMS_Project_By_Group_8 {
                                 removeBooks();
                             }else{
                                 System.out.printf("%n%nCANCELLED%n");
-                                //system("pause");
+                                pause(); cls();
                             }
                             break;
-                    case 4: //system("cls");
+                    case 4: cls();
                             obj.bookRequests();
                             break;
-                    case 5: //system("cls");
+                    case 5: cls();
                             changeKey();
                             break;
-                    case 6: //system("cls");
+                    case 6: cls();
                             displayBooks();
                             break;
-                    case 7: //system("cls");
+                    case 7: cls();
                             displayLogs();
                             break;
-                    case 8: //system("cls");
+                    case 8: cls();
                             exitMessage();
                             saveAccounts();
                             saveAccountFD();
                             saveBooks();
                             logs("OUT", Vars.fill);
                             break;
-                    default: //system("cls");
+                    default: cls();
                             System.out.println("INVALID INPUT.");
-                            //system("pause");
-                            //system("cls");
+                            pause();
+                            cls();
                             break;
                 }
             }
@@ -321,6 +315,7 @@ public class LMS_Project_By_Group_8 {
             retrieveAccounts();
             scanScreen(2);
             while (!isValid) {
+                cls();
                 System.out.println("NEW USER");
                 System.out.println("CHOOSE CATEGORY: ");
                 System.out.printf("%n[1] STUDENT");
@@ -536,7 +531,7 @@ public class LMS_Project_By_Group_8 {
 
         while(!isValid){
             if(count<3){
-                //system("cls");
+                cls();
 
                 System.out.printf("%nAPPLICATION FORM%n%n");
                 System.out.print("\nEnter Student Name: ");
@@ -556,24 +551,24 @@ public class LMS_Project_By_Group_8 {
                     AccountDetails account = new AccountDetails(studentID, studentName, librarianID, librarianName, skey, lkey, violation);
                     accountList.add(account);
                     System.out.println("REGISTRATION SUCCESSFUL");
-                    //system("pause");
+                    pause();
                     isValid = true;
                 }else {
                     System.out.println("INVALID STUDENT ID");
                     System.out.println("ID ALREADY EXIST");
                     System.out.println("PLEASE TRY AGAIN.");
-                    //system("pause");
+                    pause();
                     count++;
                 }
             }else{
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
                 System.exit(0);
             }
         }
-        //system("cls");
+        cls();
     }
 
     public void registerLibrarian() {
@@ -581,7 +576,7 @@ public class LMS_Project_By_Group_8 {
         boolean isValid = false;
         while(!isValid){
             if(count<3){
-                //system("cls");
+                cls();
 
                 System.out.printf("%nAPPLICATION FORM%n%n");
                 System.out.println("ADMINISTRATORS HAVE DEFAULT NAME AND ID");
@@ -609,24 +604,24 @@ public class LMS_Project_By_Group_8 {
                     }
 
                     System.out.println("REGISTRATION SUCCESSFUL");
-                    //system("pause");
+                    pause();
                     isValid = true;
                 }else{
                     System.out.println("INVALID INPUT");
                     System.out.println("CREDENTIALS DO NOT MATCH");
                     System.out.println("PLEASE TRY AGAIN.");
-                    //system("pause");
+                    pause();
                     count++;
                 }
             }else{
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
                 System.exit(0);
             }
         }
-        //system("cls");
+        cls();
     }
 
     public static void userLOGIN() {
@@ -637,7 +632,7 @@ public class LMS_Project_By_Group_8 {
             count = 0;
             while(!isValid){
                 if(count<3){
-                    //system("cls");
+                    cls();
                     System.out.printf("%nLOG IN%n%n");
                     System.out.println("Enter Student ID: ");
                     String studentID = scan.nextLine();
@@ -649,14 +644,14 @@ public class LMS_Project_By_Group_8 {
                         System.out.printf("%n%nERROR.%n");
                         System.out.println("WRONG STUDENT ID");
                         System.out.println("PLEASE TRY AGAIN.");
-                        //system("pause");
+                        pause();
                         count++;
                     }
                 }else{
                     System.out.println("ERROR.");
                     System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                     System.out.println("PLEASE TRY AGAIN LATER");
-                    //system("pause");
+                    pause();
                     System.exit(0);
                 }
             }
@@ -664,7 +659,7 @@ public class LMS_Project_By_Group_8 {
             count = 0;
             while(!isValid){
                 if(count<3){
-                    //system("cls");
+                    cls();
                     System.out.printf("%nLOG IN%n%n");
                     System.out.println("Enter Librarian ID: ");
                     String librarianID = scan.nextLine();
@@ -676,22 +671,22 @@ public class LMS_Project_By_Group_8 {
                         System.out.printf("%n%nERROR.%n");
                         System.out.println("WRONG LIBRARIAN ID");
                         System.out.println("PLEASE TRY AGAIN.");
-                        //system("pause");
+                        pause();
                         count++;
                     }
                 }else{
                     System.out.println("ERROR.");
                     System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                     System.out.println("PLEASE TRY AGAIN LATER");
-                    //system("pause");
+                    pause();
                     System.exit(0);
                 }
             }
         }else{
-            //system("cls");
+            cls();
             System.out.println("SYSTEM ERROR.");
-            //system("pause");
-            //system("cls");
+            pause();
+            cls();
         }
     }
 
@@ -743,16 +738,6 @@ public class LMS_Project_By_Group_8 {
                                             }
                                         }while(!fp.exists());
 
-                                        System.out.println("\n\ncurrYear = " + currYear);
-                                        System.out.println("currMonth = " + currMonth);
-                                        System.out.println("currDay = " + currDay);
-                                        System.out.println("\n\nbook.getBookNum() = " + book.getBookNum());
-                                        System.out.println("book.getISBN() = " + book.getISBN());
-                                        System.out.println("book.getBookTitle() = " + book.getBookTitle());
-                                        System.out.println("book.getBookAuthor() = " + book.getBookAuthor());
-                                        System.out.println("book.getPublicationYear() = " + book.getPublicationYear());
-                                        System.out.println("userNum = " + userNum + "\n\n");
-
                                         //-------------------encrypting-------------------
                                         int encryptedcurrYear = encryptInt(currYear, KEY);
                                         int encryptedcurrMonth = encryptInt(currMonth, KEY);
@@ -764,17 +749,6 @@ public class LMS_Project_By_Group_8 {
                                         int encryptedPubYear = encryptInt(book.getPublicationYear(), KEY);
                                         int encryptedBookQuant = encryptInt(userNum, KEY);
 
-                                        System.out.println("\n\n------------------------------------------------");
-                                        System.out.println("\n\nencryptedcurrYear = " + encryptedcurrYear);
-                                        System.out.println("encryptedcurrMonth = " + encryptedcurrMonth);
-                                        System.out.println("encryptedcurrDay = " + encryptedcurrDay);
-                                        System.out.println("encryptedBookNum = " + encryptedBookNum);
-                                        System.out.println("encryptedISBN = " + encryptedISBN);
-                                        System.out.println("encryptedBookTitle = " + encryptedBookTitle);
-                                        System.out.println("encryptedBookAuthor = " + encryptedBookAuthor);
-                                        System.out.println("encryptedPubYear = " + encryptedPubYear);
-                                        System.out.println("encryptedBookQuant = " + encryptedBookQuant + "\n\n");
-
                                         //-------------------saving-------------------
                                         try (BufferedWriter fprint = new BufferedWriter(new FileWriter(fp, true))) {
                                             String borrowedBookDetails = String.format("%d,%d,%d,%s,%s,%s,%s,%d,%d%n",
@@ -785,6 +759,8 @@ public class LMS_Project_By_Group_8 {
 
                                             saveBooks();
                                             logs("BORROWED BOOK", temp);
+                                            pause();
+                                            cls();
                                         }catch (IOException e){
                                             e.printStackTrace();
                                         }
@@ -792,19 +768,20 @@ public class LMS_Project_By_Group_8 {
                                         System.out.println("INVALID INPUT");
                                         System.out.println("PLEASE SPARE AT LEAST 1 COPY OF THE BOOK :(");
                                         System.out.println("PLEASE TRY AGAIN");
-                                        //system("cls");
+                                        cls();
                                     }
                                 }catch (InputMismatchException e) {
                                     System.out.println("INVALID INPUT.");
                                     System.out.println("PLEASE ENTER A VALID NUMBER.");
                                     scan.nextLine(); // Clear the input buffer
+                                    pause();
                                     count++;
                                 }
                             }else{
                                 System.out.println("ERROR.");
                                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                 System.out.println("PLEASE TRY AGAIN LATER");
-                                //system("pause");
+                                pause();
                                 isValid = true;
                             }
                         }
@@ -812,24 +789,28 @@ public class LMS_Project_By_Group_8 {
                         System.out.println("TRANSACTION CANCELLED.");
                         System.out.println("INPUT DO NOT MATCH TO YOUR CREDENTIALS.");
                         System.out.println("PLEASE TRY AGAIN LATER");
-                        //system("pause");
+                        pause();
                     }
                     break;
                 }
             }
             if (!isFound){
                 System.out.println("BOOK NUMBER: ( " + userBookNum + " ) NOT FOUND.");
+                pause();
             }
         }else {
             System.out.println("TRANSACTION CANCELLED.");
             System.out.println("YOU HAVE A VIOLATION");
             System.out.println("PLEASE SETTLE YOUR VIOLATION FIRST AND TRY AGAIN LATER.");
+            pause();
         }
     }
 
     public void returnBook() {
         boolean isFound = false;
         boolean isAccFound = false;
+
+        cls();
 
         if (verifyAccount(1)){
             File fp = new File(Vars.LMSFlashDrive + "\\borrowedBooks.txt");
@@ -858,19 +839,6 @@ public class LMS_Project_By_Group_8 {
                         String borrowedBookAuthor = decryptString(tokens[6], KEY);
                         int borrowedPubYear = decryptInt(Integer.parseInt(tokens[7]), KEY);
                         int borrowedBookQuantity = decryptInt(Integer.parseInt(tokens[8]), KEY);
-
-                        System.out.println("\n\ncurrYear = " + currYear);
-                        System.out.println("currMonth = " + currMonth);
-                        System.out.println("currDay = " + currDay);
-                        System.out.println("\n\nborrowedYear = " + borrowedYear);
-                        System.out.println("borrowedMonth = " + borrowedMonth);
-                        System.out.println("borrowedDay = " + borrowedDay);
-                        System.out.println("borrowedBookNum = " + borrowedBookNum);
-                        System.out.println("borrowedISBN = " + borrowedISBN);
-                        System.out.println("borrowedBookTitle = " + borrowedBookTitle);
-                        System.out.println("borrowedBookAuthor = " + borrowedBookAuthor);
-                        System.out.println("borrowedPubYear = " + borrowedPubYear);
-                        System.out.println("borrowedBookQuantity = " + borrowedBookQuantity);
 
                         //check penalty
                         for (AccountDetails account : accountList){
@@ -914,6 +882,8 @@ public class LMS_Project_By_Group_8 {
                         }else {
                             System.out.println("SYSTEM ERROR");
                             System.out.println("ACCOUNT NOT FOUND IN LIST");
+                            pause();
+                            cls();
                         }
 
                         //return the book to the database
@@ -923,7 +893,10 @@ public class LMS_Project_By_Group_8 {
                                 int newBookQuant = book.getBookQuantity() + borrowedBookQuantity;
                                 book.setBookQuantity(newBookQuant);
                                 System.out.println("BOOK ( " + borrowedBookTitle + " ) SUCCESSFULLY RETURNED.");
+                                saveBooks();
                                 logs("RETURNED BOOK", borrowedBookTitle);
+                                pause();
+                                cls();
                                 break;
                             }
                         }
@@ -931,7 +904,11 @@ public class LMS_Project_By_Group_8 {
                             BookDetails books = new BookDetails(borrowedBookNum, borrowedISBN, borrowedBookTitle,
                                     borrowedBookAuthor, borrowedPubYear, borrowedBookQuantity);
                             bookList.add(books);
+                            System.out.println("BOOK ( " + borrowedBookTitle + " ) SUCCESSFULLY RETURNED.");
+                            saveBooks();
                             logs("RETURNED BOOK", borrowedBookTitle);
+                            pause();
+                            cls();
                         }
                     }
                     bf2p.close();
@@ -952,18 +929,18 @@ public class LMS_Project_By_Group_8 {
             }else {
                 System.out.println("ERROR.");
                 System.out.println("NO BOOKS TO BE RETURN.");
-                //system("pause");
+                pause();
             }
         }else{
             System.out.println("TRANSACTION CANCELLED.");
             System.out.println("INPUT DO NOT MATCH TO YOUR CREDENTIALS.");
             System.out.println("PLEASE TRY AGAIN LATER");
-            //system("pause");
+            pause();
         }
     }
 
     public void requestBook() {
-        //system("cls");
+        cls();
         int count = 0, count2 = 0;
         String validRandomISBN = "";
         boolean isValid = false;
@@ -972,7 +949,7 @@ public class LMS_Project_By_Group_8 {
         if (Vars.currentViolation == 0){
             while(!isValid){
                 if (count<3){
-                    //system("cls");
+                    cls();
     
                     int bookNum = getBookNumber();
                     System.out.println("BOOK ID: " + bookNum);
@@ -1006,13 +983,15 @@ public class LMS_Project_By_Group_8 {
                                         }else {
                                             System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                             System.out.println("INVALID ISBN.");
-                                            //system("pause");
+                                            pause();
+                                            cls();
                                             count++;
                                         }
                                     }else {
                                         System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                         System.out.println("INVALID ISBN.");
-                                        //system("pause");
+                                        pause();
+                                        cls();
                                         count++;
                                     }
                                 }else if (pubYear > 0 && pubYear > 2006 && bookQuantity > 0){
@@ -1027,19 +1006,22 @@ public class LMS_Project_By_Group_8 {
                                         }else {
                                             System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                             System.out.println("INVALID ISBN.");
-                                            //system("pause");
+                                            pause();
+                                            cls();
                                             count++;
                                         }
                                     }else {
                                         System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                         System.out.println("INVALID ISBN.");
-                                        //system("pause");
+                                        pause();
+                                        cls();
                                         count++;
                                     }
                                 }else {
                                     System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                     System.out.println("INVALID PUBLICATION YEAR.");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                     count++;
                                 }
                                 break;
@@ -1054,15 +1036,20 @@ public class LMS_Project_By_Group_8 {
                                 }else{
                                     System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                     System.out.println("INVALID PUBLICATION YEAR.");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                     count++;
                                 }
                                 break;
                         case 3: //cancelled
                                 System.out.println("\nMODIFICATION CANCELLED.");
+                                pause();
+                                cls();
                                 isValid = true;
                                 break;
                         default: System.out.println("WRONG RETURN VALUE");
+                                 pause();
+                                 cls();
                                  break;
                     }
     
@@ -1073,26 +1060,37 @@ public class LMS_Project_By_Group_8 {
                                     if (verifyAccount(1)){
                                         isCorrect = true;
                                         //----------------encryption----------------
+                                        int encryptedBookNum = encryptInt(bookNum, KEY);
+                                        String encryptedISBN = encryptString(validRandomISBN, KEY);
+                                        String encryptedBookTitle = encryptString(bookTitle, KEY);
+                                        String encryptedBookAuthor = encryptString(bookAuthor, KEY);
+                                        int encryptedPubYear = encryptInt(pubYear, KEY);
+                                        int encryptedBookQuant = encryptInt(bookQuantity, KEY);
 
                                         //----------------saving----------------
-                                        BookDetails book = new BookDetails(bookNum, validRandomISBN, bookTitle, bookAuthor, pubYear, bookQuantity);
+                                        BookDetails book = new BookDetails(encryptedBookNum, encryptedISBN, encryptedBookTitle, 
+                                                encryptedBookAuthor, encryptedPubYear, encryptedBookQuant);
                                         bookRquestList.add(book);
                                         saveBookRequests();
                                         logs("REQUEST BOOK", bookTitle);
     
                                         System.out.println("\nBOOK ( " + bookTitle + " ) SUCCESSFULLY REQUESTED.");
-                                        //system("pause");
+                                        pause();
+                                        cls();
                                     }else {
                                         System.out.println("ERROR.");
                                         System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
                                         System.out.println("PLEASE TRY AGAIN");
+                                        pause();
+                                        cls();
                                         count2++;
                                     }
                                 }else{
                                     System.out.println("ERROR.");
                                     System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                     System.out.println("PLEASE TRY AGAIN LATER");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                     isCorrect = true;
                                 }
                             }
@@ -1110,6 +1108,8 @@ public class LMS_Project_By_Group_8 {
                                             System.out.println("ERROR.");
                                             System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
                                             System.out.println("PLEASE TRY AGAIN");
+                                            pause();
+                                            cls();
                                             count2++;
                                         }
                                     }else{
@@ -1117,13 +1117,15 @@ public class LMS_Project_By_Group_8 {
                                         System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                         System.out.println("GRABE KA NA");
                                         System.out.println("PLEASE TRY AGAIN LATER");
-                                        //system("pause");
+                                        pause();
+                                        cls();
                                         isCorrect = true;
                                     }
                                 }
                             }else {
                                 System.out.println("PLEASE TRY AGAIN LATER");
-                                //system("pause");
+                                pause();
+                                cls();
                                 isCorrect = true;
                             }
                         }
@@ -1132,7 +1134,8 @@ public class LMS_Project_By_Group_8 {
                     System.out.println("ERROR.");
                     System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                     System.out.println("PLEASE TRY AGAIN LATER");
-                    //system("pause");
+                    pause();
+                    cls();
                     isValid = true;
                 }
             }
@@ -1140,10 +1143,13 @@ public class LMS_Project_By_Group_8 {
             System.out.println("TRANSACTION CANCELLED.");
             System.out.println("YOU HAVE A VIOLATION");
             System.out.println("PLEASE SETTLE YOUR VIOLATION FIRST AND TRY AGAIN LATER.");
+            pause();
+            cls();
         }
     }
 
     public static void viewViolation() {
+        cls();
         boolean isFound = false;
         //locate the account
         for (AccountDetails account : accountList){
@@ -1159,17 +1165,25 @@ public class LMS_Project_By_Group_8 {
                         saveAccountFD();
                         logs("SETTLED VIOLATION", Vars.fill);
                         System.out.println("CONGRATULATION YOU SETTLED YOUR VIOLATION.");
+                        pause();
+                        cls();
                     }else {
                         System.out.println("BRUH WTF SETTLE YOUR VIOLATION.");
+                        pause();
+                        cls();
                     }
                 }else {
                     System.out.println("CONGRATULATION YOU DON'T HAVE ANY VIOLATION.");
+                    pause();
+                    cls();
                 }
             }
         }
         if (!isFound){
             System.out.println("SYSTEM ERROR");
             System.out.println("ACCOUNT NOT FOUND IN LIST");
+            pause();
+            cls();
         }
     }
 
@@ -1180,7 +1194,7 @@ public class LMS_Project_By_Group_8 {
         int count = 0, count2 = 0;
         boolean isValid = false;
         boolean isNum = false;
-        //system("cls");
+        cls();
         displayBooks();
 
         while (!isValid){
@@ -1216,29 +1230,35 @@ public class LMS_Project_By_Group_8 {
                                                 displayCurrentBook(book.bookNum);
                                                 saveBooks();
                                                 logs("ADD EXISTING BOOK", book.getBookTitle());
+                                                pause();
+                                                cls();
                                             }else {
                                                 System.out.println("INVALID INPUT");
                                                 System.out.println("CREDENTIALS DO NOT MATCH");
                                                 System.out.println("PLEASE TRY AGAIN.");
-                                                //system("pause");
+                                                pause();
+                                                cls();
                                                 count2++;
                                             }
                                         }else {
                                             System.out.println("\n\nINVALID INPUT.");
                                             System.out.println("PLEASE TRY AGAIN");
+                                            pause();
+                                            cls();
                                             count2++;
                                         }
                                     }catch (InputMismatchException e){
-                                        e.printStackTrace();
-                                        System.out.println("\n\nINVALID INPUT.");
-                                        System.out.println("PLEASE TRY AGAIN");
+                                        System.out.println("\nERROR: " + e.getMessage());
+                                        pause();
+                                        cls();
                                         count2++;
                                     }
                                 }else {
                                     System.out.println("ERROR.");
                                     System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                     System.out.println("PLEASE TRY AGAIN LATER");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                     isNum = true;
                                 }
                             }
@@ -1250,24 +1270,28 @@ public class LMS_Project_By_Group_8 {
                         System.out.println("ERROR");
                         System.out.println("WRONG BOOK NUMBER OR BOOK NUMBER DOES NOT EXIST");
                         System.out.println("PLEASE TRY AGAIN");
+                        pause();
+                        cls();
                         count++;
                     }
                 }catch (InputMismatchException e){
-                    e.printStackTrace();
-                    System.out.println("INVALID INPUT.");
-                    System.out.println("PLEASE TRY AGAIN");
+                    System.out.println("\nERROR: " + e.getMessage());
+                    pause();
+                    cls();
                 }
             }else {
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
+                cls();
                 isValid = true;
             }
         }
     }
 
     public  void insertNewBook() {
+        cls();
         int count = 0, count2 = 0;
         String validRandomISBN = "";
         boolean isValid = false;
@@ -1275,7 +1299,7 @@ public class LMS_Project_By_Group_8 {
 
         while(!isValid){
             if (count<3){
-                //system("cls");
+                cls();
 
                 int bookNum = getBookNumber();
                 System.out.println("BOOK ID: " + bookNum);
@@ -1311,13 +1335,15 @@ public class LMS_Project_By_Group_8 {
                                     }else {
                                         System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                         System.out.println("INVALID ISBN.");
-                                        //system("pause");
+                                        pause();
+                                        cls();
                                         count++;
                                     }
                                 }else {
                                     System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                     System.out.println("INVALID ISBN.");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                     count++;
                                 }
                             }else if (pubYear > 0 && pubYear > 2006 && bookQuantity > 0){
@@ -1332,19 +1358,22 @@ public class LMS_Project_By_Group_8 {
                                     }else {
                                         System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                         System.out.println("INVALID ISBN.");
-                                        //system("pause");
+                                        pause();
+                                        cls();
                                         count++;
                                     }
                                 }else {
                                     System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                     System.out.println("INVALID ISBN.");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                     count++;
                                 }
                             }else {
                                 System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                 System.out.println("INVALID PUBLICATION YEAR.");
-                                //system("pause");
+                                pause();
+                                cls();
                                 count++;
                             }
                             break;
@@ -1359,15 +1388,20 @@ public class LMS_Project_By_Group_8 {
                             }else{
                                 System.out.println("\nMODIFICATION UNSUCCESSFUL.");
                                 System.out.println("INVALID PUBLICATION YEAR.");
-                                //system("pause");
+                                pause();
+                                cls();
                                 count++;
                             }
                             break;
                     case 3: //cancelled
                             System.out.println("\nMODIFICATION CANCELLED.");
                             isValid = true;
+                            pause();
+                            cls();
                             break;
                     default: System.out.println("WRONG RETURN VALUE");
+                             pause();
+                             cls();
                              break;
                 }
 
@@ -1383,18 +1417,22 @@ public class LMS_Project_By_Group_8 {
                                     logs("ADDED NEW BOOK", bookTitle);
 
                                     System.out.println("\nBOOK ( " + bookTitle + " ) SUCCESSFULLY ADDED.");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                 }else {
                                     System.out.println("ERROR.");
                                     System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
                                     System.out.println("PLEASE TRY AGAIN");
+                                    pause();
+                                    cls();
                                     count2++;
                                 }
                             }else{
                                 System.out.println("ERROR.");
                                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                 System.out.println("PLEASE TRY AGAIN LATER");
-                                //system("pause");
+                                pause();
+                                cls();
                                 isCorrect = true;
                             }
                         }
@@ -1412,6 +1450,8 @@ public class LMS_Project_By_Group_8 {
                                         System.out.println("ERROR.");
                                         System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
                                         System.out.println("PLEASE TRY AGAIN");
+                                        pause();
+                                        cls();
                                         count2++;
                                     }
                                 }else{
@@ -1419,13 +1459,15 @@ public class LMS_Project_By_Group_8 {
                                     System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                     System.out.println("GRABE KA NA");
                                     System.out.println("PLEASE TRY AGAIN LATER");
-                                    //system("pause");
+                                    pause();
+                                    cls();
                                     isCorrect = true;
                                 }
                             }
                         }else {
                             System.out.println("PLEASE TRY AGAIN LATER");
-                            //system("pause");
+                            pause();
+                            cls();
                             isCorrect = true;
                         }
                     }
@@ -1434,13 +1476,15 @@ public class LMS_Project_By_Group_8 {
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
+                cls();
                 isValid = true;
             }
         }
     }
 
     public static void editBooks() {
+        cls();
         int ch = 0, count = 0;
         int newBookNum, newBookYear, newBookQuant;
         String newISBN, newBookTitle, newBookAuthor;
@@ -1450,6 +1494,7 @@ public class LMS_Project_By_Group_8 {
         while (!isCorrect){
             if (count<3){
                 if (verifyAccount(2)){
+                    cls();
                     isCorrect = true;
 
                     System.out.println("\n\nENTER BOOK NUMBER TO BE EDITED: ");
@@ -1479,6 +1524,8 @@ public class LMS_Project_By_Group_8 {
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("BOOK NUMBER ALREADY EXIST.");
+                                                pause();
+                                                cls();
                                             }
                                             break;
                                     case 2: System.out.println("INPUT NEW VALID BOOK TITLE: ");
@@ -1490,6 +1537,8 @@ public class LMS_Project_By_Group_8 {
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("BOOK DETAILS ALREADY EXIST.");
+                                                pause();
+                                                cls();
                                             }
                                             break;
                                     case 3: System.out.println("INPUT NEW VALID BOOK AUTHOR: ");
@@ -1501,6 +1550,8 @@ public class LMS_Project_By_Group_8 {
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("BOOK DETAILS ALREADY EXIST.");
+                                                pause();
+                                                cls();
                                             }
                                             break;
                                     case 4: System.out.println("INPUT NEW VALID BOOK PUBLICATION YEAR: ");
@@ -1520,9 +1571,13 @@ public class LMS_Project_By_Group_8 {
                                                 logs("EDIT BOOK ISBN", "FROM ( " + book.getISBN() + " ) TO ( " + newISBN + " )");
                                                 book.setBookISBN(newISBN);
                                                 saveBooks();
+                                                pause();
+                                                cls();
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("INVALID BOOK PUBLICATION YEAR.");
+                                                pause();
+                                                cls();
                                             }
                                             break;
                                     case 5: System.out.println("INPUT NEW VALID BOOK QUANTITY: ");
@@ -1535,12 +1590,17 @@ public class LMS_Project_By_Group_8 {
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("INVALID BOOK QUANTITY.");
+                                                pause();
+                                                cls();
                                             }
                                             break;
                                     case 6: System.out.println("\n\nBOOK SUCCESSFULLY EDITED.");
-                                            //system("pause");
+                                            pause();
+                                            cls();
                                             break;
                                     default: System.out.println("\n\nSELECT 1 - 6 ONLY.");
+                                            pause();
+                                            cls();
                                             break;
                                 }
                             } 
@@ -1553,7 +1613,8 @@ public class LMS_Project_By_Group_8 {
                         System.out.println("ERROR NOT FOUND.");
                         System.out.println("WRONG BOOK NUMBER OR IT DOES NOT EXIST");
                         System.out.println("PLEASE TRY AGAIN LATER");
-                        //system("pause");
+                        pause();
+                        cls();
                         isCorrect = false;
                         count++;
                     }
@@ -1561,25 +1622,30 @@ public class LMS_Project_By_Group_8 {
                     System.out.println("INVALID INPUT");
                     System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
                     System.out.println("PLEASE TRY AGAIN");
+                    pause();
+                    cls();
                     count++;
                 }
             }else {
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
+                cls();
                 isCorrect = true;
             }
         }
     }
 
     public static void removeAcopy() {
+        cls();
         int count = 0, count2 = 0;
         boolean isValid = false;
         boolean isCorrect = false;
 
         while (!isValid){
             if (count<3){
+                cls();
                 System.out.println("\n\nENTER BOOK NUMBER TO REMOVE A COPY: ");
                 int userBookNum = scan.nextInt();
                 scan.nextLine(); // Consume the newline character
@@ -1606,15 +1672,21 @@ public class LMS_Project_By_Group_8 {
 
                                         saveBooks();
                                         logs("REMOVE A COPY", book.getBookTitle());
+                                        pause();
+                                        cls();
                                     }else {
                                         System.out.println("INVALID INPUT");
                                         System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
                                         System.out.println("PLEASE TRY AGAIN");
+                                        pause();
+                                        cls();
                                         count2++;
                                     }
                                 }else{
                                     System.out.println("ERROR.");
                                     System.out.println("iNVALID QUANTITY.");
+                                    pause();
+                                    cls();
                                     count2++;
                                 }
                             }
@@ -1626,26 +1698,31 @@ public class LMS_Project_By_Group_8 {
                     System.out.println("ERROR NOT FOUND.");
                     System.out.println("WRONG BOOK NUMBER OR IT DOES NOT EXIST");
                     System.out.println("PLEASE TRY AGAIN LATER");
+                    pause();
+                    cls();
                     count++;
                 }
             }else {
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
+                cls();
                 isValid = true;
             }
         }
     }
 
     public static void removeBooks() {
+        cls();
         int count = 0, count2 = 0;
         boolean isValid = false;
         boolean isCorrect = false;
 
         while (!isValid){
             if (count<3){
-                System.out.println("\n\nENTER BOOK NUMBER TO REMOVE A COPY: ");
+                cls();
+                System.out.println("\n\nENTER BOOK NUMBER TO REMOVE: ");
                 int userBookNum = scan.nextInt();
                 scan.nextLine(); // Consume the newline character
 
@@ -1665,10 +1742,14 @@ public class LMS_Project_By_Group_8 {
                                     System.out.println("\n\nMODIFICATION SUCCESSFUL.");
 
                                     saveBooks();
+                                    pause();
+                                    cls();
                                 }else {
                                     System.out.println("INVALID INPUT");
                                     System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
                                     System.out.println("PLEASE TRY AGAIN");
+                                    pause();
+                                    cls();
                                     count2++;
                                 }
                             }
@@ -1680,19 +1761,23 @@ public class LMS_Project_By_Group_8 {
                     System.out.println("ERROR NOT FOUND.");
                     System.out.println("WRONG BOOK NUMBER OR IT DOES NOT EXIST");
                     System.out.println("PLEASE TRY AGAIN LATER");
+                    pause();
+                    cls();
                     count++;
                 }
             }else {
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
+                cls();
                 isValid = true;
             }
         }
     }
 
     public void bookRequests() {
+        cls();
         int count = 0, count2 = 0;
         boolean isFound = false;
         boolean isCorrect = false;
@@ -1700,6 +1785,7 @@ public class LMS_Project_By_Group_8 {
         File fp = new File(Vars.LMSFolderDB + "\\BookRequests.tx");
         if (fp.exists()){
             try {
+                cls();
                 //read the file 
                 FileReader f2p = new FileReader(fp);
                 BufferedReader bf2p = new BufferedReader(f2p);
@@ -1731,6 +1817,7 @@ public class LMS_Project_By_Group_8 {
                     case 1: //approve book request
                         while (!isFound){
                             if (count<3){
+                                cls();
                                 System.out.println("ENTER BOOK NUMBER: ");
                                 userNum = scan.nextInt();
                                 scan.nextLine(); // Consume the newline character
@@ -1750,18 +1837,22 @@ public class LMS_Project_By_Group_8 {
                                                     logs("APPROVED BOOK", reqBook.getBookTitle());
 
                                                     System.out.println("BOOK ( " + reqBook.getBookTitle() + " ) APPROVED.");
-                                                    //system("pause");
+                                                    pause();
+                                                    cls();
                                                 }else {
                                                     System.out.println("INVALID INPUT");
                                                     System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
                                                     System.out.println("PLEASE TRY AGAIN");
+                                                    pause();
+                                                    cls();
                                                     count2++;
                                                 }
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                                 System.out.println("PLEASE TRY AGAIN LATER");
-                                                //system("pause");
+                                                pause();
+                                                cls();
                                                 isCorrect = true;
                                             }
                                         }
@@ -1772,13 +1863,16 @@ public class LMS_Project_By_Group_8 {
                                     System.out.println("ERROR");
                                     System.out.println("WRONG BOOK NUMBER OR BOOK NUMBER DOES NOT EXIST");
                                     System.out.println("PLEASE TRY AGAIN");
+                                    pause();
+                                    cls();
                                     count++;
                                 }
                             }else {
                                 System.out.println("ERROR.");
                                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                 System.out.println("PLEASE TRY AGAIN LATER");
-                                //system("pause");
+                                pause();
+                                cls();
                                 isFound = true;
                             }
                         }
@@ -1786,6 +1880,7 @@ public class LMS_Project_By_Group_8 {
                     case 2: //disapprove book
                         while (!isFound){
                             if (count<3){
+                                cls();
                                 System.out.println("ENTER BOOK NUMBER: ");
                                 userNum = scan.nextInt();
                                 scan.nextLine(); // Consume the newline character
@@ -1804,18 +1899,22 @@ public class LMS_Project_By_Group_8 {
                                                     logs("DISAPPROVED BOOK", reqBook.getBookTitle());
 
                                                     System.out.println("BOOK ( " + reqBook.getBookTitle() + " ) DISAPPROVED.");
-                                                    //system("pause");
+                                                    pause();
+                                                    cls();
                                                 }else {
                                                     System.out.println("INVALID INPUT");
                                                     System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
                                                     System.out.println("PLEASE TRY AGAIN");
+                                                    pause();
+                                                    cls();
                                                     count2++;
                                                 }
                                             }else {
                                                 System.out.println("ERROR.");
                                                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                                 System.out.println("PLEASE TRY AGAIN LATER");
-                                                //system("pause");
+                                                pause();
+                                                cls();
                                                 isCorrect = true;
                                             }
                                         }
@@ -1826,13 +1925,16 @@ public class LMS_Project_By_Group_8 {
                                     System.out.println("ERROR");
                                     System.out.println("WRONG BOOK NUMBER OR BOOK NUMBER DOES NOT EXIST");
                                     System.out.println("PLEASE TRY AGAIN");
+                                    pause();
+                                    cls();
                                     count++;
                                 }
                             }else {
                                 System.out.println("ERROR.");
                                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                                 System.out.println("PLEASE TRY AGAIN LATER");
-                                //system("pause");
+                                pause();
+                                cls();
                                 isFound = true;
                             }
                         }
@@ -1842,24 +1944,30 @@ public class LMS_Project_By_Group_8 {
                             saveBookRequests();
                         break;
                     default: System.out.println("INVALID INPUT.");
+                            pause();
+                            cls();
                             break;
                             
                 }
             }catch (FileNotFoundException e){
-                e.printStackTrace();
-                System.out.println("\nERROR.");
-                System.out.println("NO BOOK REQUESTS YET.");
+                System.out.println("\nERROR: " + e.getMessage());
+                pause();
+                cls();
             }catch (IOException e){
-                e.printStackTrace();
+                System.out.println("\nERROR: " + e.getMessage());
+                pause();
+                cls();
             }
         }else {
             System.out.println("ERROR.");
             System.out.println("NO BOOK REQUESTS YET.");
-            //system("pause");
+            pause();
+            cls();
         }
     }
 
     public static void changeKey() {
+        cls();
         int newKey = 0, count = 0;
         boolean isValid = false;
         Random srand = new Random();
@@ -1879,6 +1987,8 @@ public class LMS_Project_By_Group_8 {
                                 fp.createNewFile();
                             }catch (IOException e){
                                 System.out.println("ERROR: " + e.getMessage());
+                                pause();
+                                cls();
                             }
                         }
 
@@ -1886,9 +1996,14 @@ public class LMS_Project_By_Group_8 {
                             fwrite.write(String.valueOf(newKey));
                         }catch (IOException e){
                             System.out.println("ERROR: " + e.getMessage());
+                            pause();
+                            cls();
                         }
 
-                        System.out.println("KEY IS SET TO: " + newKey);
+                        KEY = newKey;
+                        System.out.println("KEY IS SET TO: " + KEY);
+                        pause();
+                        cls();
                         break;
                 case 2: //librarian will enter the new key
                         while (!isValid){
@@ -1904,6 +2019,8 @@ public class LMS_Project_By_Group_8 {
                                                 fp.createNewFile();
                                             }catch (IOException e){
                                                 System.out.println("ERROR: " + e.getMessage());
+                                                pause();
+                                                cls();
                                             }
                                         }
 
@@ -1911,15 +2028,21 @@ public class LMS_Project_By_Group_8 {
                                             fwrite.write(String.valueOf(newKey));
                                         }catch (IOException e){
                                             System.out.println("ERROR: " + e.getMessage());
+                                            pause();
+                                            cls();
                                         }
 
                                     }else {
                                         System.out.println("PLEASE ENTER 'NEW' AND 'VALID' KEY.");
                                         System.out.println("PLEASE TRY AGAIN.");
+                                        pause();
+                                        cls();
                                         count++;
                                     }
                                 }catch (InputMismatchException e){
                                     System.out.println("ERROR: " + e.getMessage());
+                                    pause();
+                                    cls();
                                     count++;
                                 }
                             }
@@ -1927,6 +2050,8 @@ public class LMS_Project_By_Group_8 {
                         break;
                 default: System.out.println("WRONG RETURN VALUE.");
                          System.out.println("PLEASE CHECK THE CODE.");
+                         pause();
+                         cls();
                          break;
                         
             }
@@ -1934,6 +2059,8 @@ public class LMS_Project_By_Group_8 {
             System.out.println("INVALID INPUT");
             System.out.println("CREDENTIALS DO NOT MATCH");
             System.out.println("PLEASE TRY AGAIN LATER.");
+            pause();
+            cls();
         }
     }
 
@@ -1944,7 +2071,7 @@ public class LMS_Project_By_Group_8 {
 
         while(!isValid){
             if(count<3){
-                //system("cls");
+                cls();
                 displayDirectoryContent();
                 System.out.printf("%n%n!DO NOT INCLUDE THE .csv EXTENSION!%n");
                 System.out.printf("%n%nENTER DATE (YYYY-MM-DD): ");
@@ -1985,36 +2112,44 @@ public class LMS_Project_By_Group_8 {
                                 }else{
                                     System.out.println("INVALID INPUT");
                                     System.out.println("PLEASE TRY AGAIN.");
+                                    pause();
+                                    cls();
                                 }
                             }catch (InputMismatchException e){
-                                e.printStackTrace();
-                                System.out.println("INVALID INPUT.");
-                                System.out.println("PLEASE TRY AGAIN");
+                                System.out.println("\nERROR: " + e.getMessage());
+                                pause();
+                                cls();
                             }
                         }
                         bf2p.close();
                     }catch (FileNotFoundException e){
-                        e.printStackTrace();
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
+                        cls();
                     }catch (IOException e){
-                        e.printStackTrace();
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
+                        cls();
                     }
-                    //system("pause");
+                    pause();
                 }else{
                     System.out.println("ERROR.");
                     System.out.println("FILE ( " + userStr + ".csv ) NOT FOUND.");
                     System.out.println("PLEASE TRY AGAIN.");
-                    //system("pause");
+                    pause();
+                    cls();
                     count++;
                 }
             }else{
                 System.out.println("ERROR.");
                 System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
                 System.out.println("PLEASE TRY AGAIN LATER");
-                //system("pause");
+                pause();
+                cls();
                 isValid = true;
             }
         }
-        //system("cls");
+        cls();
     }
 
     public static void displayDirectoryContent() {
@@ -2040,7 +2175,7 @@ public class LMS_Project_By_Group_8 {
     public static int menu(int x) {
         int userNum=0;
         boolean isValid = false;
-        //system("cls");
+        cls();
         while (!isValid){
             System.out.printf("%n%n%nMENU%n%n");
 
@@ -2061,11 +2196,15 @@ public class LMS_Project_By_Group_8 {
                     }else{
                         System.out.println("INVALID INPUT.");
                         System.out.println("PLEASE TRY AGAIN");
+                        pause();
+                        cls();
                     }
                 }catch (InputMismatchException e) {
                     e.printStackTrace();
                     System.out.printf("%nINVALID INPUT.%n");
                     System.out.println("PLEASE TRY AGAIN");
+                    pause();
+                    cls();
                 }
             }else{ //librarian
                 System.out.println("[1] ADD BOOKS");
@@ -2086,11 +2225,13 @@ public class LMS_Project_By_Group_8 {
                     }else{
                         System.out.println("INVALID INPUT.");
                         System.out.println("PLEASE TRY AGAIN");
+                        pause();
+                        cls();
                     }
                 }catch (InputMismatchException e) {
-                    e.printStackTrace();
-                    System.out.printf("%nINVALID INPUT.%n");
-                    System.out.println("PLEASE TRY AGAIN");
+                    System.out.println("\nERROR: " + e.getMessage());
+                    pause();
+                    cls();
                 }
             }
         }
@@ -2123,11 +2264,11 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
@@ -2148,11 +2289,11 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
@@ -2173,11 +2314,11 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
@@ -2198,11 +2339,11 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
@@ -2226,11 +2367,11 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
@@ -2251,11 +2392,11 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
@@ -2275,11 +2416,11 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
@@ -2299,26 +2440,26 @@ public class LMS_Project_By_Group_8 {
                         }else{
                             System.out.println("INVALID INPUT.");
                             System.out.println("PLEASE TRY AGAIN");
+                            pause();
                         }
                     }catch (InputMismatchException e) {
-                        e.printStackTrace();
-                        System.out.printf("%nINVALID INPUT.%n");
-                        System.out.println("PLEASE TRY AGAIN");
+                        System.out.println("\nERROR: " + e.getMessage());
+                        pause();
                     }
                 }
                 break;
 
-            default: //system("cls");
+            default: cls();
                 System.out.printf("%n%nINVALID PARAMETER.%n");
-                //system("pause");
-                //system("cls");
+                pause();
+                cls();
                 break;
         }
         return userNum;
     }
 
     public static void displayBooks() {
-        //system("cls");
+        cls();
         System.out.println("-------------------------------------------------------------");
         System.out.printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |%n",
                 "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
@@ -2350,7 +2491,7 @@ public class LMS_Project_By_Group_8 {
     }
 
     public static void displayBookRequests() {
-        //system("cls");
+        cls();
         System.out.println("-------------------------------------------------------------");
         System.out.printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |%n",
                 "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
@@ -2470,6 +2611,8 @@ public class LMS_Project_By_Group_8 {
         }else {
             System.out.println("\n\nWRONGPARAMETER.");
             System.out.println("PLEASE CHECK THE CODE.");
+            pause();
+            cls();
         }
         
         return randomISBNstring;
@@ -2546,6 +2689,8 @@ public class LMS_Project_By_Group_8 {
         }else {
             System.out.println("\n\nWRONG PARAMETERS.");
             System.out.println("PLEASE CHECK THE CODE.");
+            pause();
+            cls();
             return false;
         }
     }
@@ -2567,6 +2712,8 @@ public class LMS_Project_By_Group_8 {
         }else {
             System.out.println("\n\nWRONG PARAMETERS.");
             System.out.println("PLEASE CHECK THE CODE.");
+            pause();
+            cls();
             return false;
         }
         
@@ -2587,6 +2734,8 @@ public class LMS_Project_By_Group_8 {
                 fp.createNewFile();
             }catch (IOException e){
                 System.out.println("ERROR: " + e.getMessage());
+                pause();
+                cls();
             }
         }
 
@@ -2594,6 +2743,8 @@ public class LMS_Project_By_Group_8 {
             fwrite.write(String.valueOf(KEY));
         }catch (IOException e){
             System.out.println("ERROR: " + e.getMessage());
+            pause();
+            cls();
         }
     }
 
@@ -2604,7 +2755,9 @@ public class LMS_Project_By_Group_8 {
             try {
                 fp.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("\nERROR: " + e.getMessage());
+                pause();
+                cls();
             }
         }
 
@@ -2627,6 +2780,8 @@ public class LMS_Project_By_Group_8 {
             }
         }catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
+            pause();
+            cls();
         }
     }
 
@@ -2636,7 +2791,9 @@ public class LMS_Project_By_Group_8 {
             try {
                 fp.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("\nERROR: " + e.getMessage());
+                pause();
+                cls();
             }
         }
 
@@ -2663,6 +2820,8 @@ public class LMS_Project_By_Group_8 {
                 }
             }catch (IOException e) {
                 System.out.println("ERROR: " + e.getMessage());
+                pause();
+                cls();
             }
 
         }else if (Vars.currentSKey == 0 && Vars.currentLKey == 1){ 
@@ -2688,10 +2847,14 @@ public class LMS_Project_By_Group_8 {
                 }
             }catch (IOException e) {
                 System.out.println("ERROR: " + e.getMessage());
+                pause();
+                cls();
             }
         }else {
             System.out.println("ERROR.");
             System.out.println("UNABLE TO SAVE IN FILE.");
+            pause();
+            cls();
         }
     }
 
@@ -2701,7 +2864,9 @@ public class LMS_Project_By_Group_8 {
             try {
                 fp.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("\nERROR: " + e.getMessage());
+                pause();
+                cls();
             }
         }
 
@@ -2723,6 +2888,8 @@ public class LMS_Project_By_Group_8 {
             }
         }catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
+            pause();
+            cls();
         }
     }
 
@@ -2732,7 +2899,9 @@ public class LMS_Project_By_Group_8 {
             try {
                 fp.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("\nERROR: " + e.getMessage());
+                pause();
+                cls();
             }
         }
 
@@ -2754,6 +2923,8 @@ public class LMS_Project_By_Group_8 {
             }
         }catch (IOException e) {
             System.out.println("ERROR: " + e.getMessage());
+            pause();
+            cls();
         }
     }
 
@@ -2779,6 +2950,8 @@ public class LMS_Project_By_Group_8 {
                 fwrite.newLine(); 
             }catch (IOException e) {
                 System.out.println("ERROR: " + e.getMessage());
+                pause();
+                cls();
             }
 
         }else if (Vars.currentSKey == 0 && Vars.currentLKey == 1){
@@ -2789,7 +2962,24 @@ public class LMS_Project_By_Group_8 {
                 fwrite.newLine(); 
             }catch (IOException e) {
                 System.out.println("ERROR: " + e.getMessage());
+                pause();
+                cls();
             }
+        }
+    }
+
+    public static void cls() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    public static void pause() {
+        Scanner pause = new Scanner(System.in);
+        System.out.println("\nPRESS ANY KEY TO CONTINUE...");
+        try {
+            pause.nextLine();
+        } catch (NoSuchElementException e) {
+            System.out.println("ERROR: No input available. Program will continue.");
         }
     }
 
