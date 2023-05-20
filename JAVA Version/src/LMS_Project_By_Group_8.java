@@ -1883,7 +1883,7 @@ public class LMS_Project_By_Group_8 {
                         }
 
                         try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
-                            fwrite.write(newKey);
+                            fwrite.write(String.valueOf(newKey));
                         }catch (IOException e){
                             System.out.println("ERROR: " + e.getMessage());
                         }
@@ -1908,7 +1908,7 @@ public class LMS_Project_By_Group_8 {
                                         }
 
                                         try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
-                                            fwrite.write(newKey);
+                                            fwrite.write(String.valueOf(newKey));
                                         }catch (IOException e){
                                             System.out.println("ERROR: " + e.getMessage());
                                         }
