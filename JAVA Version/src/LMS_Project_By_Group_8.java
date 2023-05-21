@@ -299,6 +299,7 @@ public class LMS_Project_By_Group_8 {
                 e.printStackTrace();
             }
             loading();
+            cls();
         }
         File directoryFD = new File(Vars.LMSFlashDrive);
         directoryFD.mkdir();
@@ -627,6 +628,13 @@ public class LMS_Project_By_Group_8 {
     public static void userLOGIN() {
         int count;
         boolean isValid = false;
+        Console cons = System.console();
+        if (cons == null) {
+            System.out.println("CONSOLE NOT AVAILABLE. EXITING...");
+            pause();
+            cls();
+            return;
+        }
 
         if(Vars.currentSKey==1 && Vars.currentLKey==0){
             count = 0;
@@ -634,8 +642,11 @@ public class LMS_Project_By_Group_8 {
                 if(count<3){
                     cls();
                     System.out.printf("%nLOG IN%n%n");
-                    System.out.println("Enter Student ID: ");
-                    String studentID = scan.nextLine();
+                    System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
+
+                    //hiding user input for security purposes
+                    char[] user_studentID = cons.readPassword("ENTER STUDENT ID: ");
+                    String studentID = new String(user_studentID);
 
                     if(studentID.compareTo(Vars.currentStudentID) == 0){
                         logs("IN",Vars.fill);
@@ -661,8 +672,11 @@ public class LMS_Project_By_Group_8 {
                 if(count<3){
                     cls();
                     System.out.printf("%nLOG IN%n%n");
-                    System.out.println("Enter Librarian ID: ");
-                    String librarianID = scan.nextLine();
+                    System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
+
+                    //hiding user input for security purposes
+                    char[] user_librarianID = cons.readPassword("ENTER LIBRARIAN ID: ");
+                    String librarianID = new String(user_librarianID);
 
                     if(librarianID.compareTo(Vars.adminFillID) == 0){
                         logs("IN",Vars.fill);
@@ -2531,10 +2545,21 @@ public class LMS_Project_By_Group_8 {
     }
 
     public static boolean verifyAccount(int x) {
+        Console cons = System.console();
+        if (cons == null) {
+            System.out.println("CONSOLE NOT AVAILABLE. EXITING...");
+            pause();
+            cls();
+            return false;
+        }
+        System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
+
         if (x==1){ 
             //-----------------student-----------------
-            System.out.println("ENTER STUDENT ID TO CONFIRM: ");
-            String userStr = scan.nextLine();
+            //hiding user input for security purposes
+            char[] user_studentID = cons.readPassword("ENTER STUDENT ID TO CONFIRM: ");
+            String userStr = new String(user_studentID);
+
             if (userStr.compareTo(Vars.currentStudentID) == 0){
                 return true;
             }else{
@@ -2542,8 +2567,9 @@ public class LMS_Project_By_Group_8 {
             }
         }else{ 
             //-----------------librarian-----------------
-            System.out.println("ENTER LIBRARIAN ID TO CONFIRM: ");
-            String userStr = scan.nextLine();
+            char[] user_librarianID = cons.readPassword("ENTER LIBRARIAN ID TO CONFIRM: ");
+            String userStr = new String(user_librarianID);
+
             if (userStr.compareTo(Vars.adminFillID) == 0){
                 return true;
             }else{
@@ -2975,11 +3001,11 @@ public class LMS_Project_By_Group_8 {
 
     public static void pause() {
         Scanner pause = new Scanner(System.in);
-        System.out.println("\nPRESS ANY KEY TO CONTINUE...");
+        System.out.println("\nPRESS ENTER KEY TO CONTINUE...");
         try {
             pause.nextLine();
         } catch (NoSuchElementException e) {
-            System.out.println("ERROR: No input available. Program will continue.");
+            System.out.println("ERROR: NO INPUT AVAILABLE. THE PROGRAM WILL CONTINUE.");
         }
     }
 
