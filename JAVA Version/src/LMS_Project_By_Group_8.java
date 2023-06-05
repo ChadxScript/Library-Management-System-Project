@@ -3,6 +3,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.time.*;
 import java.time.format.*;
+import java.nio.charset.*;
 
 /*
     Mga fre pakilagay nalang ulit yung mga UI hehe kung JOption or
@@ -34,6 +35,7 @@ public class LMS_Project_By_Group_8 {
     private static LinkedList<BookDetails> bookRquestList = new LinkedList<>();
     private static int KEY;
     private static Scanner scan = new Scanner(System.in);
+    private static Scanner pause = new Scanner(System.in);
 
     public static void main(String[] args) {
         int userNum;
@@ -371,7 +373,7 @@ public class LMS_Project_By_Group_8 {
         File fkey = new File(Vars.LMSFolderDB + "\\KEY.txt");
         if (fkey.exists()){
             try {
-                FileReader readKey = new FileReader(fkey);
+                FileReader readKey = new FileReader(fkey, StandardCharsets.UTF_8);
                 BufferedReader bReadKey = new BufferedReader(readKey);
                 String strKey;
 
@@ -400,7 +402,7 @@ public class LMS_Project_By_Group_8 {
             }
         }else{
             try{
-                FileReader f2p = new FileReader(fp);
+                FileReader f2p = new FileReader(fp, StandardCharsets.UTF_8);
                 BufferedReader bf2p = new BufferedReader(f2p);
                 String str;
 
@@ -476,7 +478,7 @@ public class LMS_Project_By_Group_8 {
             }
         }else{
             try{
-                FileReader f2p = new FileReader(fp);
+                FileReader f2p = new FileReader(fp, StandardCharsets.UTF_8);
                 BufferedReader bf2p = new BufferedReader(f2p);
                 String str;
 
@@ -556,7 +558,7 @@ public class LMS_Project_By_Group_8 {
             }
         }else{
             try{
-                FileReader f2p = new FileReader(Vars.LMSFolderDB + "\\Books.txt");
+                FileReader f2p = new FileReader(Vars.LMSFolderDB + "\\Books.txt", StandardCharsets.UTF_8);
                 BufferedReader bf2p = new BufferedReader(f2p);
                 String str;
 
@@ -620,7 +622,7 @@ public class LMS_Project_By_Group_8 {
                     Vars.currentStudentName = new String(studentName);
                     int violation = Vars.currentViolation = 0;
 
-                    AccountDetails account = new AccountDetails(studentID, studentName, librarianID, librarianName, skey, lkey, violation);
+                    AccountDetails account = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
                     accountList.add(account);
                     System.out.println("REGISTRATION SUCCESSFUL");
                     pause();
@@ -669,7 +671,7 @@ public class LMS_Project_By_Group_8 {
                     Vars.currentLibrarianID = new String(librarianID);
                     int violation = Vars.currentViolation = 0;
 
-                    AccountDetails account = new AccountDetails(studentID, studentName, librarianID, librarianName, skey, lkey, violation);
+                    AccountDetails account = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
 
                     if (checkAccount(2,librarianID) == 2){
                         accountList.add(account);
@@ -835,7 +837,7 @@ public class LMS_Project_By_Group_8 {
                                         int encryptedBookQuant = encryptInt(userNum, KEY);
 
                                         //-------------------saving-------------------
-                                        try (BufferedWriter fprint = new BufferedWriter(new FileWriter(fp, true))) {
+                                        try (BufferedWriter fprint = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
                                             String borrowedBookDetails = String.format("%d,%d,%d,%s,%s,%s,%s,%d,%d%n",
                                                         encryptedcurrYear, encryptedcurrMonth, encryptedcurrDay, encryptedBookNum, 
                                                         encryptedISBN, encryptedBookTitle, encryptedBookAuthor, encryptedPubYear, encryptedBookQuant);
@@ -908,7 +910,7 @@ public class LMS_Project_By_Group_8 {
 
                 //read the file
                 try {
-                    FileReader f2p = new FileReader(fp);
+                    FileReader f2p = new FileReader(fp, StandardCharsets.UTF_8);
                     BufferedReader bf2p = new BufferedReader(f2p);
                     String str;
 
@@ -1872,7 +1874,7 @@ public class LMS_Project_By_Group_8 {
             try {
                 cls();
                 //read the file 
-                FileReader f2p = new FileReader(fp);
+                FileReader f2p = new FileReader(fp, StandardCharsets.UTF_8);
                 BufferedReader bf2p = new BufferedReader(f2p);
                 String str;
                 
@@ -2077,7 +2079,7 @@ public class LMS_Project_By_Group_8 {
                             }
                         }
 
-                        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+                        try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
                             fwrite.write(String.valueOf(newKey));
                         }catch (IOException e){
                             System.out.println("ERROR: " + e.getMessage());
@@ -2109,7 +2111,7 @@ public class LMS_Project_By_Group_8 {
                                             }
                                         }
 
-                                        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+                                        try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
                                             fwrite.write(String.valueOf(newKey));
                                         }catch (IOException e){
                                             System.out.println("ERROR: " + e.getMessage());
@@ -2855,7 +2857,7 @@ public class LMS_Project_By_Group_8 {
             }
         }
 
-        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+        try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
             fwrite.write(String.valueOf(KEY));
         }catch (IOException e){
             System.out.println("ERROR: " + e.getMessage());
@@ -2877,7 +2879,7 @@ public class LMS_Project_By_Group_8 {
             }
         }
 
-        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+        try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
             for (AccountDetails account : accountList){
                 //-------------------encrypting-------------------
                 String encryptedStudentID = encryptString(account.getStudentID(), KEY);
@@ -2915,7 +2917,7 @@ public class LMS_Project_By_Group_8 {
 
         if (Vars.currentSKey == 1 && Vars.currentLKey == 0){ 
             //save student info in flashdrive
-            try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+            try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
                 for (AccountDetails account : accountList){
                     if (Vars.currentStudentID.equals(account.getStudentID())){
                         //-------------------encrypting-------------------
@@ -2942,7 +2944,7 @@ public class LMS_Project_By_Group_8 {
 
         }else if (Vars.currentSKey == 0 && Vars.currentLKey == 1){ 
             //save librarian info in file
-            try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+            try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
                 for (AccountDetails account : accountList){
                     if (Vars.currentLibrarianID.equals(account.getLibrarianID())){
                         //-------------------encrypting-------------------
@@ -2986,7 +2988,7 @@ public class LMS_Project_By_Group_8 {
             }
         }
 
-        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+        try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
             for (BookDetails book : bookList){
                 //-------------------encrypting-------------------
                 int encryptedBookNum = encryptInt(book.getBookNum(), KEY);
@@ -3021,7 +3023,7 @@ public class LMS_Project_By_Group_8 {
             }
         }
 
-        try (BufferedWriter fwrite = new BufferedWriter(new FileWriter(fp))) {
+        try (BufferedWriter fwrite = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fp), "UTF-8"))) {
             for (BookDetails book : bookRquestList){
                 //-------------------encrypting-------------------
                 int encryptedBookNum = encryptInt(book.getBookNum(), KEY);
@@ -3090,7 +3092,6 @@ public class LMS_Project_By_Group_8 {
     }
 
     public static void pause() {
-        Scanner pause = new Scanner(System.in);
         System.out.println("\nPRESS ENTER KEY TO CONTINUE...");
         try {
             pause.nextLine();
