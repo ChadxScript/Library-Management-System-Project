@@ -1796,7 +1796,7 @@ public class LMS_Project_By_Group_8 {
         boolean isFound = false;
         boolean isCorrect = false;
 
-        File fp = new File(Vars.LMSFolderDB + "\\BookRequests.tx");
+        File fp = new File(Vars.LMSFolderDB + "\\BookRequests.txt");
         if (fp.exists()){
             try {
                 cls();
