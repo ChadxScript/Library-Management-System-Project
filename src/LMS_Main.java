@@ -3,7 +3,7 @@ import java.nio.file.*;
 import java.util.*;
 import java.time.*;
 import java.time.format.*;
-import java.nio.charset.*;
+//import java.nio.charset.*;
 
 /*
     Mga fre pakilagay nalang ulit yung mga UI hehe kung JOption or
@@ -336,6 +336,7 @@ public class LMS_Main {
             try {
                 fp.createNewFile();
             } catch (IOException e) {
+                System.out.println("ERROR: " + e.getMessage());
             }
             loading();
             cls();
@@ -699,13 +700,13 @@ public class LMS_Main {
     public static void userLOGIN() {
         int count;
         boolean isValid = false;
-        Console cons = System.console();
+        /*Console cons = System.console();
         if (cons == null) {
             System.out.println("CONSOLE NOT AVAILABLE. EXITING...");
             pause();
             cls();
-            return;
-        }
+            //return;
+        }*/
 
         if(Vars.CURRENT_S_KEY==1 && Vars.CURRENT_L_KEY==0){
             count = 0;
@@ -713,12 +714,14 @@ public class LMS_Main {
                 if(count<3){
                     cls();
                     System.out.printf("%nLOG IN%n%n");
-                    System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
+                    //System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
 
                     //hiding user input for security purposes
-                    char[] user_studentID = cons.readPassword("ENTER STUDENT ID: ");
-                    String studentID = new String(user_studentID);
+                    //char[] user_studentID = cons.readPassword("ENTER STUDENT ID: ");
+                    //String studentID = new String(user_studentID);
 
+                    System.out.print("ENTER STUDENT ID: ");
+                    String studentID = scan.nextLine();
                     if(studentID.compareTo(Vars.CURRENT_STUDENT_ID) == 0){
                         logs("IN",Vars.FILL);
                         isValid = true;
@@ -743,12 +746,14 @@ public class LMS_Main {
                 if(count<3){
                     cls();
                     System.out.printf("%nLOG IN%n%n");
-                    System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
+                    //System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
 
                     //hiding user input for security purposes
-                    char[] user_librarianID = cons.readPassword("ENTER LIBRARIAN ID: ");
-                    String librarianID = new String(user_librarianID);
-
+                    //char[] user_librarianID = cons.readPassword("ENTER LIBRARIAN ID: ");
+                    //String librarianID = new String(user_librarianID);
+                    
+                    System.out.print("ENTER LIBRARIAN ID: ");
+                    String librarianID = scan.nextLine();
                     if(librarianID.compareTo(Vars.ADMIN_FILL_ID) == 0){
                         logs("IN",Vars.FILL);
                         isValid = true;
