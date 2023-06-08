@@ -209,6 +209,7 @@ public class LMS_Main {
                             saveAccountFD();
                             saveBooks();
                             logs("OUT", Vars.FILL);
+                            System.exit(0);
                             break;
                     default: cls();
                             System.out.println("INVALID INPUT.");
@@ -499,13 +500,13 @@ public class LMS_Main {
                     }else {
                         //-------------------display temporarily-------------------
                         System.out.println("---------ENCRYPTED---------");
-                        System.out.println("studentID: " + tokens[0]);
-                        System.out.println("librarianID: " + tokens[1]);
-                        System.out.println("studentName: " + tokens[2]);
-                        System.out.println("librarianName: " + tokens[3]);
-                        System.out.println("skey: " + tokens[4]);
-                        System.out.println("lkey: " + tokens[5]);
-                        System.out.println("violation: " + tokens[6]);
+                        System.out.println("curr-studentID: " + tokens[0]);
+                        System.out.println("curr-librarianID: " + tokens[1]);
+                        System.out.println("curr-studentName: " + tokens[2]);
+                        System.out.println("curr-librarianName: " + tokens[3]);
+                        System.out.println("curr-skey: " + tokens[4]);
+                        System.out.println("curr-lkey: " + tokens[5]);
+                        System.out.println("curr-violation: " + tokens[6]);
                         System.out.println("---------ENCRYPTED---------\n");
 
                         //-------------------decrypting-------------------
@@ -1032,6 +1033,7 @@ public class LMS_Main {
         String validRandomISBN = "";
         boolean isValid = false;
         boolean isCorrect = false;
+        boolean isCancelled = false;
 
         if (Vars.CURRENT_VIOLATION == 0){
             while(!isValid){
@@ -1066,6 +1068,7 @@ public class LMS_Main {
                                         if (checkISBN(userISBN,10)){
                                             validRandomISBN = userISBN;
                                             isValid = true;
+                                            isCancelled = false;
                                             break;
                                         }else {
                                             System.out.println("\nMODIFICATION UNSUCCESSFUL.");
@@ -1089,6 +1092,7 @@ public class LMS_Main {
                                         if (checkISBN(userISBN,13)){
                                             validRandomISBN = userISBN;
                                             isValid = true;
+                                            isCancelled = false;
                                             break;
                                         }else {
                                             System.out.println("\nMODIFICATION UNSUCCESSFUL.");
@@ -1106,7 +1110,7 @@ public class LMS_Main {
                                     }
                                 }else {
                                     System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                    System.out.println("INVALID PUBLICATION YEAR.");
+                                    System.out.println("INVALID INPUT.");
                                     pause();
                                     cls();
                                     count++;
@@ -1117,22 +1121,22 @@ public class LMS_Main {
                                 if (pubYear > 0 && pubYear <= 2006 && bookQuantity > 0){
                                     validRandomISBN = getISBN(10);
                                     isValid = true;
+                                    isCancelled = false;
                                 }else if (pubYear > 0 && pubYear > 2006 && bookQuantity > 0){
                                     validRandomISBN = getISBN(13);
                                     isValid = true;
+                                    isCancelled = false;
                                 }else{
                                     System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                    System.out.println("INVALID PUBLICATION YEAR.");
+                                    System.out.println("INVALID INPUT.");
                                     pause();
                                     cls();
                                     count++;
                                 }
                                 break;
                         case 3: //cancelled
-                                System.out.println("\nMODIFICATION CANCELLED.");
-                                pause();
-                                cls();
                                 isValid = true;
+                                isCancelled = true;
                                 break;
                         default: System.out.println("WRONG RETURN VALUE");
                                  pause();
@@ -1140,7 +1144,7 @@ public class LMS_Main {
                                  break;
                     }
     
-                    if (isValid){
+                    if (isValid && !isCancelled){
                         if (checkBooks(1, bookTitle, bookAuthor, 0)){
                             while (!isCorrect){
                                 if (count2<3){
@@ -1181,6 +1185,10 @@ public class LMS_Main {
                                     isCorrect = true;
                                 }
                             }
+                        } else if (isValid && isCancelled) {
+                            System.out.println("\nMODIFICATION CANCELLED.");
+                            pause();
+                            cls();
                         }else {
                             userNum = prompts(5);
                             if (userNum == 1){
@@ -2317,7 +2325,7 @@ public class LMS_Main {
                 try {
                     userNum = scan.nextInt();
                     scan.nextLine(); // Consume the newline character
-                    if (userNum > 0 && userNum <= 7){
+                    if (userNum > 0 && userNum <= 8){
                         isValid = true;
                     }else{
                         System.out.println("INVALID INPUT.");
@@ -2609,37 +2617,43 @@ public class LMS_Main {
             }
         }else { 
             //-----------------librarian-----------------
-            if (Vars.ADMIN_FILL_ID.compareTo(ID) == 0){
-                return 1;
-            }else{
-                return 2;
+            for (AccountDetails account: accountList){
+                if (account.getLibrarianID().compareTo(ID) == 0){
+                    return 1;
+                }else{
+                    return 2;
+                }
             }
         }
         return 0;
     }
 
     public static boolean verifyAccount(int x) {
-        Console cons = System.console();
+        /*Console cons = System.console();
         if (cons == null) {
             System.out.println("CONSOLE NOT AVAILABLE. EXITING...");
             pause();
             cls();
             return false;
-        }
+        }*/
         System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
 
         if (x==1){ 
             //-----------------student-----------------
             //hiding user input for security purposes
-            char[] user_studentID = cons.readPassword("ENTER STUDENT ID TO CONFIRM: ");
-            String userStr = new String(user_studentID);
-
+            //char[] user_studentID = cons.readPassword("ENTER STUDENT ID TO CONFIRM: ");
+            //String userStr = new String(user_studentID);
+            
+            System.out.print("ENTER STUDENT ID: ");
+            String userStr = scan.nextLine();
             return userStr.compareTo(Vars.CURRENT_STUDENT_ID) == 0;
         }else{ 
             //-----------------librarian-----------------
-            char[] user_librarianID = cons.readPassword("ENTER LIBRARIAN ID TO CONFIRM: ");
-            String userStr = new String(user_librarianID);
+            //char[] user_librarianID = cons.readPassword("ENTER LIBRARIAN ID TO CONFIRM: ");
+            //String userStr = new String(user_librarianID);
 
+            System.out.print("ENTER LIBRARIAN ID: ");
+            String userStr = scan.nextLine();
             return userStr.compareTo(Vars.ADMIN_FILL_ID) == 0;
         }
     }
@@ -2651,7 +2665,7 @@ public class LMS_Main {
         while (!isValid){
             do{
                 newBookNum = srand.nextInt();
-            }while (newBookNum > 0);
+            }while (newBookNum < 0);
 
             for (BookDetails book : bookList){
                 if (book.getBookNum() != newBookNum){
