@@ -1185,10 +1185,6 @@ public class LMS_Main {
                                     isCorrect = true;
                                 }
                             }
-                        } else if (isValid && isCancelled) {
-                            System.out.println("\nMODIFICATION CANCELLED.");
-                            pause();
-                            cls();
                         }else {
                             userNum = prompts(5);
                             if (userNum == 1){
@@ -1224,6 +1220,10 @@ public class LMS_Main {
                                 isCorrect = true;
                             }
                         }
+                    } else if (isValid && isCancelled) {
+                            System.out.println("\nMODIFICATION CANCELLED.");
+                            pause();
+                            cls();
                     }
                 }else {
                     System.out.println("ERROR.");
