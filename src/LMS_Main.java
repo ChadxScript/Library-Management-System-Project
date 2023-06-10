@@ -2687,7 +2687,7 @@ public class LMS_Main {
                 while (!isValid){
                     do{
                         randomISBN = srand.nextInt(999999999) + 1000000000;
-                    }while (randomISBN > 0);
+                    }while (randomISBN <= 0);
                     
                     randomISBNstring = String.valueOf(randomISBN);
                     int len = randomISBNstring.length();
@@ -2703,7 +2703,7 @@ public class LMS_Main {
                 while (!isValid){
                     do{
                         randomISBN = Math.abs(srand.nextLong() % 9000000000000L) + 1000000000000L;
-                    }while (randomISBN > 0);
+                    }while (randomISBN <= 0);
                     
                     randomISBNstring = String.valueOf(randomISBN);
                     int len = randomISBNstring.length();
