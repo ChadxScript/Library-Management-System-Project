@@ -332,7 +332,7 @@ public class LMS_Main {
         boolean isValid = false;
 
         //check if card is inserted
-        File fp = new File("D:\\LMS_Check.txt");
+        File fp = new File(Vars.LMS_CHCEK_FD);
         while (!fp.exists()) {
             try {
                 fp.createNewFile();
@@ -933,14 +933,14 @@ public class LMS_Main {
                         for (AccountDetails account : accountList){
                             if (account.getStudentID().compareTo(Vars.CURRENT_STUDENT_ID) == 0){
                                 isAccFound = true;
-                                if (borrowedYear > currYear){
+                                if (currYear > borrowedYear){
                                     //penalty here
                                     int kept = currYear - borrowedYear;
                                     System.out.println("YOU KEPT THE BOOK FOR ( " + kept + " ) YEAR(S)!? WTF?");
                                     System.out.println("CONGRATS!");
                                     System.out.println("YOU HAVE A VIOLATION OF 3 OR KUNG ANO MAN");
                                     account.setViolation(3);
-                                } else if (borrowedMonth > currMonth) {
+                                } else if (currMonth > borrowedMonth) {
                                     //penalty here
                                     int kept = currMonth - borrowedMonth;
                                     System.out.println("YOU KEPT THE BOOK FOR ( " + kept + " ) MONTH(S)!? WTF?");
@@ -1001,19 +1001,19 @@ public class LMS_Main {
                         }
                     }
                     saveBooks();
-
-                    //remove the borrowedBooks.txt
-                    try {
-                        Path path = Paths.get(Vars.LMS_FD_BORROWED_BOOKS);
-                        Files.delete(path);
-                    }catch (IOException e){
-                        System.out.println("ERROR: " + e.getMessage());
-                    }
                 }catch (FileNotFoundException e){
                     System.out.println("ERROR: " + e.getMessage());
                 }catch (IOException e){
                     System.out.println("ERROR: " + e.getMessage());
                 }
+                
+                //remove the borrowedBooks.txt
+                try {
+                    Path path = Paths.get(Vars.LMS_FD_BORROWED_BOOKS);
+                    Files.delete(path);
+                }catch (IOException e){
+                    System.out.println("ERROR: " + e.getMessage());
+                } 
             }else {
                 System.out.println("ERROR.");
                 System.out.println("NO BOOKS TO BE RETURN.");
