@@ -2238,6 +2238,7 @@ public class LMS_Main {
                         pause();
                         cls();
                     }
+                    isValid2 = false;
                     pause();
                 }else{
                     System.out.println("ERROR.");
