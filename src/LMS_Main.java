@@ -3,17 +3,8 @@ import java.nio.file.*;
 import java.util.*;
 import java.time.*;
 import java.time.format.*;
+import javax.swing.*;
 //import java.nio.charset.*;
-
-/*
-    Mga fre pakilagay nalang ulit yung mga UI hehe kung JOption or
-    kung anong pwede 
-    ------
-    Pa check narin kung may mga error para ma debug ko
-    slamatttt
-    ------
-    
-*/
 
 //----------------------[GLOBAL VARIABLES]----------------------
 class Vars{
@@ -145,7 +136,9 @@ public class LMS_Main {
                             System.exit(0);
                             break;
                     default: cls();
-                             System.out.println("INVALID INPUT.");
+                           JFrame frame = new JFrame("Error Message");
+                           JOptionPane.showMessageDialog(frame, "Invalid input. Try again. ",
+               "Error Message", JOptionPane.ERROR_MESSAGE);
                              pause();
                              cls();
                              break;
@@ -212,7 +205,9 @@ public class LMS_Main {
                             System.exit(0);
                             break;
                     default: cls();
-                            System.out.println("INVALID INPUT.");
+                            JFrame frame = new JFrame("Error Message");
+                           JOptionPane.showMessageDialog(frame, "Invalid input. Try again. ",
+               "Error Message", JOptionPane.ERROR_MESSAGE);
                             pause();
                             cls();
                             break;
@@ -339,7 +334,7 @@ public class LMS_Main {
             } catch (IOException e) {
                 System.out.println("ERROR: " + e.getMessage());
             }
-            loading();
+            loading(); //System.exit(0);
             cls();
         }
         File directoryFD = new File(Vars.LMS_FLASH_DRIVE);
@@ -357,21 +352,20 @@ public class LMS_Main {
             retrieveAccounts();
             scanScreen(2);
             while (!isValid) {
-                cls();
-                System.out.println("NEW USER");
-                System.out.println("CHOOSE CATEGORY: ");
-                System.out.printf("%n[1] STUDENT");
-                System.out.printf("%n[2] LIBRARIAN");
-                System.out.printf("%n[3] CANCEL");
-                System.out.printf("%n%n-> ");
+                cls(); 
+                System.out.println("\n\n\t\t\t\t\t\t\tNEW USER DETECTED");
+                System.out.println("\n\t\tCHOOSE YOUR CATEGORY: ");
+                System.out.println("\t\t==========================================================================================");
+                System.out.printf("\n\t\t\t[1] STUDENT \t\t\t[2] LIBRARIAN \t\t\t[3] CANCEL");
+                System.out.println("\n\n\t\t==========================================================================================");
+                System.out.printf("\n\t\t-> ");
                 try {
                     userNum = scan.nextInt();
                     scan.nextLine(); // Consume the newline character
                     if (userNum > 0 && userNum <= 3) {
                         return userNum;
                     } else {
-                        System.out.println("INVALID INPUT.");
-                        System.out.println("PLEASE TRY AGAIN");
+                           System.out.println("Invalid. Try gaian");
                     }
                 } catch (InputMismatchException e) {
                     System.out.println("ERROR" + e.getMessage());
@@ -431,15 +425,15 @@ public class LMS_Main {
                         accountList.add(accounts);
                     }else{
                         //-------------------display temporarily-------------------
-                        System.out.println("---------ENCRYPTED---------");
-                        System.out.println("studentID: " + tokens[0]);
-                        System.out.println("librarianID: " + tokens[1]);
-                        System.out.println("studentName: " + tokens[2]);
-                        System.out.println("librarianName: " + tokens[3]);
-                        System.out.println("skey: " + tokens[4]);
-                        System.out.println("lkey: " + tokens[5]);
-                        System.out.println("violation: " + tokens[6]);
-                        System.out.println("---------ENCRYPTED---------");
+                        //System.out.println("---------ENCRYPTED---------");
+                        //System.out.println("studentID: " + tokens[0]);
+                       // System.out.println("librarianID: " + tokens[1]);
+                       // System.out.println("studentName: " + tokens[2]);
+                       // System.out.println("librarianName: " + tokens[3]);
+                       // System.out.println("skey: " + tokens[4]);
+                       // System.out.println("lkey: " + tokens[5]);
+                       // System.out.println("violation: " + tokens[6]);
+                       // System.out.println("---------ENCRYPTED---------");
 
                         //-------------------decrypting-------------------
                         String studentID = decryptString(tokens[0], KEY);
@@ -451,15 +445,15 @@ public class LMS_Main {
                         int violation = decryptInt(Integer.parseInt(tokens[6]), KEY);
 
                         //-------------------display temporarily-------------------
-                        System.out.println("---------DECRYPTED---------");
-                        System.out.println("studentID: " + studentID);
-                        System.out.println("librarianID: " + librarianID);
-                        System.out.println("studentName: " + studentName);
-                        System.out.println("librarianName: " + librarianName);
-                        System.out.println("skey: " + skey);
-                        System.out.println("lkey: " + lkey);
-                        System.out.println("violation: " + violation);
-                        System.out.println("---------DECRYPTED---------");
+                       // System.out.println("---------DECRYPTED---------");
+                       // System.out.println("studentID: " + studentID);
+                       // System.out.println("librarianID: " + librarianID);
+                       // System.out.println("studentName: " + studentName);
+                       // System.out.println("librarianName: " + librarianName);
+                       // System.out.println("skey: " + skey);
+                       // System.out.println("lkey: " + lkey);
+                       // System.out.println("violation: " + violation);
+                      //  System.out.println("---------DECRYPTED---------");
 
                         //-------------------add the decrypted value to list-------------------
                         AccountDetails accounts = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
@@ -492,15 +486,15 @@ public class LMS_Main {
                         Vars.CURRENT_VIOLATION = Integer.parseInt(tokens[6]);
                     }else {
                         //-------------------display temporarily-------------------
-                        System.out.println("---------ENCRYPTED---------");
-                        System.out.println("curr-studentID: " + tokens[0]);
-                        System.out.println("curr-librarianID: " + tokens[1]);
-                        System.out.println("curr-studentName: " + tokens[2]);
-                        System.out.println("curr-librarianName: " + tokens[3]);
-                        System.out.println("curr-skey: " + tokens[4]);
-                        System.out.println("curr-lkey: " + tokens[5]);
-                        System.out.println("curr-violation: " + tokens[6]);
-                        System.out.println("---------ENCRYPTED---------\n");
+                        //System.out.println("---------ENCRYPTED---------");
+                        //System.out.println("curr-studentID: " + tokens[0]);
+                        //System.out.println("curr-librarianID: " + tokens[1]);
+                        //System.out.println("curr-studentName: " + tokens[2]);
+                        //System.out.println("curr-librarianName: " + tokens[3]);
+                        //System.out.println("curr-skey: " + tokens[4]);
+                        //System.out.println("curr-lkey: " + tokens[5]);
+                        //System.out.println("curr-violation: " + tokens[6]);
+                        //System.out.println("---------ENCRYPTED---------\n");
 
                         //-------------------decrypting-------------------
                         Vars.CURRENT_STUDENT_ID = decryptString(tokens[0], KEY);
@@ -512,15 +506,15 @@ public class LMS_Main {
                         Vars.CURRENT_VIOLATION = decryptInt(Integer.parseInt(tokens[6]), KEY);
                         
                         //-------------------display temporarily-------------------
-                        System.out.println("---------DECRYPTED---------");
-                        System.out.println("curr-studentID: " + Vars.CURRENT_STUDENT_ID);
-                        System.out.println("curr-librarianID: " + Vars.CURRENT_LIBRARIAN_ID);
-                        System.out.println("curr-studentName: " + Vars.CURRENT_STUDENT_NAME);
-                        System.out.println("curr-librarianName: " + Vars.CURRENT_LIBRARIAN_NAME);
-                        System.out.println("curr-skey: " + Vars.CURRENT_S_KEY);
-                        System.out.println("curr-lkey: " + Vars.CURRENT_L_KEY);
-                        System.out.println("curr-violation: " + Vars.CURRENT_VIOLATION);
-                        System.out.println("---------DECRYPTED---------");
+                       // System.out.println("---------DECRYPTED---------");
+                       // System.out.println("curr-studentID: " + Vars.CURRENT_STUDENT_ID);
+                       // System.out.println("curr-librarianID: " + Vars.CURRENT_LIBRARIAN_ID);
+                       // System.out.println("curr-studentName: " + Vars.CURRENT_STUDENT_NAME);
+                       // System.out.println("curr-librarianName: " + Vars.CURRENT_LIBRARIAN_NAME);
+                       // System.out.println("curr-skey: " + Vars.CURRENT_S_KEY);
+                       // System.out.println("curr-lkey: " + Vars.CURRENT_L_KEY);
+                       // System.out.println("curr-violation: " + Vars.CURRENT_VIOLATION);
+                       // System.out.println("---------DECRYPTED---------");
                     }
                 }
             }catch (FileNotFoundException e){
@@ -599,12 +593,14 @@ public class LMS_Main {
         while(!isValid){
             if(count<3){
                 cls();
-
-                System.out.printf("%nAPPLICATION FORM%n%n");
-                System.out.print("\nEnter Student Name: ");
+                System.out.println("\n\n\t\t\t\t\t\t\tAPPLICATION FORM");
+                System.out.println("\n\t\tENTER YOUR INFORMATION: ");
+                System.out.println("\t\t==========================================================================================");
+                System.out.print("\n\t\tEnter Student Name: ");
                 String studentName = scan.nextLine();
-                System.out.print("\nEnter Student ID: ");
+                System.out.print("\n\t\tEnter Student ID: ");
                 String studentID = scan.nextLine();
+                System.out.println("\n\n\t\t==========================================================================================");
 
                 if(checkAccount(1,studentID)==2){
                     int skey = Vars.CURRENT_S_KEY = 1;
@@ -617,20 +613,22 @@ public class LMS_Main {
 
                     AccountDetails account = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
                     accountList.add(account);
-                    System.out.println("REGISTRATION SUCCESSFUL");
+                    JFrame frame = new JFrame("Application");
+                    JOptionPane.showMessageDialog(frame, "REGISTRATION SUCCESSFUL!",
+               "Application", JOptionPane.INFORMATION_MESSAGE);
                     pause();
                     isValid = true;
                 }else {
-                    System.out.println("INVALID STUDENT ID");
-                    System.out.println("ID ALREADY EXIST");
-                    System.out.println("PLEASE TRY AGAIN.");
+                    JFrame frame = new JFrame("Error Message");
+                    JOptionPane.showMessageDialog(frame, "Duplicated Student ID. Try again. ",
+               "Error Message", JOptionPane.ERROR_MESSAGE);
                     pause();
                     count++;
                 }
             }else{
-                System.out.println("ERROR.");
-                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
-                System.out.println("PLEASE TRY AGAIN LATER");
+                JFrame frame = new JFrame("Error Message");
+                    JOptionPane.showMessageDialog(frame, "Too many unsuccessful attempts. Try again later.",
+               "Error Message", JOptionPane.ERROR_MESSAGE);
                 pause();
                 System.exit(0);
             }
@@ -645,13 +643,14 @@ public class LMS_Main {
             if(count<3){
                 cls();
 
-                System.out.printf("%nAPPLICATION FORM%n%n");
-                System.out.println("ADMINISTRATORS HAVE DEFAULT NAME AND ID");
-                System.out.println("PLEASE ENTER THE FOLLOWING INFORMATION TO CONFIRM");
-                System.out.println("Enter Librarian Name: ");
+                System.out.printf("%n\n\n\t\t\t\t\t\t\tAPPLICATION FORM ADMIN%n%n");
+                System.out.println("\n\t\tPLEASE ENTER THE FOLLOWING INFORMATION TO CONFIRM");
+                System.out.println("\t\t==========================================================================================");
+                System.out.println("\n\t\tEnter Librarian Name: ");
                 String librarianName = scan.nextLine();
-                System.out.println("Enter Librarian ID: ");
+                System.out.println("\n\t\tEnter Librarian ID: ");
                 String librarianID = scan.nextLine();
+                System.out.println("\n\n\t\t==========================================================================================");
 
                 if(librarianName.compareTo(Vars.ADMIN_FILL_NAME)==0 &&
                     librarianID.compareTo(Vars.ADMIN_FILL_ID)==0){
@@ -707,22 +706,22 @@ public class LMS_Main {
             while(!isValid){
                 if(count<3){
                     cls();
-                    System.out.printf("%nLOG IN%n%n");
+                    System.out.println("\n\n\t\t\t\t\t\t\tSTUDENT LOG IN");
+                    System.out.println("\n\t\tENTER YOUR INFORMATION: ");
+                    System.out.println("\t\t==========================================================================================");
+                    System.out.print("\n\t\tEnter Student ID: ");
                     //System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
 
                     //hiding user input for security purposes
                     //char[] user_studentID = cons.readPassword("ENTER STUDENT ID: ");
                     //String studentID = new String(user_studentID);
 
-                    System.out.print("ENTER STUDENT ID: ");
                     String studentID = scan.nextLine();
                     if(studentID.compareTo(Vars.CURRENT_STUDENT_ID) == 0){
                         logs("IN",Vars.FILL);
                         isValid = true;
                     }else{
-                        System.out.printf("%n%nERROR.%n");
-                        System.out.println("WRONG STUDENT ID");
-                        System.out.println("PLEASE TRY AGAIN.");
+                        System.out.println("Wrong ID");
                         pause();
                         count++;
                     }
@@ -839,6 +838,7 @@ public class LMS_Main {
                                                         encryptedcurrYear, encryptedcurrMonth, encryptedcurrDay, encryptedBookNum, 
                                                         encryptedISBN, encryptedBookTitle, encryptedBookAuthor, encryptedPubYear, encryptedBookQuant);
                                             fprint.write(borrowedBookDetails);
+
                                             System.out.println("THE BOOK ( " + temp + " ) SUCCESSFULLY BORROWED.");
 
                                             saveBooks();
@@ -1228,9 +1228,12 @@ public class LMS_Main {
                 }
             }
         }else {
-            System.out.println("TRANSACTION CANCELLED.");
-            System.out.println("YOU HAVE A VIOLATION");
-            System.out.println("PLEASE SETTLE YOUR VIOLATION FIRST AND TRY AGAIN LATER.");
+            JFrame frame = new JFrame("");
+       JOptionPane.showMessageDialog(frame, "You have a violation. Please settle it and try again.",
+               "Transaction Cancelled", JOptionPane.ERROR_MESSAGE);
+            //System.out.println("TRANSACTION CANCELLED.");
+            //System.out.println("YOU HAVE A VIOLATION");
+            //System.out.println("PLEASE SETTLE YOUR VIOLATION FIRST AND TRY AGAIN LATER.");
             pause();
             cls();
         }
@@ -1252,15 +1255,19 @@ public class LMS_Main {
                         saveAccounts();
                         saveAccountFD();
                         logs("SETTLED VIOLATION", Vars.FILL);
+                        
                         System.out.println("CONGRATULATION YOU SETTLED YOUR VIOLATION.");
                         pause();
                         cls();
                     }else {
-                        System.out.println("BRUH WTF SETTLE YOUR VIOLATION.");
+                        System.out.println("PLEASE SETTLE YOUR VIOLATION FIRST.");
                         pause();
                         cls();
                     }
                 }else {
+               //     JFrame frame = new JFrame("");
+       //JOptionPane.showMessageDialog(frame, "CONGRATULATION YOU DON'T HAVE ANY VIOLATION.",
+          //     "Student User", JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("CONGRATULATION YOU DON'T HAVE ANY VIOLATION.");
                     pause();
                     cls();
@@ -1421,15 +1428,17 @@ public class LMS_Main {
                                         isValid = true;
                                         break;
                                     }else {
-                                        System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                        System.out.println("INVALID ISBN.");
+                                        JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                         pause();
                                         cls();
                                         count++;
                                     }
                                 }else {
-                                    System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                    System.out.println("INVALID ISBN.");
+                                    JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                     pause();
                                     cls();
                                     count++;
@@ -1444,22 +1453,25 @@ public class LMS_Main {
                                         isValid = true;
                                         break;
                                     }else {
-                                        System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                        System.out.println("INVALID ISBN.");
+                                        JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                         pause();
                                         cls();
                                         count++;
                                     }
                                 }else {
-                                    System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                    System.out.println("INVALID ISBN.");
+                                    JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                     pause();
                                     cls();
                                     count++;
                                 }
                             }else {
-                                System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                System.out.println("INVALID PUBLICATION YEAR.");
+                                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid Publication Year.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                 pause();
                                 cls();
                                 count++;
@@ -1474,8 +1486,9 @@ public class LMS_Main {
                                 validRandomISBN = getISBN(13);
                                 isValid = true;
                             }else{
-                                System.out.println("\nMODIFICATION UNSUCCESSFUL.");
-                                System.out.println("INVALID PUBLICATION YEAR.");
+                                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid Publication Year.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                 pause();
                                 cls();
                                 count++;
@@ -1508,17 +1521,17 @@ public class LMS_Main {
                                     pause();
                                     cls();
                                 }else {
-                                    System.out.println("ERROR.");
-                                    System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
-                                    System.out.println("PLEASE TRY AGAIN");
+                                    JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Wrong credentials.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                     pause();
                                     cls();
                                     count2++;
                                 }
                             }else{
-                                System.out.println("ERROR.");
-                                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
-                                System.out.println("PLEASE TRY AGAIN LATER");
+                                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                 pause();
                                 cls();
                                 isCorrect = true;
@@ -1535,18 +1548,17 @@ public class LMS_Main {
                                         isCorrect = true;
                                         isValid = false;
                                     }else {
-                                        System.out.println("ERROR.");
-                                        System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
-                                        System.out.println("PLEASE TRY AGAIN");
+                                        JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Wrong credentials.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                         pause();
                                         cls();
                                         count2++;
                                     }
                                 }else{
-                                    System.out.println("ERROR.");
-                                    System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
-                                    System.out.println("GRABE KA NA");
-                                    System.out.println("PLEASE TRY AGAIN LATER");
+                                    JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                                     pause();
                                     cls();
                                     isCorrect = true;
@@ -1561,9 +1573,9 @@ public class LMS_Main {
                     }
                 }
             }else {
-                System.out.println("ERROR.");
-                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
-                System.out.println("PLEASE TRY AGAIN LATER");
+                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                 pause();
                 cls();
                 isValid = true;
@@ -1698,26 +1710,26 @@ public class LMS_Main {
                         }
                     }
                     if (!isFound){
-                        System.out.println("ERROR NOT FOUND.");
-                        System.out.println("WRONG BOOK NUMBER OR IT DOES NOT EXIST");
-                        System.out.println("PLEASE TRY AGAIN LATER");
+                        JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Wrong book number or does not exit.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                         pause();
                         cls();
                         isCorrect = false;
                         count++;
                     }
                 }else{
-                    System.out.println("INVALID INPUT");
-                    System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
-                    System.out.println("PLEASE TRY AGAIN");
+                    JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Wrong credentials.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                     pause();
                     cls();
                     count++;
                 }
             }else {
-                System.out.println("ERROR.");
-                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
-                System.out.println("PLEASE TRY AGAIN LATER");
+                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                 pause();
                 cls();
                 isCorrect = true;
@@ -2211,8 +2223,10 @@ public class LMS_Main {
                                         isValid2 = true;
                                     }
                                 }else{
-                                    System.out.println("INVALID INPUT");
-                                    System.out.println("PLEASE TRY AGAIN.");
+                                    JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                                     pause();
                                     cls();
                                 }
@@ -2242,9 +2256,10 @@ public class LMS_Main {
                     count++;
                 }
             }else{
-                System.out.println("ERROR.");
-                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
-                System.out.println("PLEASE TRY AGAIN LATER");
+                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Too many attempts. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                 pause();
                 cls();
                 isValid = true;
@@ -2281,22 +2296,24 @@ public class LMS_Main {
             System.out.printf("%n%n%nMENU%n%n");
 
             if (x==1){ //student
-                System.out.println("[1] DISPLAY BOOKS");
-                System.out.println("[2] BORROW BOOKS");
-                System.out.println("[3] RETURN BOOKS");
-                System.out.println("[4] REQUEST BOOKS");
-                System.out.println("[5] VIEW VIOLATIONS");
-                System.out.println("[6] SAVE AND EXIT");
-                System.out.printf("%n->");
-
+                System.out.println("\n\n\t\t\t\t\t\t\tSTUDENT LIBRARY  MENU");
+                System.out.println("\n\t\tCHOOSE YOUR CATEGORY: ");
+                System.out.println("\t\t==========================================================================================");
+                System.out.printf("\n\t\t    [1] DISPLAY BOOKS \t\t[2] BORROW BOOKS \t\t[3] RETURN BOOKS");
+                System.out.printf("\n\n\t\t    [4] REQUEST BOOKS \t\t[5] VIEW VIOLATIONS \t\t[6] SAVE AND EXIT");
+                System.out.println("\n\n\t\t==========================================================================================");
+                System.out.printf("\n\t\t-> ");
+               
                 try {
                     userNum = scan.nextInt();
                     scan.nextLine(); // Consume the newline character
                     if (userNum > 0 && userNum <= 6){
                         isValid = true;
                     }else{
-                        System.out.println("INVALID INPUT.");
-                        System.out.println("PLEASE TRY AGAIN");
+                        JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                         pause();
                         cls();
                     }
@@ -2306,15 +2323,12 @@ public class LMS_Main {
                     cls();
                 }
             }else{ //librarian
-                System.out.println("[1] ADD BOOKS");
-                System.out.println("[2] EDIT BOOKS");
-                System.out.println("[3] REMOVE BOOKS");
-                System.out.println("[4] BOOK REQUESTS");
-                System.out.println("[5] CHANGE KEY");
-                System.out.println("[6] DISPLAY BOOKS");
-                System.out.println("[7] DISPLAY LOGS");
-                System.out.println("[8] SAVE AND EXIT");
-                System.out.printf("%n->");
+                System.out.println("\t\t==========================================================================================");
+                System.out.printf("\n\t\t    [1] ADD BOOKS \t\t[2] EDIT BOOKS \t\t[3] REMOVE BOOKS");
+                System.out.printf("\n\n\t\t    [4] BOOK REQUESTS \t\t[5] CHANGE KEY \t\t[6] DISPLAY BOOKS");
+                System.out.printf("\n\n\t\t    [7] DISPLAY LOGHS \t\t[8] SAVE & EXIT \t\t");
+                System.out.println("\n\n\t\t==========================================================================================");
+                System.out.printf("\n\t\t-> ");
 
                 try {
                     userNum = scan.nextInt();
@@ -2360,8 +2374,10 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2384,8 +2400,10 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2408,8 +2426,10 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2432,8 +2452,10 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 2){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2459,8 +2481,10 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 6){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2483,8 +2507,10 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2506,8 +2532,10 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 2){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            pause();
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2529,8 +2557,9 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 2){
                             return userNum;
                         }else{
-                            System.out.println("INVALID INPUT.");
-                            System.out.println("PLEASE TRY AGAIN");
+                            JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2541,7 +2570,9 @@ public class LMS_Main {
                 break;
 
             default: cls();
-                System.out.printf("%n%nINVALID PARAMETER.%n");
+                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Invalid parameter.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                 pause();
                 cls();
                 break;
@@ -2551,25 +2582,32 @@ public class LMS_Main {
 
     public static void displayBooks() {
         cls();
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
+                   
         System.out.printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |%n",
                 "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
-        System.out.println("-------------------------------------------------------------");
-
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
+        
         for (BookDetails book : bookList){
             System.out.printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |%n",
                     book.getBookNum(), book.getISBN(), book.getBookTitle(),
                     book.getBookAuthor(), book.getPublicationYear(), book.getBookQuantity());
         }
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
         System.out.printf("%n%n");
     }
 
     public static void displayCurrentBook(int x){
-        System.out.printf("%n-------------------------------------------------------------");
-        System.out.printf("%n%nBook Details:%n");
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
+                   
         System.out.printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |%n",
                 "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
 
         //search for the book
         for (BookDetails book : bookList){
@@ -2583,17 +2621,20 @@ public class LMS_Main {
 
     public static void displayBookRequests() {
         cls();
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("-===================================================================================================================================================================="
+                + "===================================================");
         System.out.printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |%n",
                 "BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY");
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
 
         for (BookDetails book : bookRquestList){
             System.out.printf("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |%n",
                     book.getBookNum(), book.getISBN(), book.getBookTitle(),
                     book.getBookAuthor(), book.getPublicationYear(), book.getBookQuantity());
         }
-        System.out.println("-------------------------------------------------------------");
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
         System.out.printf("%n%n");
     }
 
@@ -2630,6 +2671,8 @@ public class LMS_Main {
             cls();
             return false;
         }*/
+        System.out.println("===================================================================================================================================================================="
+                + "===================================================");
         System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
 
         if (x==1){ 
@@ -2710,8 +2753,9 @@ public class LMS_Main {
                     }
                 }   break;
             default:
-                System.out.println("\n\nWRONGPARAMETER.");
-                System.out.println("PLEASE CHECK THE CODE.");
+                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Wrong Parameters. Please check the code.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                 pause();
                 cls();
                 break;
@@ -2794,8 +2838,9 @@ public class LMS_Main {
                 return sum % 10 == 0;
             }
             default:
-                System.out.println("\n\nWRONG PARAMETERS.");
-                System.out.println("PLEASE CHECK THE CODE.");
+                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Wrong Parameters. Please check the code.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                 pause();
                 cls();
                 return false;
@@ -2818,8 +2863,9 @@ public class LMS_Main {
                     }
                 }   break;
             default:
-                System.out.println("\n\nWRONG PARAMETERS.");
-                System.out.println("PLEASE CHECK THE CODE.");
+                JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Wrong Parameters. Please check the code.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
                 pause();
                 cls();
                 return false;
@@ -3123,22 +3169,36 @@ public class LMS_Main {
     public static void front()  {
         System.out.println("LIBRARY MANAGEMENT SYSTEM");
     }
+    
+    public static void login()
+    {
+        JFrame f=new JFrame("Login");
+    }
 
     public static void loading() {
-        System.out.println("LOADING......");
+        //JFrame frame =new JFrame("ERROR");//creating instance of JFrame
+       // frame.setSize(400,180);//400 width and 500 height 
+       // frame.setVisible(true);
+       JFrame frame = new JFrame("Error Message");
+       JOptionPane.showMessageDialog(frame, "Try again. Please insert your card.",
+               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+        
     }
 
     public static void scanScreen(int x) {
         if(x==1){
             System.out.println("WELCOME USER!");
+            
         }else{
-            System.out.println("NEW USER!");
+            JFrame frame = new JFrame("");
+       JOptionPane.showMessageDialog(frame, "NEW USER DETECTED!",
+               "User", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     public static void exitMessage() {
-        System.out.println("LIBRARY MANAGEMENT SYSTEM");
-        System.out.println("HOPE TO SEE YOU AGAIN!");
+        System.out.println("\n\n\t\tEXITING LIBRARY MANAGEMENT SYSTEM...");
+        System.out.println("\t\tHOPE TO SEE YOU AGAIN!");
     }
 
 }
