@@ -1428,17 +1428,15 @@ public class LMS_Main {
                                         isValid = true;
                                         break;
                                     }else {
-                                        JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                        System.out.println("\nMODIFICATION UNSUCCESSFUL.");
+                                        System.out.println("INVALID ISBN.");
                                         pause();
                                         cls();
                                         count++;
                                     }
                                 }else {
-                                    JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                    System.out.println("\nMODIFICATION UNSUCCESSFUL.");
+                                    System.out.println("INVALID ISBN.");
                                     pause();
                                     cls();
                                     count++;
@@ -1453,25 +1451,22 @@ public class LMS_Main {
                                         isValid = true;
                                         break;
                                     }else {
-                                        JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                        System.out.println("\nMODIFICATION UNSUCCESSFUL.");
+                                        System.out.println("INVALID ISBN.");
                                         pause();
                                         cls();
                                         count++;
                                     }
                                 }else {
-                                    JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid ISBN.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                    System.out.println("\nMODIFICATION UNSUCCESSFUL.");
+                                    System.out.println("INVALID ISBN.");
                                     pause();
                                     cls();
                                     count++;
                                 }
                             }else {
-                                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid Publication Year.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                System.out.println("\nMODIFICATION UNSUCCESSFUL.");
+                                System.out.println("INVALID PUBLICATION YEAR.");
                                 pause();
                                 cls();
                                 count++;
@@ -1486,9 +1481,8 @@ public class LMS_Main {
                                 validRandomISBN = getISBN(13);
                                 isValid = true;
                             }else{
-                                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Modification unsuccessful. Invalid Publication Year.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                System.out.println("\nMODIFICATION UNSUCCESSFUL.");
+                                System.out.println("INVALID PUBLICATION YEAR.");
                                 pause();
                                 cls();
                                 count++;
@@ -1521,17 +1515,17 @@ public class LMS_Main {
                                     pause();
                                     cls();
                                 }else {
-                                    JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Wrong credentials.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                    System.out.println("ERROR.");
+                                    System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
+                                    System.out.println("PLEASE TRY AGAIN");
                                     pause();
                                     cls();
                                     count2++;
                                 }
                             }else{
-                                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                System.out.println("ERROR.");
+                                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
+                                System.out.println("PLEASE TRY AGAIN LATER");
                                 pause();
                                 cls();
                                 isCorrect = true;
@@ -1548,17 +1542,18 @@ public class LMS_Main {
                                         isCorrect = true;
                                         isValid = false;
                                     }else {
-                                        JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Wrong credentials.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                        System.out.println("ERROR.");
+                                        System.out.println("INPUT DO NOT MATCH TO YOU CREDENTIALS.");
+                                        System.out.println("PLEASE TRY AGAIN");
                                         pause();
                                         cls();
                                         count2++;
                                     }
                                 }else{
-                                    JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                                    System.out.println("ERROR.");
+                                    System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
+                                    System.out.println("GRABE KA NA");
+                                    System.out.println("PLEASE TRY AGAIN LATER");
                                     pause();
                                     cls();
                                     isCorrect = true;
@@ -1573,9 +1568,9 @@ public class LMS_Main {
                     }
                 }
             }else {
-                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                System.out.println("ERROR.");
+                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
+                System.out.println("PLEASE TRY AGAIN LATER");
                 pause();
                 cls();
                 isValid = true;
@@ -1710,26 +1705,26 @@ public class LMS_Main {
                         }
                     }
                     if (!isFound){
-                        JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Wrong book number or does not exit.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                        System.out.println("ERROR NOT FOUND.");
+                        System.out.println("WRONG BOOK NUMBER OR IT DOES NOT EXIST");
+                        System.out.println("PLEASE TRY AGAIN LATER");
                         pause();
                         cls();
                         isCorrect = false;
                         count++;
                     }
                 }else{
-                    JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Wrong credentials.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("INVALID INPUT");
+                    System.out.println("DOES NOT MATCH TO YOUR CREDENTIALS");
+                    System.out.println("PLEASE TRY AGAIN");
                     pause();
                     cls();
                     count++;
                 }
             }else {
-                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Error. Too many unsuccessful attempts.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                System.out.println("ERROR.");
+                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
+                System.out.println("PLEASE TRY AGAIN LATER");
                 pause();
                 cls();
                 isCorrect = true;
@@ -2223,10 +2218,8 @@ public class LMS_Main {
                                         isValid2 = true;
                                     }
                                 }else{
-                                    JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                                    System.out.println("INVALID INPUT");
+                                    System.out.println("PLEASE TRY AGAIN.");
                                     pause();
                                     cls();
                                 }
@@ -2256,10 +2249,9 @@ public class LMS_Main {
                     count++;
                 }
             }else{
-                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Too many attempts. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                System.out.println("ERROR.");
+                System.out.println("TOO MANY UNSUCCESSFUL ATTEMPTS.");
+                System.out.println("PLEASE TRY AGAIN LATER");
                 pause();
                 cls();
                 isValid = true;
@@ -2310,10 +2302,8 @@ public class LMS_Main {
                     if (userNum > 0 && userNum <= 6){
                         isValid = true;
                     }else{
-                        JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                        System.out.println("INVALID INPUT.");
+                        System.out.println("PLEASE TRY AGAIN");
                         pause();
                         cls();
                     }
@@ -2374,10 +2364,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2400,10 +2388,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2426,10 +2412,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2452,10 +2436,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 2){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2481,10 +2463,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 6){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2507,10 +2487,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 3){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2532,10 +2510,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 2){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
-                            pause();
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2557,9 +2533,8 @@ public class LMS_Main {
                         if (userNum > 0 && userNum <= 2){
                             return userNum;
                         }else{
-                            JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid input. Please try again.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                            System.out.println("INVALID INPUT.");
+                            System.out.println("PLEASE TRY AGAIN");
                             pause();
                         }
                     }catch (InputMismatchException e) {
@@ -2570,9 +2545,7 @@ public class LMS_Main {
                 break;
 
             default: cls();
-                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Invalid parameter.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                System.out.printf("%n%nINVALID PARAMETER.%n");
                 pause();
                 cls();
                 break;
@@ -2753,9 +2726,8 @@ public class LMS_Main {
                     }
                 }   break;
             default:
-                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Wrong Parameters. Please check the code.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                System.out.println("\n\nWRONGPARAMETER.");
+                System.out.println("PLEASE CHECK THE CODE.");
                 pause();
                 cls();
                 break;
@@ -2838,9 +2810,8 @@ public class LMS_Main {
                 return sum % 10 == 0;
             }
             default:
-                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Wrong Parameters. Please check the code.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                System.out.println("\n\nWRONG PARAMETERS.");
+                System.out.println("PLEASE CHECK THE CODE.");
                 pause();
                 cls();
                 return false;
@@ -2863,9 +2834,8 @@ public class LMS_Main {
                     }
                 }   break;
             default:
-                JFrame frame = new JFrame("Error Message");
-       JOptionPane.showMessageDialog(frame, "Wrong Parameters. Please check the code.",
-               "No Card Detected", JOptionPane.ERROR_MESSAGE);
+                System.out.println("\n\nWRONG PARAMETERS.");
+                System.out.println("PLEASE CHECK THE CODE.");
                 pause();
                 cls();
                 return false;
