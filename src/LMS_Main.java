@@ -475,14 +475,7 @@ public class LMS_Main {
 
         //retrieve account details from flashdrive
         fp = new File(Vars.LMS_FD_USER_DETAILS);
-        if(!fp.exists()){
-            System.out.println("OH! NEW USER!");
-            try {
-                fp.createNewFile();
-            } catch (IOException e) {
-                System.out.println("ERROR: " + e.getMessage());
-            }
-        }else{
+        if(fp.exists()){
             try(BufferedReader f2p = new BufferedReader(new FileReader(fp))){
                 String str;
 
