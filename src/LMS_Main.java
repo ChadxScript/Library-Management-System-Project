@@ -1316,7 +1316,7 @@ public class LMS_Main {
                                         if (userNum > 0){
                                             if (verifyAccount(2)){
                                                 isNum = true;
-                                                int newBookQuant = book.getBookQuantity() - userNum;
+                                                int newBookQuant = book.getBookQuantity() + userNum;
                                                 book.setBookQuantity(newBookQuant);
                                                 System.out.printf("%nMODIFICATION SUCCESSFUL.%n%n");
                                                 System.out.println("BOOK LIST:");
@@ -1625,7 +1625,7 @@ public class LMS_Main {
                                             break;
                                     case 2: System.out.println("INPUT NEW VALID BOOK TITLE: ");
                                             newBookTitle = scan.nextLine();
-                                            if (checkBooks(1, newBookTitle, book.getBookAuthor(), 0)){
+                                            if (checkBooks(1, newBookTitle, book.getBookTitle(), 0)){
                                                 logs("EDIT BOOK TITLE", "FROM ( " + book.getBookTitle() + " ) TO ( " + newBookTitle + " )");
                                                 book.setBookTitle(newBookTitle);
                                                 saveBooks();
@@ -1640,7 +1640,7 @@ public class LMS_Main {
                                             newBookAuthor = scan.nextLine();
                                             if (checkBooks(1, book.getBookTitle(), newBookAuthor, 0)){
                                                 logs("EDIT BOOK AUTHOR", "FROM ( " + book.getBookAuthor() + " ) TO ( " + newBookAuthor + " )");
-                                                book.setBookTitle(newBookAuthor);
+                                                book.setBookAuthor(newBookAuthor);
                                                 saveBooks();
                                             }else {
                                                 System.out.println("ERROR.");
@@ -1877,7 +1877,7 @@ public class LMS_Main {
         boolean isFound = false;
         boolean isCorrect = false;
 
-        File fp = new File(Vars.LMS_FD_BORROWED_BOOKS);
+        File fp = new File(Vars.LMS_BOOK_REQUESTS);
         if (fp.exists()){
             try (BufferedReader f2p = new BufferedReader(new FileReader(fp))){
                 cls();
