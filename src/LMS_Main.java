@@ -424,16 +424,6 @@ public class LMS_Main {
                         AccountDetails accounts = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
                         accountList.add(accounts);
                     }else{
-                        //-------------------display temporarily-------------------
-                        //System.out.println("---------ENCRYPTED---------");
-                        //System.out.println("studentID: " + tokens[0]);
-                       // System.out.println("librarianID: " + tokens[1]);
-                       // System.out.println("studentName: " + tokens[2]);
-                       // System.out.println("librarianName: " + tokens[3]);
-                       // System.out.println("skey: " + tokens[4]);
-                       // System.out.println("lkey: " + tokens[5]);
-                       // System.out.println("violation: " + tokens[6]);
-                       // System.out.println("---------ENCRYPTED---------");
 
                         //-------------------decrypting-------------------
                         String studentID = decryptString(tokens[0], KEY);
@@ -443,17 +433,6 @@ public class LMS_Main {
                         int skey = decryptInt(Integer.parseInt(tokens[4]), KEY);
                         int lkey = decryptInt(Integer.parseInt(tokens[5]), KEY);
                         int violation = decryptInt(Integer.parseInt(tokens[6]), KEY);
-
-                        //-------------------display temporarily-------------------
-                       // System.out.println("---------DECRYPTED---------");
-                       // System.out.println("studentID: " + studentID);
-                       // System.out.println("librarianID: " + librarianID);
-                       // System.out.println("studentName: " + studentName);
-                       // System.out.println("librarianName: " + librarianName);
-                       // System.out.println("skey: " + skey);
-                       // System.out.println("lkey: " + lkey);
-                       // System.out.println("violation: " + violation);
-                      //  System.out.println("---------DECRYPTED---------");
 
                         //-------------------add the decrypted value to list-------------------
                         AccountDetails accounts = new AccountDetails(studentID, librarianID, studentName, librarianName, skey, lkey, violation);
@@ -485,16 +464,6 @@ public class LMS_Main {
                         Vars.CURRENT_L_KEY = Integer.parseInt(tokens[5]);
                         Vars.CURRENT_VIOLATION = Integer.parseInt(tokens[6]);
                     }else {
-                        //-------------------display temporarily-------------------
-                        //System.out.println("---------ENCRYPTED---------");
-                        //System.out.println("curr-studentID: " + tokens[0]);
-                        //System.out.println("curr-librarianID: " + tokens[1]);
-                        //System.out.println("curr-studentName: " + tokens[2]);
-                        //System.out.println("curr-librarianName: " + tokens[3]);
-                        //System.out.println("curr-skey: " + tokens[4]);
-                        //System.out.println("curr-lkey: " + tokens[5]);
-                        //System.out.println("curr-violation: " + tokens[6]);
-                        //System.out.println("---------ENCRYPTED---------\n");
 
                         //-------------------decrypting-------------------
                         Vars.CURRENT_STUDENT_ID = decryptString(tokens[0], KEY);
@@ -505,16 +474,6 @@ public class LMS_Main {
                         Vars.CURRENT_L_KEY = decryptInt(Integer.parseInt(tokens[5]), KEY);
                         Vars.CURRENT_VIOLATION = decryptInt(Integer.parseInt(tokens[6]), KEY);
                         
-                        //-------------------display temporarily-------------------
-                       // System.out.println("---------DECRYPTED---------");
-                       // System.out.println("curr-studentID: " + Vars.CURRENT_STUDENT_ID);
-                       // System.out.println("curr-librarianID: " + Vars.CURRENT_LIBRARIAN_ID);
-                       // System.out.println("curr-studentName: " + Vars.CURRENT_STUDENT_NAME);
-                       // System.out.println("curr-librarianName: " + Vars.CURRENT_LIBRARIAN_NAME);
-                       // System.out.println("curr-skey: " + Vars.CURRENT_S_KEY);
-                       // System.out.println("curr-lkey: " + Vars.CURRENT_L_KEY);
-                       // System.out.println("curr-violation: " + Vars.CURRENT_VIOLATION);
-                       // System.out.println("---------DECRYPTED---------");
                     }
                 }
             }catch (FileNotFoundException e){
@@ -693,13 +652,6 @@ public class LMS_Main {
     public static void userLOGIN() {
         int count;
         boolean isValid = false;
-        /*Console cons = System.console();
-        if (cons == null) {
-            System.out.println("CONSOLE NOT AVAILABLE. EXITING...");
-            pause();
-            cls();
-            //return;
-        }*/
 
         if(Vars.CURRENT_S_KEY==1 && Vars.CURRENT_L_KEY==0){
             count = 0;
@@ -710,11 +662,6 @@ public class LMS_Main {
                     System.out.println("\n\t\tENTER YOUR INFORMATION: ");
                     System.out.println("\t\t==========================================================================================");
                     System.out.print("\n\t\tEnter Student ID: ");
-                    //System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
-
-                    //hiding user input for security purposes
-                    //char[] user_studentID = cons.readPassword("ENTER STUDENT ID: ");
-                    //String studentID = new String(user_studentID);
 
                     String studentID = scan.nextLine();
                     if(studentID.compareTo(Vars.CURRENT_STUDENT_ID) == 0){
@@ -739,11 +686,6 @@ public class LMS_Main {
                 if(count<3){
                     cls();
                     System.out.printf("%nLOG IN%n%n");
-                    //System.out.println("NOTE: INPUTS ARE HIDDEN FOR SECURITY PURPOSES.\n");
-
-                    //hiding user input for security purposes
-                    //char[] user_librarianID = cons.readPassword("ENTER LIBRARIAN ID: ");
-                    //String librarianID = new String(user_librarianID);
                     
                     System.out.print("ENTER LIBRARIAN ID: ");
                     String librarianID = scan.nextLine();
@@ -933,6 +875,7 @@ public class LMS_Main {
                                     System.out.println("CONGRATS!");
                                     System.out.println("YOU HAVE A VIOLATION OF 3 OR KUNG ANO MAN");
                                     account.setViolation(3);
+                                    Vars.CURRENT_VIOLATION = 3;
                                 } else if (currMonth > borrowedMonth) {
                                     //penalty here
                                     int kept = currMonth - borrowedMonth;
@@ -940,6 +883,7 @@ public class LMS_Main {
                                     System.out.println("CONGRATS!");
                                     System.out.println("YOU HAVE A VIOLATION OF 2 OR KUNG ANO MAN");
                                     account.setViolation(2);
+                                    Vars.CURRENT_VIOLATION = 2;
                                 }else if ((currDay - borrowedDay) >= 3){
                                     //penalty here
                                     int kept = currDay - borrowedDay;
@@ -947,6 +891,7 @@ public class LMS_Main {
                                     System.out.println("CONGRATS!");
                                     System.out.println("YOU HAVE A VIOLATION OF 1 OR KUNG ANO MAN");
                                     account.setViolation(1);
+                                    Vars.CURRENT_VIOLATION = 1;
                                 }else{
                                     //no penalty
                                     int kept = currDay - borrowedDay;
@@ -954,6 +899,7 @@ public class LMS_Main {
                                     System.out.println("CONGRATS!");
                                     System.out.println("YOU DON'T HAVE A VIOLATION OR KUNG ANO MAN");
                                     account.setViolation(0);
+                                    Vars.CURRENT_VIOLATION = 0;
                                 }
                                 break;
                             }
@@ -1265,9 +1211,9 @@ public class LMS_Main {
                         cls();
                     }
                 }else {
-               //     JFrame frame = new JFrame("");
-       //JOptionPane.showMessageDialog(frame, "CONGRATULATION YOU DON'T HAVE ANY VIOLATION.",
-          //     "Student User", JOptionPane.INFORMATION_MESSAGE);
+                    JFrame frame = new JFrame("");
+                    JOptionPane.showMessageDialog(frame, "CONGRATULATION YOU DON'T HAVE ANY VIOLATION.",
+               "Student User", JOptionPane.INFORMATION_MESSAGE);
                     System.out.println("CONGRATULATION YOU DON'T HAVE ANY VIOLATION.");
                     pause();
                     cls();
