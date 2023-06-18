@@ -4,11 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Library-Management-System-Project.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Library-Management-System-Project.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/JAVA Version/src/LMS Database/LMS Logs/2023-06-05.csv" beforeDir="false" afterPath="$PROJECT_DIR$/JAVA Version/src/LMS Database/LMS Logs/2023-06-05.csv" afterDir="false" />
+    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="PYTHON Version [pycharm]">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,6 +98,29 @@
       <option name="presentableId" value="Default" />
       <updated>1687063277446</updated>
     </task>
+    <task id="LOCAL-00001" summary="PYTHON Version [pycharm]">
+      <created>1687097257204</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1687097257204</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="PYTHON Version [pycharm]" />
+    <option name="LAST_COMMIT_MESSAGE" value="PYTHON Version [pycharm]" />
   </component>
 </project>
