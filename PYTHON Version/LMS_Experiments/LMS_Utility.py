@@ -1,5 +1,379 @@
+# LMS files imports
+import LMS_Vars
+import LMS_LinkedList
+import LMS_Utility
+
+# System imports
 import random
 import os
+import datetime
+
+
+def insert_card():
+    # Check if card is inserted or not
+    while not os.path.exists(LMS_Vars.LMS_CHECK_FD):
+        try:
+            with open(LMS_Vars.LMS_CHECK_FD, 'w'):
+                pass
+        except IOError as e:
+            print(f"ERROR: {e}")
+        # loading()
+        LMS_Utility.cls()
+
+    # Create directory for the user details
+    os.makedirs(LMS_Vars.LMS_FLASH_DRIVE, exist_ok=True)
+    # front()
+
+    if os.path.exists(LMS_Vars.LMS_FD_USER_DETAILS):
+        # retrieve_key()
+        # retrieve_accounts()
+        LMS_Utility.scan_screen(1)
+        return 4
+    else:
+        # retrieve_key()
+        # retrieve_accounts()
+        LMS_Utility.scan_screen(2)
+        user_choice = LMS_Utility.prompts(10)
+        return user_choice
+
+
+def retrieve_key():
+    if os.path.exists(LMS_Vars.LMS_KEY):
+        try:
+            with open(LMS_Vars.LMS_KEY, 'r') as readKey:
+                # str_key = readKey.readline().strip()
+                # LMS_Vars.KEY = int(str_key)
+                key = readKey.readline().rstrip()
+                return key
+        except IOError as e:
+            print("ERROR:", e)
+    else:
+        return None
+
+
+def retrieve_accounts(key_exist, key):
+    accounts_list = []  # Initialize an empty list to store the accounts
+
+    # Retrieve accounts from the database file
+    if os.path.exists(LMS_Vars.LMS_ACCOUNTS):
+        with open(LMS_Vars.LMS_ACCOUNTS, 'r') as f2p:
+            for line in f2p:
+                tokens = line.strip().split(",/,")
+
+                if not key_exist:
+                    # Scan the plain text in the file because there is no key yet
+                    student_id = tokens[0]
+                    librarian_id = tokens[1]
+                    student_name = tokens[2]
+                    librarian_name = tokens[3]
+                    s_key = int(tokens[4])
+                    l_key = int(tokens[5])
+                    violation = int(tokens[6])
+                else:
+                    # Decrypting
+                    student_id = decrypt(tokens[0], key)
+                    librarian_id = decrypt(tokens[1], key)
+                    student_name = decrypt(tokens[2], key)
+                    librarian_name = decrypt(tokens[3], key)
+                    s_key = decrypt(int(tokens[4]), key)
+                    l_key = decrypt(int(tokens[5]), key)
+                    violation = decrypt(int(tokens[6]), key)
+
+                # Create an AccountDetails object
+                account = LMS_LinkedList.AccountDetails(student_id, librarian_id, student_name, librarian_name,
+                                                        s_key, l_key, violation)
+                # Add the account to the list
+                accounts_list.append(account)
+
+    # Return the list of accounts
+    return accounts_list
+
+
+
+def retrieve_account_fd(key_exist, key):
+    # Retrieve account details from flash drive
+    if os.path.exists(LMS_Vars.LMS_FD_USER_DETAILS):
+        with open(LMS_Vars.LMS_FD_USER_DETAILS, 'r') as f2p:
+            for line in f2p:
+                tokens = line.strip().split(",/,")
+
+                if not key_exist:
+                    current_student_id = tokens[0]
+                    current_librarian_id = tokens[1]
+                    current_student_name = tokens[2]
+                    current_librarian_name = tokens[3]
+                    current_s_key = int(tokens[4])
+                    current_l_key = int(tokens[5])
+                    current_violation = int(tokens[6])
+                else:
+                    # Decrypting
+                    current_student_id = decrypt(tokens[0], key)
+                    current_librarian_id = decrypt(tokens[1], key)
+                    current_student_name = decrypt(tokens[2], key)
+                    current_librarian_name = decrypt(tokens[3], key)
+                    current_s_key = decrypt(int(tokens[4]), key)
+                    current_l_key = decrypt(int(tokens[5]), key)
+                    current_violation = decrypt(int(tokens[6]), key)
+                return (
+                    current_student_id,
+                    current_librarian_id,
+                    current_student_name,
+                    current_librarian_name,
+                    current_s_key,
+                    current_l_key,
+                    current_violation,
+                )
+
+
+def retrieve_books():
+    # Retrieve books from Database
+    if not os.path.exists(LMS_Vars.LMS_BOOKS):
+        if LMS_Vars.CURRENT_S_KEY == 1 and LMS_Vars.CURRENT_L_KEY == 0:
+            print("LIBRARY IS CURRENTLY EMPTY")
+            print("NO BOOKS TO BE FOUND :(")
+            print("PLEASE COME BACK LATER. SORRY FOR INCONVENIENCE.")
+            pause()
+            # logs("OUT", Vars.FILL)
+            # exit(0)
+        elif LMS_Vars.CURRENT_S_KEY == 0 and LMS_Vars.CURRENT_L_KEY == 1:
+            print("LIBRARY IS CURRENTLY EMPTY")
+            print("NO BOOKS TO BE FOUND :(")
+            print("PLEASE ADD BOOKS.")
+            pause()
+        else:
+            print("SYSTEM ERROR.")
+            pause()
+    else:
+        with open(LMS_Vars.LMS_BOOKS, 'r') as f2p:
+            for line in f2p:
+                tokens = line.strip().split(",/,")
+
+                if not Vars.KEY_EXIST:
+                    book_num = int(tokens[0])
+                    isbn = tokens[1]
+                    book_title = tokens[2]
+                    book_author = tokens[3]
+                    publication_year = int(tokens[4])
+                    book_quantity = int(tokens[5])
+
+                    # Add the decrypted value to the list
+                    book = LMS_LinkedList.BookDetails(book_num, isbn, book_title, book_author,
+                                                      publication_year, book_quantity)
+                    book_list.append(book)
+                else:
+                    # Decrypting
+                    book_num = decryptInt(int(tokens[0]), KEY)
+                    isbn = decryptString(tokens[1], KEY)
+                    book_title = decryptString(tokens[2], KEY)
+                    book_author = decryptString(tokens[3], KEY)
+                    publication_year = decryptInt(int(tokens[4]), KEY)
+                    book_quantity = decryptInt(int(tokens[5]), KEY)
+
+                    # Add the decrypted value to the list
+                    book = LMS_LinkedList.BookDetails(book_num, isbn, book_title, book_author,
+                                                      publication_year, book_quantity)
+                    book_list.append(book)
+
+
+def save_accounts(account_list, key):
+    if not os.path.exists(LMS_Vars.LMS_ACCOUNTS):
+        try:
+            open(LMS_Vars.LMS_ACCOUNTS, 'w').close()
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+    try:
+        with open(LMS_Vars.LMS_ACCOUNTS, 'w', encoding='UTF-8') as fwrite:
+            for account in account_list:
+                # Encrypting
+                encrypted_student_id = encrypt(account.student_id, key)
+                encrypted_librarian_id = encrypt(account.librarian_id, key)
+                encrypted_student_name = encrypt(account.student_name, key)
+                encrypted_librarian_name = encrypt(account.librarian_name, key)
+                encrypted_s_key = encrypt(account.s_key, key)
+                encrypted_l_key = encrypt(account.l_key, key)
+                encrypted_violation = encrypt(account.violation, key)
+
+                # Saving
+                fwrite.write(
+                    f"{encrypted_student_id},/,"
+                    f"{encrypted_librarian_id},/,"
+                    f"{encrypted_student_name},/,"
+                    f"{encrypted_librarian_name},/,"
+                    f"{encrypted_s_key},/,"
+                    f"{encrypted_l_key},/,"
+                    f"{encrypted_violation}"
+                )
+                fwrite.write('\n')
+    except IOError as e:
+        print(f"ERROR: {e}")
+        pause()
+        cls()
+
+
+def save_accounts_fd(account_list, lms_fd_user_details, current_s_key, current_l_key,
+                     current_student_id, current_librarian_id):
+    if not os.path.exists(lms_fd_user_details):
+        try:
+            open(lms_fd_user_details, 'w').close()
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+    if current_s_key == 1 and current_l_key == 0:
+        try:
+            with open(lms_fd_user_details, 'w', encoding='UTF-8') as fwrite:
+                for account in account_list:
+                    if current_student_id == account.student_id:
+                        # Encrypting
+                        encrypted_student_id = encryptString(account.student_id, KEY)
+                        encrypted_librarian_id = encryptString(account.librarian_id, KEY)
+                        encrypted_student_name = encryptString(account.student_name, KEY)
+                        encrypted_librarian_name = encryptString(account.librarian_name, KEY)
+                        encrypted_s_key = encryptInt(account.s_key, KEY)
+                        encrypted_l_key = encryptInt(account.l_key, KEY)
+                        encrypted_violation = encryptInt(account.violation, KEY)
+
+                        # Saving
+                        fwrite.write(
+                            f"{encrypted_student_id},/,"
+                            f"{encrypted_librarian_id},/,"
+                            f"{encrypted_student_name},/,"
+                            f"{encrypted_librarian_name},/,"
+                            f"{encrypted_s_key},/,"
+                            f"{encrypted_l_key},/,"
+                            f"{encrypted_violation}"
+                        )
+                        fwrite.write('\n')
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+    elif current_s_key == 0 and current_l_key == 1:
+        try:
+            with open(lms_fd_user_details, 'w', encoding='UTF-8') as fwrite:
+                for account in account_list:
+                    if current_librarian_id == account.librarian_id:
+                        # Encrypting
+                        encrypted_student_id = encryptString(account.student_id, KEY)
+                        encrypted_librarian_id = encryptString(account.librarian_id, KEY)
+                        encrypted_student_name = encryptString(account.student_name, KEY)
+                        encrypted_librarian_name = encryptString(account.librarian_name, KEY)
+                        encrypted_s_key = encryptInt(account.s_key, KEY)
+                        encrypted_l_key = encryptInt(account.l_key, KEY)
+                        encrypted_violation = encryptInt(account.violation, KEY)
+
+                        # Saving
+                        fwrite.write(
+                            f"{encrypted_student_id},/,"
+                            f"{encrypted_librarian_id},/,"
+                            f"{encrypted_student_name},/,"
+                            f"{encrypted_librarian_name},/,"
+                            f"{encrypted_s_key},/,"
+                            f"{encrypted_l_key},/,"
+                            f"{encrypted_violation}"
+                        )
+                        fwrite.write('\n')
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+    else:
+        print("ERROR.")
+        print("UNABLE TO SAVE IN FILE")
+        pause()
+        cls()
+
+
+def save_books(book_list, lms_books):
+    if not os.path.exists(lms_books):
+        try:
+            open(lms_books, 'w').close()
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+    try:
+        with open(lms_books, 'w', encoding='UTF-8') as fwrite:
+            for book in book_list:
+                # Encrypting
+                encrypted_book_num = encryptInt(book.book_num, KEY)
+                encrypted_isbn = encryptString(book.isbn, KEY)
+                encrypted_book_title = encryptString(book.book_title, KEY)
+                encrypted_book_author = encryptString(book.book_author, KEY)
+                encrypted_publication_year = encryptInt(book.publication_year, KEY)
+                encrypted_book_quantity = encryptInt(book.book_quantity, KEY)
+
+                # Saving
+                fwrite.write(
+                    f"{encrypted_book_num},/,"
+                    f"{encrypted_isbn},/,"
+                    f"{encrypted_book_title},/,"
+                    f"{encrypted_book_author},/,"
+                    f"{encrypted_publication_year},/,"
+                    f"{encrypted_book_quantity}"
+                )
+                fwrite.write('\n')
+    except IOError as e:
+        print(f"ERROR: {e}")
+        pause()
+        cls()
+
+
+def save_book_requests(book_requests_list, lms_book_requests):
+    if not os.path.exists(lms_book_requests):
+        try:
+            open(lms_book_requests, 'w').close()
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+    try:
+        with open(lms_book_requests, 'w', encoding='UTF-8') as fwrite:
+            for book in book_requests_list:
+                # Encrypting
+                encrypted_book_num = encryptInt(book.book_num, KEY)
+                encrypted_isbn = encryptString(book.isbn, KEY)
+                encrypted_book_title = encryptString(book.book_title, KEY)
+                encrypted_book_author = encryptString(book.book_author, KEY)
+                encrypted_publication_year = encryptInt(book.publication_year, KEY)
+                encrypted_book_quantity = encryptInt(book.book_quantity, KEY)
+
+                # Saving
+                fwrite.write(
+                    f"{encrypted_book_num},/,"
+                    f"{encrypted_isbn},/,"
+                    f"{encrypted_book_title},/,"
+                    f"{encrypted_book_author},/,"
+                    f"{encrypted_publication_year},/,"
+                    f"{encrypted_book_quantity}"
+                )
+                fwrite.write('\n')
+    except IOError as e:
+        print(f"ERROR: {e}")
+        pause()
+        cls()
+
+
+def encrypt(plain_text, key):
+    encrypted = bytearray()
+    for i in range(len(plain_text)):
+        encrypted.append(plain_text[i] ^ key[i % len(key)])
+    return encrypted
+
+
+def decrypt(encrypted_text, key):
+    decrypted = bytearray()
+    for i in range(len(encrypted_text)):
+        decrypted.append(encrypted_text[i] ^ key[i % len(key)])
+    return decrypted
 
 
 def menu(x):
@@ -504,6 +878,42 @@ def get_key(lms_key_path):
             print(f"ERROR: {e}")
             pause()
             cls()
+
+
+def logs(lms_logs, current_s_key, current_l_key, current_student_name, current_librarian_name, status, item):
+    curr_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    curr_time = datetime.datetime.now().strftime("%H:%M:%S")
+
+    fp = os.path.join(lms_logs, curr_date + ".txt")
+    if current_s_key == 1 and current_l_key == 0:
+        try:
+            with open(fp, 'w') as fwrite:
+                fwrite.write(
+                    f"{curr_date}\t{curr_time}\t{current_student_name}\t{status}\t{item}\n"
+                )
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+    elif current_s_key == 0 and current_l_key == 1:
+        try:
+            with open(fp, 'w') as fwrite:
+                fwrite.write(
+                    f"{curr_date}\t{curr_time}\t{current_librarian_name}\t{status}\t{item}\n"
+                )
+        except IOError as e:
+            print(f"ERROR: {e}")
+            pause()
+            cls()
+
+
+def cls():
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def pause():
+    input("\nPRESS ENTER KEY TO CONTINUE...")
 
 
 def scan_screen(x):
