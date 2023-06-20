@@ -2,6 +2,7 @@ import os
 import sys
 import time
 import random
+import string
 import datetime
 
 # ----------------------[GLOBAL VARIABLES]----------------------
@@ -229,7 +230,7 @@ def borrow_books():
     if CURRENT_VIOLATION == 0:
         # search the book
         for book in book_list:
-            if book.getBookNum() == user_book_num:
+            if book.book_num == user_book_num:
                 is_found = True
 
                 # get current date and time
@@ -645,6 +646,837 @@ def view_violation():
 
 
 # ----------------------[LIBRARIAN]----------------------
+def insert_existing_book():
+    count = 0
+    count2 = 0
+    is_valid = False
+    is_num = False
+    cls()
+    display_books()
+
+    while not is_valid:
+        if count < 3:
+            try:
+                print("ENTER BOOK NUMBER: ")
+                user_num = int(input())
+                # input()  # Consume the newline character
+
+                # Check if book exists
+                for book in book_list:
+                    if book.book_num == user_num:
+                        is_valid = True
+
+                        print("BOOK SELECTED: ")
+                        display_current_book(book.book_num)
+
+                        while not is_num:
+                            if count2 < 3:
+                                print("\n\nENTER BOOK COPIES TO BE INSERTED: ")
+                                try:
+                                    user_num = int(input())
+                                    # input()  # Consume the newline character
+                                    if user_num > 0:
+                                        if verify_account(2):
+                                            is_num = True
+                                            new_book_quant = book.book_quantity + user_num
+                                            book.set_book_quantity(new_book_quant)
+                                            print("\nMODIFICATION SUCCESSFUL.\n")
+                                            print("BOOK LIST:")
+                                            display_books()
+                                            print("\n\nBOOK SELECTED:")
+                                            display_current_book(book.book_num)
+                                            save_books()
+                                            logs("ADD EXISTING BOOK", book.book_title)
+                                            pause()
+                                            cls()
+                                        else:
+                                            print("INVALID INPUT")
+                                            print("CREDENTIALS DO NOT MATCH")
+                                            print("PLEASE TRY AGAIN.")
+                                            pause()
+                                            cls()
+                                            count2 += 1
+                                    else:
+                                        print("\n\nINVALID INPUT.")
+                                        print("PLEASE TRY AGAIN")
+                                        pause()
+                                        cls()
+                                        count2 += 1
+                                except ValueError as e:
+                                    print(f"\nERROR: {e}")
+                                    pause()
+                                    cls()
+                                    count2 += 1
+                            else:
+                                print("ERROR.")
+                                print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+                                print("PLEASE TRY AGAIN LATER")
+                                pause()
+                                cls()
+                                is_num = True
+
+                        break
+                if not is_valid:
+                    print("ERROR")
+                    print("WRONG BOOK NUMBER OR BOOK NUMBER DOES NOT EXIST")
+                    print("PLEASE TRY AGAIN")
+                    pause()
+                    cls()
+                    count += 1
+            except ValueError as e:
+                print(f"\nERROR: {e}")
+                pause()
+                cls()
+        else:
+            print("ERROR.")
+            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+            print("PLEASE TRY AGAIN LATER")
+            pause()
+            cls()
+            is_valid = True
+
+
+def insert_new_book():
+    cls()
+    count = 0
+    count2 = 0
+    valid_random_isbn = ""
+    is_valid = False
+    is_correct = False
+
+    while not is_valid:
+        if count < 3:
+            cls()
+
+            book_num = get_book_number()
+            print("BOOK ID: " + str(book_num))
+
+            print("INPUT BOOK TITLE: ")
+            book_title = input()
+
+            print("INPUT BOOK AUTHOR: ")
+            book_author = input()
+
+            print("INPUT PUBLICATION YEAR: ")
+            pub_year = int(input())
+
+            print("INPUT BOOK QUANTITY: ")
+            book_quantity = int(input())
+
+            # input()  # Consume the newline character
+
+            user_num = prompts(4)
+            if user_num == 1:  # librarian knows the book's ISBN
+                if 0 < pub_year <= 2006 and book_quantity > 0:
+                    print("\n\nENTER VALID 10-DIGIT ISBN: ")
+                    user_isbn = input()
+                    if len(user_isbn) == 10:
+                        if check_isbn(user_isbn, 10):
+                            valid_random_isbn = user_isbn
+                            is_valid = True
+                        else:
+                            print("\nMODIFICATION UNSUCCESSFUL.")
+                            print("INVALID ISBN.")
+                            pause()
+                            cls()
+                            count += 1
+                    else:
+                        print("\nMODIFICATION UNSUCCESSFUL.")
+                        print("INVALID ISBN.")
+                        pause()
+                        cls()
+                        count += 1
+                elif pub_year > 0 and pub_year > 2006 and book_quantity > 0:
+                    print("\n\nENTER VALID 13-DIGIT ISBN: ")
+                    user_isbn = input()
+                    if len(user_isbn) == 13:
+                        if check_isbn(user_isbn, 13):
+                            valid_random_isbn = user_isbn
+                            is_valid = True
+                        else:
+                            print("\nMODIFICATION UNSUCCESSFUL.")
+                            print("INVALID ISBN.")
+                            pause()
+                            cls()
+                            count += 1
+                    else:
+                        print("\nMODIFICATION UNSUCCESSFUL.")
+                        print("INVALID ISBN.")
+                        pause()
+                        cls()
+                        count += 1
+                else:
+                    print("\nMODIFICATION UNSUCCESSFUL.")
+                    print("INVALID PUBLICATION YEAR.")
+                    pause()
+                    cls()
+                    count += 1
+            elif user_num == 2:  # librarian doesn't know the book's ISBN
+                # will generate valid ISBN based on pub year
+                if 0 < pub_year <= 2006 and book_quantity > 0:
+                    valid_random_isbn = get_isbn(10)
+                    is_valid = True
+                elif pub_year > 0 and pub_year > 2006 and book_quantity > 0:
+                    valid_random_isbn = get_isbn(13)
+                    is_valid = True
+                else:
+                    print("\nMODIFICATION UNSUCCESSFUL.")
+                    print("INVALID PUBLICATION YEAR.")
+                    pause()
+                    cls()
+                    count += 1
+            elif user_num == 3:  # cancelled
+                print("\nMODIFICATION CANCELLED.")
+                is_valid = True
+                pause()
+                cls()
+            else:
+                print("WRONG RETURN VALUE")
+                pause()
+                cls()
+
+            if is_valid:
+                if check_books(1, book_title, book_author, 0):
+                    while not is_correct:
+                        if count2 < 3:
+                            if verify_account(2):
+                                is_correct = True
+                                book = BookDetails(book_num, valid_random_isbn, book_title, book_author,
+                                                   pub_year, book_quantity)
+                                book_list.append(book)
+                                save_books()
+                                logs("ADDED NEW BOOK", book_title)
+
+                                print("\nBOOK ( " + book_title + " ) SUCCESSFULLY ADDED.")
+                                pause()
+                                cls()
+                            else:
+                                print("ERROR.")
+                                print("INPUT DOES NOT MATCH YOUR CREDENTIALS.")
+                                print("PLEASE TRY AGAIN")
+                                pause()
+                                cls()
+                                count2 += 1
+                        else:
+                            print("ERROR.")
+                            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+                            print("PLEASE TRY AGAIN LATER")
+                            pause()
+                            cls()
+                            is_correct = True
+                else:
+                    user_num = prompts(5)
+                    if user_num == 1:
+                        while not is_correct:
+                            if count2 < 3:
+                                if verify_account(2):
+                                    count = 0
+                                    count2 = 0
+                                    is_correct = True
+                                    is_valid = False
+                                else:
+                                    print("ERROR.")
+                                    print("INPUT DOES NOT MATCH YOUR CREDENTIALS.")
+                                    print("PLEASE TRY AGAIN")
+                                    pause()
+                                    cls()
+                                    count2 += 1
+                            else:
+                                print("ERROR.")
+                                print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+                                print("PLEASE TRY AGAIN LATER")
+                                pause()
+                                cls()
+                                is_correct = True
+                    else:
+                        print("PLEASE TRY AGAIN LATER")
+                        pause()
+                        cls()
+                        is_correct = True
+        else:
+            print("ERROR.")
+            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+            print("PLEASE TRY AGAIN LATER")
+            pause()
+            cls()
+            is_valid = True
+
+
+def edit_books():
+    cls()
+    ch = 0
+    count = 0
+    is_correct = False
+    is_found = False
+
+    while not is_correct:
+        if count < 3:
+            if verify_account(2):
+                cls()
+                is_correct = True
+
+                print("\n\nENTER BOOK NUMBER TO BE EDITED: ")
+                user_book_num = int(input())
+
+                for book in book_list:
+                    if book.book_num == user_book_num:
+                        is_found = True
+                        while ch != 6:
+                            print("\n\n\nBOOK NUMBER: " + str(book.book_num))
+                            print("ISBN: " + book.isbn)
+                            print("BOOK TITLE: " + book.book_title)
+                            print("BOOK AUTHOR: " + book.book_author)
+                            print("BOOK PUBLICATION YEAR: " + str(book.publication_year))
+                            print("BOOK QUANTITY: " + str(book.book_quantity))
+                            ch = prompts(6)
+                            if ch == 1:
+                                print("INPUT NEW VALID BOOK NUMBER: ")
+                                new_book_num = int(input())
+                                if check_books(2, None, None, new_book_num):
+                                    book.set_book_num(new_book_num)
+                                    save_books()
+                                    logs("EDIT BOOK NUMER", book.book_num)
+                                else:
+                                    print("ERROR.")
+                                    print("BOOK NUMBER ALREADY EXIST.")
+                                    pause()
+                                    cls()
+                            elif ch == 2:
+                                print("INPUT NEW VALID BOOK TITLE: ")
+                                new_book_title = input()
+                                if check_books(1, new_book_title, book.book_author, 0):
+                                    logs("EDIT BOOK TITLE",
+                                         "FROM ( " + book.book_title + " ) TO ( " + new_book_title + " )")
+                                    book.set_book_title(new_book_title)
+                                    save_books()
+                                else:
+                                    print("ERROR.")
+                                    print("BOOK DETAILS ALREADY EXIST.")
+                                    pause()
+                                    cls()
+                            elif ch == 3:
+                                print("INPUT NEW VALID BOOK AUTHOR: ")
+                                new_book_author = input()
+                                if check_books(1, book.book_title, new_book_author, 0):
+                                    logs("EDIT BOOK AUTHOR",
+                                         "FROM ( " + book.book_author + " ) TO ( " + new_book_author + " )")
+                                    book.set_book_author(new_book_author)
+                                    save_books()
+                                else:
+                                    print("ERROR.")
+                                    print("BOOK DETAILS ALREADY EXIST.")
+                                    pause()
+                                    cls()
+                            elif ch == 4:
+                                print("INPUT NEW VALID BOOK PUBLICATION YEAR: ")
+                                new_book_year = int(input())
+                                curr_date = datetime.date.today()
+                                if 0 < new_book_year < curr_date.year:
+                                    logs("EDIT BOOK PUB.YEAR",
+                                         "FROM ( " + str(book.publication_yea) + " ) TO ( " + str(new_book_year) + " )")
+                                    book.set_publication_year(new_book_year)
+
+                                    # update the ISBN base on the new pub date
+                                    if new_book_year <= 2006:
+                                        new_isbn = get_isbn(10)
+                                    else:
+                                        new_isbn = get_isbn(13)
+                                    logs("EDIT BOOK ISBN",
+                                         "FROM ( " + book.isbn + " ) TO ( " + new_isbn + " )")
+                                    book.set_ISBN(new_isbn)
+                                    save_books()
+                                    pause()
+                                    cls()
+                                else:
+                                    print("ERROR.")
+                                    print("INVALID BOOK PUBLICATION YEAR.")
+                                    pause()
+                                    cls()
+                            elif ch == 5:
+                                print("INPUT NEW VALID BOOK QUANTITY: ")
+                                new_book_quant = int(input())
+                                if new_book_quant > 0:
+                                    logs("EDIT BOOK QUANTITY",
+                                         "FROM ( " + str(book.book_quantity) + " ) TO ( " + str(new_book_quant) + " )")
+                                    book.set_book_quantity(new_book_quant)
+                                    save_books()
+                                else:
+                                    print("ERROR.")
+                                    print("INVALID BOOK QUANTITY.")
+                                    pause()
+                                    cls()
+                            elif ch == 6:
+                                print("\n\nBOOK SUCCESSFULLY EDITED.")
+                                pause()
+                                cls()
+                            else:
+                                print("\n\nSELECT 1 - 6 ONLY.")
+                                pause()
+                                cls()
+                        save_books()
+                        logs("EDIT BOOK", book.book_title)
+                        break
+
+                if not is_found:
+                    print("ERROR NOT FOUND.")
+                    print("WRONG BOOK NUMBER OR IT DOES NOT EXIST")
+                    print("PLEASE TRY AGAIN LATER")
+                    pause()
+                    cls()
+                    is_correct = False
+                    count += 1
+            else:
+                print("INVALID INPUT")
+                print("DOES NOT MATCH TO YOUR CREDENTIALS")
+                print("PLEASE TRY AGAIN")
+                pause()
+                cls()
+                count += 1
+        else:
+            print("ERROR.")
+            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+            print("PLEASE TRY AGAIN LATER")
+            pause()
+            cls()
+            is_correct = True
+
+
+def remove_book_copy():
+    cls()
+    count = 0
+    count2 = 0
+    is_valid = False
+    is_correct = False
+
+    while not is_valid:
+        if count < 3:
+            cls()
+            print("\n\nENTER BOOK NUMBER TO REMOVE A COPY: ")
+            user_book_num = int(input())
+            for book in book_list:
+                if book.book_num == user_book_num:
+                    is_valid = True
+                    while not is_correct:
+                        if count2 < 3:
+                            print("\n\nBOOK SELECTED: ")
+                            display_current_book(user_book_num)
+
+                            print("ENTER NUMBER OF COPIES TO REMOVE: ")
+                            user_quantity = int(input())
+                            if 0 < user_quantity < book.book_quantity:
+                                if verify_account(2):
+                                    is_correct = True
+                                    new_quant = book.book_quantity - user_quantity
+                                    book.set_book_quantity(new_quant)
+                                    display_books()
+                                    print("\n\nMODIFICATION SUCCESSFUL.")
+                                    display_current_book(user_book_num)
+
+                                    save_books()
+                                    logs("REMOVE A COPY", book.book_title)
+                                    pause()
+                                    cls()
+                                else:
+                                    print("INVALID INPUT")
+                                    print("DOES NOT MATCH TO YOUR CREDENTIALS")
+                                    print("PLEASE TRY AGAIN")
+                                    pause()
+                                    cls()
+                                    count2 += 1
+                            else:
+                                print("ERROR.")
+                                print("INVALID QUANTITY.")
+                                pause()
+                                cls()
+                                count2 += 1
+                    break
+
+            if not is_valid:
+                print("ERROR NOT FOUND.")
+                print("WRONG BOOK NUMBER OR IT DOES NOT EXIST")
+                print("PLEASE TRY AGAIN LATER")
+                pause()
+                cls()
+                count += 1
+        else:
+            print("ERROR.")
+            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+            print("PLEASE TRY AGAIN LATER")
+            pause()
+            cls()
+            is_valid = True
+
+
+def remove_book():
+    cls()
+    count = 0
+    count2 = 0
+    is_valid = False
+    is_correct = False
+
+    while not is_valid:
+        if count < 3:
+            cls()
+            print("\n\nENTER BOOK NUMBER TO REMOVE: ")
+            user_book_num = int(input())
+            for book in book_list:
+                if book.book_num == user_book_num:
+                    is_valid = True
+                    while not is_correct:
+                        if count2 < 3:
+                            print("\n\nBOOK SELECTED: ")
+                            display_current_book(user_book_num)
+
+                            if verify_account(2):
+                                is_correct = True
+                                logs("REMOVED BOOK", book.book_title)
+                                book_list.remove(book)
+                                display_books()
+                                print("\n\nMODIFICATION SUCCESSFUL.")
+
+                                save_books()
+                                pause()
+                                cls()
+                            else:
+                                print("INVALID INPUT")
+                                print("DOES NOT MATCH TO YOUR CREDENTIALS")
+                                print("PLEASE TRY AGAIN")
+                                pause()
+                                cls()
+                                count2 += 1
+                    break
+
+            if not is_valid:
+                print("ERROR NOT FOUND.")
+                print("WRONG BOOK NUMBER OR IT DOES NOT EXIST")
+                print("PLEASE TRY AGAIN LATER")
+                pause()
+                cls()
+                count += 1
+        else:
+            print("ERROR.")
+            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+            print("PLEASE TRY AGAIN LATER")
+            pause()
+            cls()
+            is_valid = True
+
+
+def book_requests():
+    cls()
+    count = 0
+    count2 = 0
+    is_found = False
+    is_correct = False
+
+    if os.path.exists(LMS_BOOK_REQUESTS):
+        try:
+            with open(LMS_BOOK_REQUESTS, 'r') as f2p:
+                cls()
+                lines = f2p.readlines()
+
+                for line in lines:
+                    tokens = line.split(",/,")
+
+                    req_book_num = int(decrypt(tokens[0]))
+                    req_isbn = decrypt(tokens[1])
+                    req_book_title = decrypt(tokens[2])
+                    req_book_author = decrypt(tokens[3])
+                    req_publication_year = int(decrypt(tokens[4]))
+                    req_book_quant = int(decrypt(tokens[5]))
+
+                    req_book = BookDetails(req_book_num, req_isbn, req_book_title, req_book_author,
+                                           req_publication_year, req_book_quant)
+                    book_request_list.append(req_book)
+
+                # Display contents
+                print("\nBOOK REQUESTS")
+                display_book_requests()
+
+                # Approve or disapprove
+                user_num = prompts(7)
+                if user_num == 1:  # Approve book request
+                    while not is_found:
+                        if count < 3:
+                            cls()
+                            print("ENTER BOOK NUMBER: ")
+                            user_num = int(input())
+                            for req_book in book_request_list:
+                                if req_book.book_num == user_num:
+                                    is_found = True
+                                    while not is_correct:
+                                        if count2 < 3:
+                                            if verify_account(2):
+                                                is_correct = True
+                                                book_list.append(req_book)
+                                                book_request_list.remove(req_book)
+                                                save_books()
+                                                save_book_requests()
+                                                logs("APPROVED BOOK", req_book.book_title)
+
+                                                print("BOOK (", req_book.book_title, ") APPROVED.")
+                                                pause()
+                                                cls()
+                                            else:
+                                                print("INVALID INPUT")
+                                                print("DOES NOT MATCH TO YOUR CREDENTIALS")
+                                                print("PLEASE TRY AGAIN")
+                                                pause()
+                                                cls()
+                                                count2 += 1
+                                    break
+
+                            if not is_found:
+                                print("ERROR")
+                                print("WRONG BOOK NUMBER OR BOOK NUMBER DOES NOT EXIST")
+                                print("PLEASE TRY AGAIN")
+                                pause()
+                                cls()
+                                count += 1
+                        else:
+                            print("ERROR.")
+                            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+                            print("PLEASE TRY AGAIN LATER")
+                            pause()
+                            cls()
+                            is_found = True
+                elif user_num == 2:  # Disapprove book
+                    while not is_found:
+                        if count < 3:
+                            cls()
+                            print("ENTER BOOK NUMBER: ")
+                            user_num = int(input())
+                            for req_book in book_request_list:
+                                if req_book.book_num == user_num:
+                                    is_found = True
+                                    while not is_correct:
+                                        if count2 < 3:
+                                            if verify_account(2):
+                                                is_correct = True
+                                                book_request_list.remove(req_book)
+                                                save_books()
+                                                save_book_requests()
+                                                logs("DISAPPROVED BOOK", req_book.book_title)
+
+                                                print("BOOK (", req_book.book_title, ") DISAPPROVED.")
+                                                pause()
+                                                cls()
+                                            else:
+                                                print("INVALID INPUT")
+                                                print("DOES NOT MATCH TO YOUR CREDENTIALS")
+                                                print("PLEASE TRY AGAIN")
+                                                pause()
+                                                cls()
+                                                count2 += 1
+                                    break
+
+                            if not is_found:
+                                print("ERROR")
+                                print("WRONG BOOK NUMBER OR BOOK NUMBER DOES NOT EXIST")
+                                print("PLEASE TRY AGAIN")
+                                pause()
+                                cls()
+                                count += 1
+                        else:
+                            print("ERROR.")
+                            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+                            print("PLEASE TRY AGAIN LATER")
+                            pause()
+                            cls()
+                            is_found = True
+                elif user_num == 3:  # Save and exit
+                    save_books()
+                    save_book_requests()
+                else:
+                    print("INVALID INPUT.")
+                    pause()
+                    cls()
+        except FileNotFoundError as e:
+            print("\nERROR:", e)
+            pause()
+            cls()
+        except IOError as e:
+            print("\nERROR:", e)
+            pause()
+            cls()
+    else:
+        print("ERROR.")
+        print("NO BOOK REQUESTS YET.")
+        pause()
+        cls()
+
+
+def change_key():
+    global KEY
+    cls()
+    new_key = ""
+    count = 0
+    is_valid = False
+    # srand = random.Random()
+
+    if verify_account(2):
+        user_num = prompts(9)
+        if user_num == 1:  # Generate random valid key
+            while not is_valid:
+                # new_key = srand.randint(1, 100)
+                new_key = " " + string.digits + string.ascii_letters
+                new_key.encode()
+                if new_key != KEY:
+                    is_valid = True
+
+            # Save the key to the file
+            if not os.path.exists(LMS_KEY): 
+                try:
+                    open(LMS_KEY, 'w').close()
+                except IOError as e:
+                    print("ERROR:", e)
+                    pause()
+                    cls()
+
+            try:
+                with open(LMS_KEY, 'w') as fwrite:
+                    fwrite.write(new_key)
+            except IOError as e:
+                print("ERROR:", e)
+                pause()
+                cls()
+
+            KEY = new_key
+            print("KEY IS SET TO:", KEY)
+            pause()
+            cls()
+        elif user_num == 2:  # Librarian will enter the new key
+            while not is_valid:
+                if count < 3:
+                    try:
+                        new_key = input("ENTER VALID KEY: ")
+                        new_key.encode()
+                        if new_key != KEY:
+                            is_valid = True
+                            # Save the key to the file
+                            if not os.path.exists(LMS_KEY):
+                                try:
+                                    open(LMS_KEY, 'w').close()
+                                except IOError as e:
+                                    print("ERROR:", e)
+                                    pause()
+                                    cls()
+
+                            try:
+                                with open(LMS_KEY, 'w') as fwrite:
+                                    fwrite.write(new_key)
+                            except IOError as e:
+                                print("ERROR:", e)
+                                pause()
+                                cls()
+
+                        else:
+                            print("PLEASE ENTER 'NEW' AND 'VALID' KEY.")
+                            print("PLEASE TRY AGAIN.")
+                            pause()
+                            cls()
+                            count += 1
+                    except ValueError as e:
+                        print("ERROR:", e)
+                        pause()
+                        cls()
+                        count += 1
+        else:
+            print("WRONG RETURN VALUE.")
+            print("PLEASE CHECK THE CODE.")
+            pause()
+            cls()
+    else:
+        print("INVALID INPUT")
+        print("CREDENTIALS DO NOT MATCH")
+        print("PLEASE TRY AGAIN LATER.")
+        pause()
+        cls()
+
+    # Check if the files exist
+    # If they exist, save the data to the new key
+    if os.path.exists(LMS_ACCOUNTS):
+        save_accounts()
+    if os.path.exists(LMS_FD_USER_DETAILS):
+        save_accounts_fd()
+    if os.path.exists(LMS_BOOKS):
+        save_books()
+    if os.path.exists(LMS_BOOK_REQUESTS):
+        save_book_requests()
+
+
+def display_logs():
+    count = 0
+    is_valid = False
+    is_valid2 = False
+
+    while not is_valid:
+        if count < 3:
+            cls()
+            display_directory_content()
+            print("\n\n!DO NOT INCLUDE THE .txt EXTENSION!")
+            user_str = input("\n\nENTER DATE (YYYY-MM-DD): ")
+            fp = os.path.join(LMS_LOGS, user_str + ".txt")
+
+            if os.path.exists(fp):
+                with open(fp, 'r') as f2p:
+                    print("\n| %-11s | %-11s | %-50s | %-10s | %-10s |" % ("DATE", "TIME", "NAME", "STATUS", "ITEM"))
+                    for line in f2p:
+                        tokens = line.strip().split("\t")
+                        print("| %-11s | %-11s | %-50s | %-10s | %-10s |" % (tokens[0], tokens[1], tokens[2], tokens[3],
+                                                                             tokens[4]))
+
+                while not is_valid2:
+                    print("\n\nDO YOU WANT TO VIEW OTHER DATES? ")
+                    print("[1] YES")
+                    print("[2] NO")
+                    try:
+                        user_num = int(input("-> "))
+                        if 1 <= user_num <= 2:
+                            if user_num == 1:
+                                is_valid2 = True
+                            else:
+                                is_valid = True
+                                is_valid2 = True
+                        else:
+                            print("INVALID INPUT")
+                            print("PLEASE TRY AGAIN.")
+                            pause()
+                            cls()
+                    except ValueError as e:
+                        print("\nERROR:", e)
+                        pause()
+                        cls()
+                is_valid2 = False
+                pause()
+            else:
+                print("ERROR.")
+                print("FILE (", user_str + ".csv ) NOT FOUND.")
+                print("PLEASE TRY AGAIN.")
+                pause()
+                cls()
+                count += 1
+        else:
+            print("ERROR.")
+            print("TOO MANY UNSUCCESSFUL ATTEMPTS.")
+            print("PLEASE TRY AGAIN LATER")
+            pause()
+            cls()
+            is_valid = True
+    cls()
+
+
+def display_directory_content():
+    # directory = os.path.join(LMS_LOGS)
+
+    # Get the contents of the directory
+    files = os.listdir(LMS_LOGS)
+
+    # Display the contents of the directory
+    if files:
+        for file in files:
+            print(file)
+    print("\n\n")
 
 
 # ----------------------[UTILITY]----------------------
@@ -1028,7 +1860,7 @@ def menu(x):
 
             try:
                 user_num = int(input())
-                input()  # Consume the newline character
+                # input()  # Consume the newline character
                 if 1 <= user_num <= 6:
                     is_valid = True
                 else:
@@ -1050,7 +1882,7 @@ def menu(x):
 
             try:
                 user_num = int(input())
-                input()  # Consume the newline character
+                # input()  # Consume the newline character
                 if 1 <= user_num <= 8:
                     is_valid = True
                 else:
@@ -1498,15 +2330,14 @@ def check_books(x, string_title, string_author, b_num):
 
 
 def get_key():
-    while True:
-        new_key = random.randint(1, 100)
-        if new_key > 0:
-            break
+    global KEY
+    KEY = " " + string.digits + string.ascii_letters
+    KEY.encode()
 
     if not os.path.exists(LMS_KEY):
         try:
             with open(LMS_KEY, 'w') as fwrite:
-                fwrite.write(str(new_key))
+                fwrite.write(KEY)
         except IOError as e:
             print(f"ERROR: {e}")
             pause()
