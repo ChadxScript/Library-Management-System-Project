@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="BOOKS">
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PYTHON Version/LMS Database/ACCOUNTS.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PYTHON Version/LMS_Project.py" beforeDir="false" afterPath="$PROJECT_DIR$/PYTHON Version/LMS_Project.py" afterDir="false" />
-    </list>
+    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="ehem UI charHAHA" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -232,7 +227,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688289092717</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="[FIXED] Saving, Retrieving, Encrypting, Decrypting">
+      <created>1688292546896</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1688292546896</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -252,6 +254,9 @@
     <MESSAGE value="librarian_function [done]" />
     <MESSAGE value="FIX something idunno" />
     <MESSAGE value="BOOKS" />
-    <option name="LAST_COMMIT_MESSAGE" value="BOOKS" />
+    <MESSAGE value="[FIXED] Saving, Retrieving, Encrypting, Decrypting" />
+    <MESSAGE value="[FIXED] Saving, Retrieving, Encrypting, Decrypting ehen UI" />
+    <MESSAGE value="ehem UI charHAHA" />
+    <option name="LAST_COMMIT_MESSAGE" value="ehem UI charHAHA" />
   </component>
 </project>
