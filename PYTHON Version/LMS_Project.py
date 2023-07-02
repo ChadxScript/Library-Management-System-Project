@@ -8,14 +8,14 @@ import datetime
 # ----------------------[GLOBAL VARIABLES]----------------------
 LMS_FOLDER_DB = "./LMS Database"
 LMS_LOGS = f"{LMS_FOLDER_DB}/LMS Logs"
-LMS_ACCOUNTS = f"{LMS_FOLDER_DB}/ACCOUNTS.csv"
+LMS_ACCOUNTS = f"{LMS_FOLDER_DB}/ACCOUNTS.txt"
 LMS_BOOKS = f"{LMS_FOLDER_DB}/BOOKS.txt"
 LMS_BOOK_REQUESTS = f"{LMS_FOLDER_DB}/BOOK_REQUESTS.txt"
 LMS_KEY = f"{LMS_FOLDER_DB}/KEY.txt"
 
 LMS_CHECK_FD = "D:\\LMS_Check.txt"
 LMS_FLASH_DRIVE = "D:\\LMS Details"
-LMS_FD_USER_DETAILS = f"{LMS_FLASH_DRIVE}\\USER_DETAILS.csv"
+LMS_FD_USER_DETAILS = f"{LMS_FLASH_DRIVE}\\USER_DETAILS.txt"
 LMS_FD_BORROWED_BOOKS = f"{LMS_FLASH_DRIVE}\\BORROWED_BOOKS.txt"
 
 FILL = "NONE"
@@ -29,7 +29,7 @@ CURRENT_STUDENT_ID = ""
 CURRENT_STUDENT_NAME = ""
 CURRENT_LIBRARIAN_ID = ""
 CURRENT_LIBRARIAN_NAME = ""
-KEY = ""
+KEY = "".encode()
 KEY_EXIST = False
 
 
@@ -1320,7 +1320,7 @@ def change_key():
             while not is_valid:
                 # new_key = srand.randint(1, 100)
                 new_key = " " + string.digits + string.ascii_letters
-                new_key.encode()
+                new_key = new_key.encode()
                 if new_key != KEY:
                     is_valid = True
 
@@ -1350,8 +1350,9 @@ def change_key():
                 if count < 3:
                     try:
                         new_key = input("ENTER VALID KEY: ")
-                        new_key.encode()
+                        new_key = new_key.encode()
                         if new_key != KEY:
+                            KEY = new_key
                             is_valid = True
                             # Save the key to the file
                             if not os.path.exists(LMS_KEY):
@@ -1364,7 +1365,7 @@ def change_key():
 
                             try:
                                 with open(LMS_KEY, 'w') as fwrite:
-                                    fwrite.write(new_key)
+                                    fwrite.write(KEY)
                             except IOError as e:
                                 print("ERROR:", e)
                                 pause()
@@ -1451,7 +1452,7 @@ def display_logs():
                 pause()
             else:
                 print("ERROR.")
-                print("FILE (", user_str + ".csv ) NOT FOUND.")
+                print("FILE (", user_str + ".txt ) NOT FOUND.")
                 print("PLEASE TRY AGAIN.")
                 pause()
                 cls()
@@ -1497,14 +1498,17 @@ def insert_card():
 
     if os.path.exists(LMS_FD_USER_DETAILS):
         retrieve_key()
+        retrieve_books()
         retrieve_accounts()
+        retrieve_account_fd()
         scan_screen(1)
         return 4
     else:
+        retrieve_books()
         retrieve_key()
         retrieve_accounts()
+        retrieve_account_fd()
         scan_screen(2)
-        # user_choice = prompts(10)
         return prompts(10)
 
 
@@ -1514,14 +1518,27 @@ def retrieve_key():
     if os.path.exists(LMS_KEY):
         try:
             with open(LMS_KEY, 'r') as readKey:
-                # str_key = readKey.readline().strip()
-                # LMS_Vars.KEY = int(str_key)
                 KEY = readKey.readline().rstrip()
+                KEY = KEY.encode()
                 KEY_EXIST = True
         except IOError as e:
             print("ERROR:", e)
     else:
-        KEY_EXIST = False
+        KEY_EXIST = True
+        # Get temporary key if there is no key yet
+        # If the user exit the program the data will still be encrypted
+        get_key()
+
+        # Check files if existed
+        # If existing, save the database on the key
+        if os.path.exists(LMS_ACCOUNTS):
+            save_accounts()
+        if os.path.exists(LMS_FD_USER_DETAILS):
+            save_accounts_fd()
+        if os.path.exists(LMS_BOOKS):
+            save_books()
+        if os.path.exists(LMS_BOOK_REQUESTS):
+            save_book_requests()
 
 
 def retrieve_accounts():
@@ -1654,13 +1671,13 @@ def save_accounts():
         with open(LMS_ACCOUNTS, 'w', encoding='UTF-8') as fwrite:
             for account in account_list:
                 # Encrypting
-                encrypted_student_id = encrypt(account.student_id)
-                encrypted_librarian_id = encrypt(account.librarian_id)
-                encrypted_student_name = encrypt(account.student_name)
-                encrypted_librarian_name = encrypt(account.librarian_name)
-                encrypted_s_key = encrypt(account.s_key)
-                encrypted_l_key = encrypt(account.l_key)
-                encrypted_violation = encrypt(account.violation)
+                encrypted_student_id = encrypt(str(account.student_id))
+                encrypted_librarian_id = encrypt(str(account.librarian_id))
+                encrypted_student_name = encrypt(str(account.student_name))
+                encrypted_librarian_name = encrypt(str(account.librarian_name))
+                encrypted_s_key = encrypt(str(account.s_key))
+                encrypted_l_key = encrypt(str(account.l_key))
+                encrypted_violation = encrypt(str(account.violation))
 
                 # Saving
                 fwrite.write(
@@ -1670,9 +1687,8 @@ def save_accounts():
                     f"{encrypted_librarian_name},/,"
                     f"{encrypted_s_key},/,"
                     f"{encrypted_l_key},/,"
-                    f"{encrypted_violation}"
+                    f"{encrypted_violation}\n"
                 )
-                fwrite.write('\n')
     except IOError as e:
         print(f"ERROR: {e}")
         pause()
@@ -1694,13 +1710,13 @@ def save_accounts_fd():
                 for account in account_list:
                     if CURRENT_STUDENT_ID == account.student_id:
                         # Encrypting
-                        encrypted_student_id = encrypt(account.student_id)
-                        encrypted_librarian_id = encrypt(account.librarian_id)
-                        encrypted_student_name = encrypt(account.student_name)
-                        encrypted_librarian_name = encrypt(account.librarian_name)
-                        encrypted_s_key = encrypt(account.s_key)
-                        encrypted_l_key = encrypt(account.l_key)
-                        encrypted_violation = encrypt(account.violation)
+                        encrypted_student_id = encrypt(str(account.student_id))
+                        encrypted_librarian_id = encrypt(str(account.librarian_id))
+                        encrypted_student_name = encrypt(str(account.student_name))
+                        encrypted_librarian_name = encrypt(str(account.librarian_name))
+                        encrypted_s_key = encrypt(str(account.s_key))
+                        encrypted_l_key = encrypt(str(account.l_key))
+                        encrypted_violation = encrypt(str(account.violation))
 
                         # Saving
                         fwrite.write(
@@ -1710,9 +1726,8 @@ def save_accounts_fd():
                             f"{encrypted_librarian_name},/,"
                             f"{encrypted_s_key},/,"
                             f"{encrypted_l_key},/,"
-                            f"{encrypted_violation}"
+                            f"{encrypted_violation}\n"
                         )
-                        fwrite.write('\n')
         except IOError as e:
             print(f"ERROR: {e}")
             pause()
@@ -1724,13 +1739,13 @@ def save_accounts_fd():
                 for account in account_list:
                     if CURRENT_LIBRARIAN_ID == account.librarian_id:
                         # Encrypting
-                        encrypted_student_id = encrypt(account.student_id)
-                        encrypted_librarian_id = encrypt(account.librarian_id)
-                        encrypted_student_name = encrypt(account.student_name)
-                        encrypted_librarian_name = encrypt(account.librarian_name)
-                        encrypted_s_key = encrypt(account.s_key)
-                        encrypted_l_key = encrypt(account.l_key)
-                        encrypted_violation = encrypt(account.violation)
+                        encrypted_student_id = encrypt(str(account.student_id))
+                        encrypted_librarian_id = encrypt(str(account.librarian_id))
+                        encrypted_student_name = encrypt(str(account.student_name))
+                        encrypted_librarian_name = encrypt(str(account.librarian_name))
+                        encrypted_s_key = encrypt(str(account.s_key))
+                        encrypted_l_key = encrypt(str(account.l_key))
+                        encrypted_violation = encrypt(str(account.violation))
 
                         # Saving
                         fwrite.write(
@@ -1740,9 +1755,8 @@ def save_accounts_fd():
                             f"{encrypted_librarian_name},/,"
                             f"{encrypted_s_key},/,"
                             f"{encrypted_l_key},/,"
-                            f"{encrypted_violation}"
+                            f"{encrypted_violation}\n"
                         )
-                        fwrite.write('\n')
         except IOError as e:
             print(f"ERROR: {e}")
             pause()
@@ -1768,12 +1782,12 @@ def save_books():
         with open(LMS_BOOKS, 'w', encoding='UTF-8') as fwrite:
             for book in book_list:
                 # Encrypting
-                encrypted_book_num = encrypt(book.book_num)
-                encrypted_isbn = encrypt(book.isbn)
-                encrypted_book_title = encrypt(book.book_title)
-                encrypted_book_author = encrypt(book.book_author)
-                encrypted_publication_year = encrypt(book.publication_year)
-                encrypted_book_quantity = encrypt(book.book_quantity)
+                encrypted_book_num = encrypt(str(book.book_num))
+                encrypted_isbn = encrypt(str(book.isbn))
+                encrypted_book_title = encrypt(str(book.book_title))
+                encrypted_book_author = encrypt(str(book.book_author))
+                encrypted_publication_year = encrypt(str(book.publication_year))
+                encrypted_book_quantity = encrypt(str(book.book_quantity))
 
                 # Saving
                 fwrite.write(
@@ -1782,9 +1796,8 @@ def save_books():
                     f"{encrypted_book_title},/,"
                     f"{encrypted_book_author},/,"
                     f"{encrypted_publication_year},/,"
-                    f"{encrypted_book_quantity}"
+                    f"{encrypted_book_quantity}\n"
                 )
-                fwrite.write('\n')
     except IOError as e:
         print(f"ERROR: {e}")
         pause()
@@ -1804,12 +1817,12 @@ def save_book_requests():
         with open(LMS_BOOK_REQUESTS, 'w', encoding='UTF-8') as fwrite:
             for book in book_request_list:
                 # Encrypting
-                encrypted_book_num = encrypt(book.book_num)
-                encrypted_isbn = encrypt(book.isbn)
-                encrypted_book_title = encrypt(book.book_title)
-                encrypted_book_author = encrypt(book.book_author)
-                encrypted_publication_year = encrypt(book.publication_year)
-                encrypted_book_quantity = encrypt(book.book_quantity)
+                encrypted_book_num = encrypt(str(book.book_num))
+                encrypted_isbn = encrypt(str(book.isbn))
+                encrypted_book_title = encrypt(str(book.book_title))
+                encrypted_book_author = encrypt(str(book.book_author))
+                encrypted_publication_year = encrypt(str(book.publication_year))
+                encrypted_book_quantity = encrypt(str(book.book_quantity))
 
                 # Saving
                 fwrite.write(
@@ -1828,17 +1841,21 @@ def save_book_requests():
 
 
 def encrypt(plain_text):
+    global KEY
+    plain_text = plain_text.encode()
     encrypted = bytearray()
     for i in range(len(plain_text)):
         encrypted.append(plain_text[i] ^ KEY[i % len(KEY)])
-    return encrypted
+    return encrypted.hex()
 
 
 def decrypt(encrypted_text):
-    decrypted = bytearray()
-    for i in range(len(encrypted_text)):
-        decrypted.append(encrypted_text[i] ^ KEY[i % len(KEY)])
-    return decrypted
+    global KEY
+    decrypted = bytearray.fromhex(encrypted_text)
+    plain_text = bytearray()
+    for i in range(len(decrypted)):
+        plain_text.append(decrypted[i] ^ KEY[i % len(KEY)])
+    return plain_text.decode()
 
 
 def menu(x):
@@ -2331,12 +2348,13 @@ def check_books(x, string_title, string_author, b_num):
 
 def get_key():
     global KEY
-    KEY = " " + string.digits + string.ascii_letters
-    KEY.encode()
+    generate_key = " " + string.digits + string.ascii_letters
+    KEY = ''.join(random.choice(generate_key) for _ in range(10))
+    KEY = KEY.encode()
 
     if not os.path.exists(LMS_KEY):
         try:
-            with open(LMS_KEY, 'w') as fwrite:
+            with open(LMS_KEY, 'wb') as fwrite:
                 fwrite.write(KEY)
         except IOError as e:
             print(f"ERROR: {e}")
@@ -2402,6 +2420,7 @@ def exit_message():
     print("HAVE A GREAT DAY")
     print("HOPE TO SEE YOU AGAIN")
     print("PLEASE CUM AGAIN ≖‿≖")
+    sys.exit()
 
 
 # ----------------------[MAIN]----------------------
@@ -2433,6 +2452,7 @@ elif choice_main == 4:
 else:
     print("INVALID INPUT")
 
+'''
 retrieve_books()
 if not KEY_EXIST:
     # Get temporary key if there is no key yet
@@ -2441,18 +2461,15 @@ if not KEY_EXIST:
 
     # Check files if existed
     # If existing, save the database on the key
-    with open(LMS_ACCOUNTS):
-        if os.path.exists(LMS_ACCOUNTS):
-            save_accounts()
-    with open(LMS_FD_USER_DETAILS):
-        if os.path.exists(LMS_FD_USER_DETAILS):
-            save_accounts_fd()
-    with open(LMS_BOOKS):
-        if os.path.exists(LMS_BOOKS):
-            save_accounts_fd()
-    with open(LMS_BOOK_REQUESTS):
-        if os.path.exists(LMS_BOOK_REQUESTS):
-            save_accounts_fd()
+    if os.path.exists(LMS_ACCOUNTS):
+        save_accounts()
+    if os.path.exists(LMS_FD_USER_DETAILS):
+        save_accounts_fd()
+    if os.path.exists(LMS_BOOKS):
+        save_accounts_fd()
+    if os.path.exists(LMS_BOOK_REQUESTS):
+        save_accounts_fd()
+'''
 
 # ----------------------[STUDENT MENU]----------------------
 if CURRENT_S_KEY == 1 and CURRENT_L_KEY == 0:
