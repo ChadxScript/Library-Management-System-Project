@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="[FIXED] fd path">
+    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="[FIXED] something">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PYTHON Version/LMS Database/ACCOUNTS.txt" beforeDir="false" afterPath="$PROJECT_DIR$/PYTHON Version/LMS Database/ACCOUNTS.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PYTHON Version/LMS Database/BOOKS.txt" beforeDir="false" afterPath="$PROJECT_DIR$/PYTHON Version/LMS Database/BOOKS.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PYTHON Version/LMS Database/KEY.txt" beforeDir="false" afterPath="$PROJECT_DIR$/PYTHON Version/LMS Database/KEY.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PYTHON Version/LMS_Project.py" beforeDir="false" afterPath="$PROJECT_DIR$/PYTHON Version/LMS_Project.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -258,7 +261,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688654755141</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="[FIXED] something">
+      <created>1688676392495</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1688676392495</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -284,6 +294,7 @@
     <MESSAGE value="UI charHAHA" />
     <MESSAGE value="[FIXED] Login" />
     <MESSAGE value="[FIXED] fd path" />
-    <option name="LAST_COMMIT_MESSAGE" value="[FIXED] fd path" />
+    <MESSAGE value="[FIXED] something" />
+    <option name="LAST_COMMIT_MESSAGE" value="[FIXED] something" />
   </component>
 </project>

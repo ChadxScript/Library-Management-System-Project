@@ -1337,14 +1337,14 @@ def change_key():
             # Save the key to the file
             if not os.path.exists(LMS_KEY): 
                 try:
-                    open(LMS_KEY, 'w').close()
+                    open(LMS_KEY, 'wb').close()
                 except IOError as e:
                     print("ERROR:", e)
                     pause()
                     cls()
 
             try:
-                with open(LMS_KEY, 'w') as fwrite:
+                with open(LMS_KEY, 'wb') as fwrite:
                     fwrite.write(new_key)
             except IOError as e:
                 print("ERROR:", e)
@@ -1367,14 +1367,14 @@ def change_key():
                             # Save the key to the file
                             if not os.path.exists(LMS_KEY):
                                 try:
-                                    open(LMS_KEY, 'w').close()
+                                    open(LMS_KEY, 'wb').close()
                                 except IOError as e:
                                     print("ERROR:", e)
                                     pause()
                                     cls()
 
                             try:
-                                with open(LMS_KEY, 'w') as fwrite:
+                                with open(LMS_KEY, 'wb') as fwrite:
                                     fwrite.write(KEY)
                             except IOError as e:
                                 print("ERROR:", e)
