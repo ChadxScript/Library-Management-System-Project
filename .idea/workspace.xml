@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="ehem UI charHAHA" />
+    <list default="true" id="7f420a06-1206-475b-8dd9-20546eeb67c9" name="Changes" comment="UI charHAHA">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PYTHON Version/LMS_Project.py" beforeDir="false" afterPath="$PROJECT_DIR$/PYTHON Version/LMS_Project.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -32,14 +35,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "E:/Documents/Studey/2. Studey BSCS-2C-M 2nd sem/004. CS221L-M Prog Lang Lab&Lec/ACTIVITY/Group 8 - Project 1/Library-Management_System-Project-[pycharm]",
-    "settings.editor.selected.configurable": "preferences.general"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/Documents/Studey/2. Studey BSCS-2C-M 2nd sem/004. CS221L-M Prog Lang Lab&amp;Lec/ACTIVITY/Group 8 - Project 1/Library-Management_System-Project-[pycharm]&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.general&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.LMS_Project">
     <configuration name="GRP3_Threading_Main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="OS_ACT3_-_Threading" />
@@ -234,7 +237,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688292546896</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="UI charHAHA">
+      <created>1688292751709</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1688292751709</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -257,6 +267,7 @@
     <MESSAGE value="[FIXED] Saving, Retrieving, Encrypting, Decrypting" />
     <MESSAGE value="[FIXED] Saving, Retrieving, Encrypting, Decrypting ehen UI" />
     <MESSAGE value="ehem UI charHAHA" />
-    <option name="LAST_COMMIT_MESSAGE" value="ehem UI charHAHA" />
+    <MESSAGE value="UI charHAHA" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI charHAHA" />
   </component>
 </project>

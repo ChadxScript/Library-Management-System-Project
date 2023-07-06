@@ -4,7 +4,7 @@ import time
 import random
 import string
 import datetime
-import sanamayUI
+# import sanamayUI
 
 # ----------------------[GLOBAL VARIABLES]----------------------
 LMS_FOLDER_DB = "./LMS Database"
@@ -14,8 +14,8 @@ LMS_BOOKS = f"{LMS_FOLDER_DB}/BOOKS.txt"
 LMS_BOOK_REQUESTS = f"{LMS_FOLDER_DB}/BOOK_REQUESTS.txt"
 LMS_KEY = f"{LMS_FOLDER_DB}/KEY.txt"
 
-LMS_CHECK_FD = "D:\\LMS_Check.txt"
-LMS_FLASH_DRIVE = "D:\\LMS Details"
+LMS_CHECK_FD = "E:\\LMS_Check.txt"
+LMS_FLASH_DRIVE = "E:\\LMS Details"
 LMS_FD_USER_DETAILS = f"{LMS_FLASH_DRIVE}\\USER_DETAILS.txt"
 LMS_FD_BORROWED_BOOKS = f"{LMS_FLASH_DRIVE}\\BORROWED_BOOKS.txt"
 
@@ -1505,8 +1505,8 @@ def insert_card():
         scan_screen(1)
         return 4
     else:
-        retrieve_books()
         retrieve_key()
+        retrieve_books()
         retrieve_accounts()
         retrieve_account_fd()
         scan_screen(2)
