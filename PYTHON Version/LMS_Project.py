@@ -126,6 +126,13 @@ def register_student():
 
 
 def register_librarian():
+    global CURRENT_S_KEY
+    global CURRENT_L_KEY
+    global CURRENT_STUDENT_ID
+    global CURRENT_STUDENT_NAME
+    global CURRENT_LIBRARIAN_ID
+    global CURRENT_LIBRARIAN_NAME
+    global CURRENT_VIOLATION
     count = 0
     is_valid = False
 
@@ -140,10 +147,12 @@ def register_librarian():
             print("\n\n\t\t==========================================================================================")
 
             if librarian_name == ADMIN_FILL_NAME and librarian_id == ADMIN_FILL_ID:
-                s_key = 0
-                l_key = 1
-                student_id = FILL
-                student_name = FILL
+                s_key = CURRENT_S_KEY = 0
+                l_key = CURRENT_L_KEY = 1
+                student_id = CURRENT_STUDENT_ID = FILL
+                student_name = CURRENT_STUDENT_NAME = FILL
+                CURRENT_LIBRARIAN_ID = librarian_id
+                CURRENT_LIBRARIAN_NAME = librarian_name
                 violation = 0
 
                 account = AccountDetails(student_id, librarian_id, student_name, librarian_name,
@@ -1525,6 +1534,7 @@ def retrieve_key():
         except IOError as e:
             print("ERROR:", e)
     else:
+        retrieve_books()
         KEY_EXIST = True
         # Get temporary key if there is no key yet
         # If the user exit the program the data will still be encrypted
