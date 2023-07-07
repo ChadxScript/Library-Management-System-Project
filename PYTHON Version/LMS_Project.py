@@ -4,7 +4,12 @@ import time
 import random
 import string
 import datetime
-# import sanamayUI
+
+# Oloroso, Andrew R.
+# Barrios, Armand Angelo C.
+# Calulang, Mary Jane P.
+# BSCS-2CD-M - Programming Language
+# Library Management System
 
 # ----------------------[GLOBAL VARIABLES]----------------------
 LMS_FOLDER_DB = "./LMS Database"
@@ -256,10 +261,10 @@ def borrow_books():
                             print("BOOK COPIES TO BE BORROWED: ")
                             try:
                                 user_num = int(input())
-                                if 0 < user_num < book.bookQuantity:
+                                if 0 < user_num < book.book_quantity:
                                     is_valid = True
                                     new_book_quant = book.book_quantity - user_num
-                                    book.setBookQuantity(new_book_quant)
+                                    book.set_book_quantity(new_book_quant)
 
                                     try:
                                         with open(LMS_FD_USER_DETAILS, 'a', encoding='UTF-8') as fwrite:
@@ -940,12 +945,12 @@ def edit_books():
                             print("BOOK QUANTITY: " + str(book.book_quantity))
                             ch = prompts(6)
                             if ch == 1:
-                                print("INPUT NEW VALID BOOK NUMBER: ")
-                                new_book_num = int(input())
+
+                                new_book_num = int(input("INPUT NEW VALID BOOK NUMBER: "))
                                 if check_books(2, None, None, new_book_num):
                                     book.set_book_num(new_book_num)
                                     save_books()
-                                    logs("EDIT BOOK NUMER", book.book_num)
+                                    logs("EDIT BOOK NUMBER", book.book_num)
                                 else:
                                     print("ERROR.")
                                     print("BOOK NUMBER ALREADY EXIST.")
@@ -983,7 +988,7 @@ def edit_books():
                                 curr_date = datetime.date.today()
                                 if 0 < new_book_year < curr_date.year:
                                     logs("EDIT BOOK PUB.YEAR",
-                                         "FROM ( " + str(book.publication_yea) + " ) TO ( " + str(new_book_year) + " )")
+                                         "FROM ( " + str(book.publication_year) + " ) TO ( " + str(new_book_year) + " )")
                                     book.set_publication_year(new_book_year)
 
                                     # update the ISBN base on the new pub date
@@ -993,7 +998,7 @@ def edit_books():
                                         new_isbn = get_isbn(13)
                                     logs("EDIT BOOK ISBN",
                                          "FROM ( " + book.isbn + " ) TO ( " + new_isbn + " )")
-                                    book.set_ISBN(new_isbn)
+                                    book.set_isbn(new_isbn)
                                     save_books()
                                     pause()
                                     cls()
@@ -2343,10 +2348,12 @@ def check_books(x, string_title, string_author, b_num):
             if book.book_title == string_title and book.book_author == string_author:
                 display_current_book(book.book_num)
                 return False
+            return True
     elif x == 2:
         for book in book_list:
             if book.book_num == b_num:
                 return False
+            return True
     elif x != 1 and x != 2:
         print("\n\nWRONG PARAMETERS.")
         print("PLEASE CHECK THE CODE.")
