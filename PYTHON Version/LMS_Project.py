@@ -267,16 +267,16 @@ def borrow_books():
                                     book.set_book_quantity(new_book_quant)
 
                                     try:
-                                        with open(LMS_FD_USER_DETAILS, 'a', encoding='UTF-8') as fwrite:
+                                        with open(LMS_FD_BORROWED_BOOKS, 'a', encoding='UTF-8') as fwrite:
                                             # -------------------encrypting-------------------
                                             encrypted_curr_year = encrypt(curr_year)
                                             encrypted_curr_month = encrypt(curr_month)
                                             encrypted_curr_day = encrypt(curr_day)
-                                            encrypted_book_num = encrypt(book.book_num)
+                                            encrypted_book_num = encrypt(str(book.book_num))
                                             encrypted_isbn = encrypt(book.isbn)
                                             encrypted_book_title = encrypt(book.book_title)
                                             encrypted_book_author = encrypt(book.book_author)
-                                            encrypted_pub_year = encrypt(book.publication_year)
+                                            encrypted_pub_year = encrypt(str(book.publication_year))
                                             encrypted_book_quant = encrypt(str(user_num))
 
                                             # -------------------saving-------------------
@@ -2151,29 +2151,33 @@ def display_books():
 
 
 def display_current_book(x):
-    print(
-        "============================================================================================================"
-        "========================================================"
-        + "===================================================")
-
+    print("============================================================================================================"
+          "========================================================"
+          + "===================================================")
     print("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |" %
           ("BOOK NUM", "ISBN", "BOOK TITLE", "BOOK AUTHOR", "PUB. YEAR", "QUANTITY"))
-    print(
-        "============================================================================================================"
-        "========================================================"
-        + "===================================================")
+    print("============================================================================================================"
+          "========================================================"
+          + "===================================================")
+
+    book_found = False
 
     for book in book_list:
         if book.book_num == x:
             print("| %-8s | %-15s | %-74s | %-82s | %-9s | %-8s |" %
                   (book.book_num, book.isbn, book.book_title, book.book_author,
                    book.publication_year, book.book_quantity))
+            book_found = True
+            break
 
-    print(
-        "============================================================================================================"
-        "========================================================"
-        + "===================================================")
+    if not book_found:
+        print("BOOK NUMBER:", x, "NOT FOUND.")
+
+    print("============================================================================================================"
+          "========================================================"
+          + "===================================================")
     print("\n\n")
+
 
 
 def display_book_requests():
